@@ -175,13 +175,90 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (populated during roadmap creation) | | |
+| FOUND-01 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Pending |
+| FOUND-03 | Phase 1 | Pending |
+| FOUND-04 | Phase 1 | Pending |
+| FOUND-05 | Phase 1 | Pending |
+| STATE-01 | Phase 2 | Pending |
+| STATE-02 | Phase 2 | Pending |
+| STATE-03 | Phase 2 | Pending |
+| STATE-04 | Phase 2 | Pending |
+| STATE-05 | Phase 2 | Pending |
+| STATE-06 | Phase 2 | Pending |
+| CTX-01 | Phase 2 | Pending |
+| CTX-02 | Phase 2 | Pending |
+| CTX-03 | Phase 2 | Pending |
+| TMPL-01 | Phase 3 | Pending |
+| TMPL-02 | Phase 3 | Pending |
+| TMPL-03 | Phase 3 | Pending |
+| TMPL-04 | Phase 3 | Pending |
+| TMPL-05 | Phase 3 | Pending |
+| TMPL-06 | Phase 3 | Pending |
+| SCOPE-01 | Phase 4 | Pending |
+| SCOPE-02 | Phase 4 | Pending |
+| SCOPE-03 | Phase 4 | Pending |
+| SCOPE-04 | Phase 4 | Pending |
+| SCOPE-05 | Phase 4 | Pending |
+| SCOPE-06 | Phase 10 | Pending |
+| SCOPE-07 | Phase 4 | Pending |
+| SCOPE-08 | Phase 4 | Pending |
+| GATE-01 | Phase 4 | Pending |
+| GATE-02 | Phase 4 | Pending |
+| GATE-03 | Phase 6 | Pending |
+| GATE-04 | Phase 10 | Pending |
+| GATE-05 | Phase 10 | Pending |
+| GATE-06 | Phase 4 | Pending |
+| GATE-07 | Phase 6 | Pending |
+| ARTF-01 | Phase 4 | Pending |
+| ARTF-02 | Phase 4 | Pending |
+| ARTF-03 | Phase 10 | Pending |
+| RSCH-01 | Phase 5 | Pending |
+| RSCH-02 | Phase 5 | Pending |
+| RSCH-03 | Phase 5 | Pending |
+| RSCH-04 | Phase 5 | Pending |
+| RSCH-05 | Phase 6 | Pending |
+| RSCH-06 | Phase 6 | Pending |
+| RSCH-07 | Phase 6 | Pending |
+| RSCH-08 | Phase 6 | Pending |
+| RSCH-09 | Phase 5 | Pending |
+| RSCH-10 | Phase 6 | Pending |
+| RSCH-11 | Phase 6 | Pending |
+| RSCH-12 | Phase 6 | Pending |
+| RSCH-13 | Phase 6 | Pending |
+| RSCH-14 | Phase 5 | Pending |
+| DSGN-01 | Phase 7 | Pending |
+| DSGN-02 | Phase 7 | Pending |
+| DSGN-03 | Phase 7 | Pending |
+| DSGN-04 | Phase 7 | Pending |
+| DSGN-05 | Phase 7 | Pending |
+| DSGN-06 | Phase 7 | Pending |
+| DSGN-07 | Phase 7 | Pending |
+| PLAN-01 | Phase 8 | Pending |
+| PLAN-02 | Phase 8 | Pending |
+| PLAN-03 | Phase 8 | Pending |
+| PLAN-04 | Phase 8 | Pending |
+| PLAN-05 | Phase 8 | Pending |
+| EXEC-01 | Phase 9 | Pending |
+| EXEC-02 | Phase 9 | Pending |
+| EXEC-03 | Phase 9 | Pending |
+| EXEC-04 | Phase 9 | Pending |
+| EXEC-05 | Phase 9 | Pending |
+| EXEC-06 | Phase 9 | Pending |
+| INTNT-01 | Phase 10 | Pending |
+| INTNT-02 | Phase 10 | Pending |
+| INTNT-03 | Phase 10 | Pending |
+| TELE-01 | Phase 10 | Pending |
+| TELE-02 | Phase 10 | Pending |
+| TELE-03 | Phase 10 | Pending |
+| TELE-04 | Phase 10 | Pending |
+| TELE-05 | Phase 10 | Pending |
 
 **Coverage:**
-- v1 requirements: 62 total
-- Mapped to phases: 0
-- Unmapped: 62
+- v1 requirements: 78 total
+- Mapped to phases: 78
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-27*
-*Last updated: 2026-02-27 after initial definition*
+*Last updated: 2026-02-27 after roadmap creation*
