@@ -34,11 +34,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. plugin.json is valid and contains name, version, description, author fields
   3. Each skill has a `skills/{name}/SKILL.md` file with YAML frontmatter (name, description, allowed-tools, argument-hint) and trigger phrases in the description
   4. The plugin directory at `~/.claude/plugins/expedite/` is self-contained with plugin.json, skills/, and references/ subdirectories
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- Create plugin manifest (.claude-plugin/plugin.json) and full directory structure (skills/, references/, templates/)
+- [ ] 01-02-PLAN.md -- Create all 6 SKILL.md files with frontmatter, trigger phrases, and stub bodies + human verification of plugin discovery
 
 ### Phase 2: State Management and Context
 **Goal**: The plugin can persist, recover, and display lifecycle state across sessions and after /clear
@@ -192,7 +192,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Plugin Scaffolding | 0/2 | Not started | - |
+| 1. Plugin Scaffolding | 0/2 | Planned | - |
 | 2. State Management and Context | 0/3 | Not started | - |
 | 3. Prompt Template System | 0/2 | Not started | - |
 | 4. Scope Skill | 0/3 | Not started | - |
