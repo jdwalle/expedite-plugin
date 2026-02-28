@@ -236,9 +236,10 @@ questions:
     priority: "P0"                        # P0 (critical), P1 (important), P2 (nice-to-have)
     decision_area: "authentication"
     source_hints: ["web", "codebase"]     # YAML flow-style array
+    evidence_requirements: "2+ implementation examples with security analysis"  # What evidence constitutes a sufficient answer
     status: "covered"                      # pending/covered/partial/not_covered/unavailable_source
     source: "original"                    # "original" | "discovered-round-{N}"
-    gap_details: null                     # Specific gap description if not sufficient
+    gap_details: null                     # Specific gap description if not sufficient (references unmet evidence requirements)
     evidence_files: ["research/evidence-batch-01.md"]
 
 # Gate history (flat list, append-only in state)
@@ -430,17 +431,28 @@ Current lifecycle state:
    - Engineering: "What is the current architecture context?", "What are the hard constraints?", "What is the desired end state?"
    - Additional questions based on imported constraints if any.
 
-6. **Question plan generation (Round 3: "Terraform plan-apply" preview).** Using gathered context, the main session generates 5-15 research questions grouped by decision area. Each question includes: text, priority (P0/P1/P2), source_hints, decision_area. Present as structured preview:
+6. **Question plan generation (Round 3: "Terraform plan-apply" preview).** Using gathered context, the main session generates 5-15 research questions grouped by decision area. Each question includes: text, priority (P0/P1/P2), source_hints, decision_area, evidence_requirements. Each DA also gets a depth calibration (Deep/Standard/Light) and a readiness criterion. Present as structured preview:
    ```
    --- Question Plan Preview ---
-   [P0] How does X framework handle Y? (web)
-   [P0] What is the current architecture of Z? (codebase)
-   [P1] What do users report about W? (web, mcp:jira)
+
+   DA-1: Authentication (Deep)
+   Readiness: 2+ implementation examples with benchmarks comparing approaches
+     [P0] How does X framework handle Y? (web)
+       Evidence needed: At least 2 implementation examples, performance benchmarks
+     [P0] What is the current architecture of Z? (codebase)
+       Evidence needed: Architecture diagram or code path walkthrough
+
+   DA-2: User Interface (Standard)
+   Readiness: 1 reference implementation + user feedback data
+     [P1] What do users report about W? (web, mcp:jira)
+       Evidence needed: User feedback data from 2+ sources
    ...
-   --- 12 questions, estimated 3 research batches ---
+   --- 12 questions across 4 DAs, estimated 3 research batches ---
    Proceed? (yes / modify / add questions)
    ```
    User can approve, modify, or add questions. No research tokens spent until approval.
+
+   **Evidence requirements** define _what specific evidence would constitute a sufficient answer_ for each question (e.g., "at least 2 implementation examples", "API documentation confirming capability"). **Readiness criteria** define _how to know when enough evidence exists to make a design decision_ for the DA as a whole. **Depth calibration** (Deep/Standard/Light) sets evidence count expectations — Deep DAs need more corroborating sources than Light ones. These flow downstream: research agents receive evidence requirements, sufficiency evaluator checks against them, and design must reference the evidence that met them.
 
 7. **Source configuration.** Display configured sources as a checklist via freeform prompt:
    ```
@@ -452,7 +464,7 @@ Current lifecycle state:
    ```
    If "edit": guide through source modification. Freeform prompt avoids AskUserQuestion timeout.
 
-8. **Write artifacts.** Write `.arc/scope/SCOPE.md` with approved question plan, success criteria, intent, imported constraints. Update state.yml with questions and per-question metadata.
+8. **Write artifacts.** Write `.arc/scope/SCOPE.md` with approved question plan (including evidence requirements per question), DA metadata (readiness criterion, depth calibration per DA), success criteria, intent, imported constraints. Update state.yml with questions and per-question metadata (including `evidence_requirements` field). DA-level metadata (readiness criterion, depth) lives in SCOPE.md (not state.yml, to respect the flat structure constraint).
 
 9. **Gate G1 evaluation (inline).** Structural check:
 
@@ -462,6 +474,8 @@ Current lifecycle state:
 | MUST | At least 3 questions defined | Count questions array |
 | MUST | Intent declared (product or engineering) | Check `intent` field |
 | MUST | At least one success criterion defined | Search SCOPE.md |
+| MUST | Every question has evidence requirements defined | Check each question for `evidence_requirements` field |
+| MUST | Every DA has a readiness criterion and depth calibration | Check DA metadata |
 | SHOULD | Questions have source hints | Check each question |
 | SHOULD | Questions span at least 2 decision areas | Compare decision_area values |
 | SHOULD | No more than 15 questions | Count questions array |
@@ -535,7 +549,8 @@ Current lifecycle state:
 4. **Construct per-batch agent prompts.** For each batch:
    - Load the appropriate prompt template (`prompt-web-researcher.md`, `prompt-codebase-analyst.md`, or `prompt-mcp-researcher.md`).
    - Read frontmatter for `subagent_type` and `model`.
-   - Inline into the prompt: batch questions (with priority, context, gap_details if gap-fill), output file path, intent lens, circuit breaker instructions, dynamic question discovery instructions.
+   - Inline into the prompt: batch questions (with priority, context, **evidence requirements per question**, DA depth calibration, gap_details if gap-fill), output file path, intent lens, circuit breaker instructions, dynamic question discovery instructions.
+   - Agents must know _what specific evidence to find_, not just the topic to research. Evidence requirements from scope drive the search.
    - Target prompt size: ~4-5K tokens.
 
 5. **Dispatch research agents.** Spawn up to 3 agents simultaneously via Task():
@@ -553,16 +568,16 @@ Current lifecycle state:
 
 7. **Dynamic question discovery.** Scan evidence files for proposed questions (YAML blocks after `# --- PROPOSED QUESTIONS ---` marker). Extract via regex. Deduplicate via LLM judgment (inline). If unique proposals exist (max 4): present via AskUserQuestion (multiSelect, header: "New Qs"). Approved questions added to state.yml with `status: "pending"`, `source: "discovered-round-{N}"`. If new questions added: create supplemental batch and dispatch.
 
-8. **Sufficiency assessment (inline).** For each question, evaluate using `prompt-sufficiency-evaluator.md` as inline guidance. Assess three dimensions qualitatively, then assign a categorical rating:
-   - **Coverage:** Is the question answered with specific, relevant evidence?
-   - **Corroboration:** Do multiple independent sources agree?
-   - **Actionability:** Can the design phase use this evidence directly?
+8. **Sufficiency assessment (inline).** For each question, evaluate _against the evidence requirements defined in scope_ using `prompt-sufficiency-evaluator.md` as inline guidance. The evaluator checks whether the specific evidence requested was found, not just general topical coverage. Assess three dimensions qualitatively, calibrated by the DA's depth level (Deep DAs require stronger corroboration than Light ones), then assign a categorical rating:
+   - **Coverage:** Does the evidence meet the specific evidence requirements for this question? (e.g., "2+ implementation examples" — were they found?)
+   - **Corroboration:** Do multiple independent sources agree? (Deep DAs require 2+ corroborating sources; Light DAs accept 1)
+   - **Actionability:** Can the design phase use this evidence directly to make the design decision for this DA?
    - Categorical rating (proven in research-engine):
-     - **COVERED:** Evidence is specific, corroborated, and actionable. The design phase can use this directly.
-     - **PARTIAL:** Evidence exists but has gaps — missing corroboration, only partially addresses the question, or requires significant interpretation.
-     - **NOT COVERED:** No relevant evidence, or evidence is too weak/contradictory to inform design.
+     - **COVERED:** Evidence meets the stated evidence requirements — specific, corroborated (per depth level), and actionable. The design phase can use this directly.
+     - **PARTIAL:** Evidence exists but doesn't fully meet evidence requirements — missing corroboration, only partially addresses the question, or requires significant interpretation.
+     - **NOT COVERED:** No relevant evidence, or evidence is too weak/contradictory to meet evidence requirements.
      - **UNAVAILABLE-SOURCE:** Source failures prevented evidence gathering (distinct from weak evidence).
-   - Update each question in state.yml: status, evidence_files, gap_details.
+   - Update each question in state.yml: status, evidence_files, gap_details (gap_details should reference which evidence requirements remain unmet).
 
 9. **Synthesis.** Spawn synthesis agent via Task():
    ```
@@ -573,8 +588,8 @@ Current lifecycle state:
      model: "opus"
    )
    ```
-   Initial round: produces `.arc/research/SYNTHESIS.md` organized by decision area.
-   Gap-fill round: produces `round-{N}/supplement-synthesis.md` as additive delta (reads all evidence, weights supplements higher).
+   Initial round: produces `.arc/research/SYNTHESIS.md` organized by decision area, with evidence traceability (which evidence files support which DA and which evidence requirements they satisfy).
+   Gap-fill round: produces `round-{N}/supplement-synthesis.md` as additive delta (reads all evidence, weights supplements higher). Gap-fill agents receive the unmet evidence requirements so they know what's still missing.
 
 10. **Gate G2 evaluation (inline).**
 
@@ -645,9 +660,10 @@ Current lifecycle state:
 
 1. **Entry validation.** Verify `phase: research_complete`. If `--override` and `phase: research_recycled`: record override in gate_history with severity, inject gap context as `<known_gaps>` section. Verify SYNTHESIS.md exists. Set `phase: "design_in_progress"`.
 
-2. **Design generation (main session).** Load `prompt-design-guide.md` as reference guidance. The main session reads SCOPE.md, SYNTHESIS.md, supplement syntheses, constraints, gap context (if any). Intent determines output format:
+2. **Design generation (main session).** Load `prompt-design-guide.md` as reference guidance. The main session reads SCOPE.md (for DAs, evidence requirements, readiness criteria), SYNTHESIS.md, supplement syntheses, constraints, gap context (if any). Intent determines output format:
    - Engineering: RFC-style (context/scope, goals/non-goals, detailed design, alternatives considered, cross-cutting concerns, implementation plan).
    - Product: PRD-style (problem statement, personas, user stories, flows, success metrics, scope boundaries).
+   **Contract chain requirement:** Every DA from scope MUST have a corresponding design decision. Each design decision MUST reference the supporting evidence from research (which evidence files, which findings justify the decision). No design decision may be invented without evidence traceability.
    Write to `.arc/design/DESIGN.md`.
 
 3. **HANDOFF.md generation (product intent only).** If `intent: product`, generate `.arc/design/HANDOFF.md` with 9 sections:
@@ -672,6 +688,8 @@ Current lifecycle state:
 | MUST | DESIGN.md exists and is non-empty | File existence |
 | MUST | Design addresses all P0 questions from research | Cross-reference against SCOPE.md |
 | MUST | Design includes success/acceptance criteria | LLM structural check |
+| MUST | Every DA from scope has a corresponding design decision | Cross-reference SCOPE.md DAs → DESIGN.md decisions |
+| MUST | Each design decision references supporting evidence | Check evidence citations in DESIGN.md |
 | SHOULD | Design addresses all P1 questions | LLM evaluation |
 | SHOULD | Scope boundaries are clearly defined | LLM judgment |
 | SHOULD | Alternatives considered section present | LLM structural check |

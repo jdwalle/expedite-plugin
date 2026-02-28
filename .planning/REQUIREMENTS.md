@@ -38,8 +38,11 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **SCOPE-04**: Question plan presented for user review before any research tokens are spent ("Terraform plan-apply" preview)
 - [ ] **SCOPE-05**: User can modify question plan (add, remove, reprioritize) before approval
 - [ ] **SCOPE-06**: Source configuration step: confirm default sources or edit sources.yml
-- [ ] **SCOPE-07**: G1 gate validates scope completeness (structural gate — all required fields present, at least 1 P0 question)
-- [ ] **SCOPE-08**: SCOPE.md artifact written to `.expedite/scope/SCOPE.md` with full question plan and metadata
+- [ ] **SCOPE-07**: G1 gate validates scope completeness (structural gate — all required fields present, at least 1 P0 question, every question has evidence requirements)
+- [ ] **SCOPE-08**: SCOPE.md artifact written to `.expedite/scope/SCOPE.md` with full question plan, evidence requirements, readiness criteria, and metadata
+- [ ] **SCOPE-09**: Each question/DA defines evidence requirements — what specific evidence would constitute a sufficient answer
+- [ ] **SCOPE-10**: Each DA defines a readiness criterion — how to know when enough evidence exists to make a design decision
+- [ ] **SCOPE-11**: Each DA has a depth calibration (Deep/Standard/Light) that sets evidence count expectations for research
 
 ### Research Skill
 
@@ -57,6 +60,8 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **RSCH-12**: Gap-fill agents produce `round-{N}/supplement-*.md` with additive supplement-synthesis
 - [ ] **RSCH-13**: SYNTHESIS.md artifact written to `.expedite/research/SYNTHESIS.md` after gate pass
 - [ ] **RSCH-14**: Every Decision Area (DA-1 through DA-N) from scope has at least one research question covering it
+- [ ] **RSCH-15**: Research agents receive evidence requirements for their batch — agents know what specific evidence to find, not just the topic
+- [ ] **RSCH-16**: Sufficiency evaluator assesses evidence against the evidence requirements defined in scope (not just general topical coverage)
 
 ### Design Skill
 
@@ -65,8 +70,10 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **DSGN-03**: Revision cycle: user can request up to 2 rounds of changes before gate evaluation
 - [ ] **DSGN-04**: Freeform feedback accepted during revision (not AskUserQuestion)
 - [ ] **DSGN-05**: Product-intent design generates HANDOFF.md with 9-section format for engineer consumption
-- [ ] **DSGN-06**: G3 gate evaluates design quality with MUST/SHOULD criteria
+- [ ] **DSGN-06**: G3 gate evaluates design quality with MUST/SHOULD criteria — MUST include "every DA has a decision" and "decisions reference evidence"
 - [ ] **DSGN-07**: DESIGN.md artifact written to `.expedite/design/DESIGN.md`
+- [ ] **DSGN-08**: Every DA from scope has a corresponding design decision — no DA is left without a decision
+- [ ] **DSGN-09**: Each design decision references the supporting evidence from research (which evidence files, which findings justify the decision)
 
 ### Plan Skill
 
@@ -205,6 +212,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCOPE-06 | Phase 10 | Pending |
 | SCOPE-07 | Phase 4 | Pending |
 | SCOPE-08 | Phase 4 | Pending |
+| SCOPE-09 | Phase 4 | Pending |
+| SCOPE-10 | Phase 4 | Pending |
+| SCOPE-11 | Phase 4 | Pending |
 | GATE-01 | Phase 4 | Pending |
 | GATE-02 | Phase 4 | Pending |
 | GATE-03 | Phase 6 | Pending |
@@ -229,6 +239,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RSCH-12 | Phase 6 | Pending |
 | RSCH-13 | Phase 6 | Pending |
 | RSCH-14 | Phase 5 | Pending |
+| RSCH-15 | Phase 5 | Pending |
+| RSCH-16 | Phase 6 | Pending |
 | DSGN-01 | Phase 7 | Pending |
 | DSGN-02 | Phase 7 | Pending |
 | DSGN-03 | Phase 7 | Pending |
@@ -236,6 +248,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DSGN-05 | Phase 7 | Pending |
 | DSGN-06 | Phase 7 | Pending |
 | DSGN-07 | Phase 7 | Pending |
+| DSGN-08 | Phase 7 | Pending |
+| DSGN-09 | Phase 7 | Pending |
 | PLAN-01 | Phase 8 | Pending |
 | PLAN-02 | Phase 8 | Pending |
 | PLAN-03 | Phase 8 | Pending |
@@ -259,8 +273,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TELE-05 | Phase 10 | Pending |
 
 **Coverage:**
-- v1 requirements: 80 total
-- Mapped to phases: 80
+- v1 requirements: 87 total
+- Mapped to phases: 87
 - Unmapped: 0
 
 ---

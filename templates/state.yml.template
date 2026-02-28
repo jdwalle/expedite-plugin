@@ -42,9 +42,10 @@ questions: []
 #   priority: "P0"           # P0 | P1 | P2
 #   decision_area: "area-name"
 #   source_hints: ["web", "codebase"]
+#   evidence_requirements: "what specific evidence would constitute a sufficient answer"
 #   status: "pending"        # pending | covered | partial | not_covered | unavailable_source
 #   source: "original"       # original | discovered-round-{N}
-#   gap_details: null
+#   gap_details: null        # references unmet evidence requirements when partial/not_covered
 #   evidence_files: []
 
 # Gate history (flat list -- each item is a flat object, max 2 nesting levels)

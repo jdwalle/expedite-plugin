@@ -73,15 +73,18 @@ Plans:
 - [ ] 03-02: TBD
 
 ### Phase 4: Scope Skill
-**Goal**: Users can define a lifecycle goal, declare intent, and produce an approved question plan ready for research
+**Goal**: Users can define a lifecycle goal, declare intent, and produce an approved question plan with evidence requirements ready for research
 **Depends on**: Phase 2, Phase 3
-**Requirements**: SCOPE-01, SCOPE-02, SCOPE-03, SCOPE-04, SCOPE-05, SCOPE-06, SCOPE-07, SCOPE-08, GATE-01, GATE-02, GATE-06, ARTF-01, ARTF-02
+**Requirements**: SCOPE-01, SCOPE-02, SCOPE-03, SCOPE-04, SCOPE-05, SCOPE-06, SCOPE-07, SCOPE-08, SCOPE-09, SCOPE-10, SCOPE-11, GATE-01, GATE-02, GATE-06, ARTF-01, ARTF-02
 **Success Criteria** (what must be TRUE):
   1. User answers 5-8 interactive questions and the skill detects intent (product or engineering) from their responses
   2. A structured question plan with priorities (P0/P1/P2), decision areas (DA-1 through DA-N), and source hints is generated and presented for user review before any research begins
-  3. User can modify the question plan (add, remove, reprioritize questions) before approving it
-  4. G1 gate passes only when all required fields are present and at least one P0 question exists (structural/deterministic validation)
-  5. SCOPE.md artifact is written to `.expedite/scope/SCOPE.md` with the full question plan, metadata, and intent declaration
+  3. Each question defines evidence requirements: what specific evidence would constitute a sufficient answer (e.g., "at least 2 implementation examples", "API documentation confirming capability", "benchmark data comparing approaches")
+  4. Each DA defines a readiness criterion: how to know when enough evidence exists to make a design decision for that area
+  5. Each DA has a depth calibration (Deep/Standard/Light) that sets evidence count expectations — Deep DAs need more corroborating sources than Light ones
+  6. User can modify the question plan (add, remove, reprioritize questions) before approving it
+  7. G1 gate passes only when all required fields are present, at least one P0 question exists, and every question has evidence requirements defined (structural/deterministic validation)
+  8. SCOPE.md artifact is written to `.expedite/scope/SCOPE.md` with the full question plan, evidence requirements, readiness criteria, and intent declaration
 **Plans**: TBD
 
 Plans:
@@ -90,14 +93,15 @@ Plans:
 - [ ] 04-03: TBD
 
 ### Phase 5: Research Orchestration Core
-**Goal**: The research skill dispatches parallel subagents that collect evidence from multiple source types and return structured findings
+**Goal**: The research skill dispatches parallel subagents that collect evidence against specific evidence requirements from scope, not just topic-level questions
 **Depends on**: Phase 4
-**Requirements**: RSCH-01, RSCH-02, RSCH-03, RSCH-04, RSCH-09, RSCH-14
+**Requirements**: RSCH-01, RSCH-02, RSCH-03, RSCH-04, RSCH-09, RSCH-14, RSCH-15
 **Success Criteria** (what must be TRUE):
   1. Questions from the scope are grouped into 3-5 batches by source affinity (web, codebase, MCP) with every Decision Area covered by at least one research question
-  2. Up to 3 research subagents are dispatched in parallel via Task() API, each using the correct per-source prompt template
-  3. Each subagent writes detailed findings to evidence files and returns a condensed summary (max 500 tokens)
-  4. Source routing handles failures with circuit breaker logic: retry once on server failure, never retry platform failures, classify failed sources as UNAVAILABLE-SOURCE
+  2. Each research agent receives the evidence requirements for its batch — agents know what specific evidence they need to find, not just the topic to research (e.g., "find 2+ implementation examples" not just "research authentication")
+  3. Up to 3 research subagents are dispatched in parallel via Task() API, each using the correct per-source prompt template
+  4. Each subagent writes detailed findings to evidence files and returns a condensed summary (max 500 tokens)
+  5. Source routing handles failures with circuit breaker logic: retry once on server failure, never retry platform failures, classify failed sources as UNAVAILABLE-SOURCE
 **Plans**: TBD
 
 Plans:
@@ -106,15 +110,16 @@ Plans:
 - [ ] 05-03: TBD
 
 ### Phase 6: Research Quality and Synthesis
-**Goal**: Research output is assessed for sufficiency, gaps are filled through targeted re-research, and a synthesis artifact is produced for downstream consumption
+**Goal**: Research output is assessed for sufficiency against the evidence requirements defined in scope, gaps are filled through targeted re-research, and a synthesis artifact is produced for downstream consumption
 **Depends on**: Phase 5
-**Requirements**: RSCH-05, RSCH-06, RSCH-07, RSCH-08, RSCH-10, RSCH-11, RSCH-12, RSCH-13, GATE-03, GATE-04, GATE-07
+**Requirements**: RSCH-05, RSCH-06, RSCH-07, RSCH-08, RSCH-10, RSCH-11, RSCH-12, RSCH-13, RSCH-16, GATE-03, GATE-04, GATE-07
 **Success Criteria** (what must be TRUE):
-  1. Per-question sufficiency is assessed using the categorical model (COVERED, PARTIAL, NOT COVERED, UNAVAILABLE-SOURCE) across 3 dimensions (Coverage, Corroboration, Actionability)
-  2. G2 gate evaluates research using count-based criteria (majority COVERED, all P0 at least PARTIAL) with anti-bias instructions in the evaluation prompt
-  3. When G2 triggers Recycle, gap-fill mode dispatches targeted agents for PARTIAL/NOT COVERED questions only, producing additive supplement files
-  4. Dynamic question discovery surfaces up to 4 new questions from subagent proposals (deduplicated via LLM judgment) for user approval
-  5. SYNTHESIS.md artifact is written to `.expedite/research/SYNTHESIS.md` after gate pass
+  1. Per-question sufficiency is assessed against the evidence requirements defined in SCOPE.md — the evaluator checks whether the specific evidence requested was found (not just general topical coverage)
+  2. The categorical model (COVERED, PARTIAL, NOT COVERED, UNAVAILABLE-SOURCE) rates each question across 3 dimensions (Coverage, Corroboration, Actionability), calibrated by the DA's depth level (Deep DAs require stronger corroboration than Light ones)
+  3. G2 gate evaluates research using count-based criteria (majority COVERED, all P0 at least PARTIAL) with anti-bias instructions in the evaluation prompt
+  4. When G2 triggers Recycle, gap-fill mode dispatches targeted agents for PARTIAL/NOT COVERED questions only, producing additive supplement files — gap-fill agents receive the unmet evidence requirements so they know what's still missing
+  5. Dynamic question discovery surfaces up to 4 new questions from subagent proposals (deduplicated via LLM judgment) for user approval
+  6. SYNTHESIS.md artifact is written to `.expedite/research/SYNTHESIS.md` after gate pass, organized by Decision Area with evidence traceability (which evidence files support which DA)
 **Plans**: TBD
 
 Plans:
@@ -123,15 +128,17 @@ Plans:
 - [ ] 06-03: TBD
 
 ### Phase 7: Design Skill
-**Goal**: Users receive a design document generated from research evidence, with opportunity for revision, in the format matching their declared intent
+**Goal**: Users receive a design document where every Decision Area has a corresponding design decision that references supporting research evidence
 **Depends on**: Phase 6
-**Requirements**: DSGN-01, DSGN-02, DSGN-03, DSGN-04, DSGN-05, DSGN-06, DSGN-07
+**Requirements**: DSGN-01, DSGN-02, DSGN-03, DSGN-04, DSGN-05, DSGN-06, DSGN-07, DSGN-08, DSGN-09
 **Success Criteria** (what must be TRUE):
   1. Design is generated in the main session (not a subagent) from research artifacts, producing RFC-style output for engineering intent and PRD-style output for product intent
-  2. User can request up to 2 rounds of revision via freeform feedback before gate evaluation
-  3. Product-intent lifecycles also produce a HANDOFF.md with 9-section format for engineer consumption
-  4. G3 gate evaluates design quality with MUST/SHOULD criteria and anti-bias instructions
-  5. DESIGN.md artifact is written to `.expedite/design/DESIGN.md`
+  2. Every Decision Area (DA-1 through DA-N) from scope has a corresponding design decision — no DA is left without a decision
+  3. Each design decision references the supporting evidence from research (which evidence files, which findings justify the decision)
+  4. User can request up to 2 rounds of revision via freeform feedback before gate evaluation
+  5. Product-intent lifecycles also produce a HANDOFF.md with 9-section format for engineer consumption
+  6. G3 gate evaluates design quality with MUST/SHOULD criteria and anti-bias instructions — MUST include "every DA has a decision" and "decisions reference evidence"
+  7. DESIGN.md artifact is written to `.expedite/design/DESIGN.md`
 **Plans**: TBD
 
 Plans:
@@ -139,14 +146,16 @@ Plans:
 - [ ] 07-02: TBD
 
 ### Phase 8: Plan Skill
-**Goal**: A structured, executable plan is generated from the design that maps every decision area to concrete tasks
+**Goal**: A structured, executable plan is generated from the design where every design decision maps to tasks with acceptance criteria that trace back to those decisions
 **Depends on**: Phase 7
-**Requirements**: PLAN-01, PLAN-02, PLAN-03, PLAN-04, PLAN-05
+**Requirements**: PLAN-01, PLAN-02, PLAN-03, PLAN-04, PLAN-05, PLAN-06
 **Success Criteria** (what must be TRUE):
   1. Plan is generated in the main session from design artifacts, producing wave-ordered tasks for engineering intent and epics/stories for product intent
-  2. Every Decision Area (DA-1 through DA-N) from scope maps to at least one plan phase/task
-  3. G4 gate validates plan completeness and feasibility (structural validation)
-  4. PLAN.md artifact is written to `.expedite/plan/PLAN.md`
+  2. Every Decision Area (DA-1 through DA-N) from scope maps to at least one plan task
+  3. Every design decision has at least one corresponding task — no decision is left unimplemented
+  4. Each task's acceptance criteria trace back to the design decision(s) they verify — criteria are derived from design, not invented independently
+  5. G4 gate validates: plan exists, every design decision has a task, acceptance criteria cite design decisions, wave ordering/priority present (structural cross-reference)
+  6. PLAN.md artifact is written to `.expedite/plan/PLAN.md`
 **Plans**: TBD
 
 Plans:
@@ -154,14 +163,15 @@ Plans:
 - [ ] 08-02: TBD
 
 ### Phase 9: Execute Skill
-**Goal**: Users can execute a plan task-by-task with the ability to pause, resume, and track progress across sessions
+**Goal**: Users can execute a plan task-by-task with per-task verification that code changes actually address the design decisions they trace to
 **Depends on**: Phase 8
-**Requirements**: EXEC-01, EXEC-02, EXEC-03, EXEC-04, EXEC-05, EXEC-06
+**Requirements**: EXEC-01, EXEC-02, EXEC-03, EXEC-04, EXEC-05, EXEC-06, EXEC-07
 **Success Criteria** (what must be TRUE):
   1. Tasks execute sequentially in wave order from PLAN.md with between-wave prompts at wave transitions
-  2. A checkpoint.yml file tracks execution position so that pausing and later invoking `/expedite:execute` resumes from the correct task
-  3. PROGRESS.md uses append-only `cat >>` pattern (never full rewrite) to log completed task outcomes
-  4. Between tasks, a freeform micro-interaction prompt offers the user "yes / pause / review" options
+  2. Per-task verification confirms the code change addresses the design decision it traces to — not just that it passes a disconnected acceptance check. The contract chain (scope question → evidence → design decision → plan task → code change) is validated
+  3. A checkpoint.yml file tracks execution position so that pausing and later invoking `/expedite:execute` resumes from the correct task
+  4. PROGRESS.md uses append-only `cat >>` pattern (never full rewrite) to log completed task outcomes including which design decision each task satisfied
+  5. Between tasks, a freeform micro-interaction prompt offers the user "yes / pause / review" options
 **Plans**: TBD
 
 Plans:
