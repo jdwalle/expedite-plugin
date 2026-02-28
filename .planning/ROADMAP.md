@@ -12,7 +12,7 @@ Expedite is a Claude Code plugin implementing a 5-phase research-to-implementati
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Plugin Scaffolding** - Static plugin files, directory structure, and auto-discovery verification
+- [x] **Phase 1: Plugin Scaffolding** - Static plugin files, directory structure, and auto-discovery verification
 - [ ] **Phase 2: State Management and Context** - state.yml schema, backup-before-write pattern, status skill, context reconstruction
 - [ ] **Phase 3: Prompt Template System** - All prompt templates (researcher, sufficiency, design guide) with 8-section XML structure
 - [ ] **Phase 4: Scope Skill** - Interactive scoping, intent detection, question plan generation, G1 gate
@@ -37,8 +37,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Create plugin manifest (.claude-plugin/plugin.json) and full directory structure (skills/, references/, templates/)
-- [ ] 01-02-PLAN.md -- Create all 6 SKILL.md files with frontmatter, trigger phrases, and stub bodies + human verification of plugin discovery
+- [x] 01-01-PLAN.md -- Create plugin manifest (.claude-plugin/plugin.json) and full directory structure (skills/, references/, templates/)
+- [x] 01-02-PLAN.md -- Create all 6 SKILL.md files with frontmatter, trigger phrases, and stub bodies + human verification of plugin discovery
 
 ### Phase 2: State Management and Context
 **Goal**: The plugin can persist, recover, and display lifecycle state across sessions and after /clear
@@ -192,7 +192,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Plugin Scaffolding | 0/2 | Planned | - |
+| 1. Plugin Scaffolding | 2/2 | Complete | 2026-02-28 |
 | 2. State Management and Context | 0/3 | Not started | - |
 | 3. Prompt Template System | 0/2 | Not started | - |
 | 4. Scope Skill | 0/3 | Not started | - |

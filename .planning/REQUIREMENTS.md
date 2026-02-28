@@ -10,10 +10,10 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Plugin Foundation
 
 - [x] **FOUND-01**: Plugin installs as self-contained directory at `~/.claude/plugins/expedite/` with plugin.json, skills/, references/
-- [ ] **FOUND-02**: Claude Code auto-discovers all 6 skills from `skills/{name}/SKILL.md` directory structure
+- [x] **FOUND-02**: Claude Code auto-discovers all 6 skills from `skills/{name}/SKILL.md` directory structure
 - [x] **FOUND-03**: Plugin.json contains minimal fields: name, version, description, author
-- [ ] **FOUND-04**: All skills invocable via `/expedite:` namespace (scope, research, design, plan, execute, status)
-- [ ] **FOUND-05**: Trigger phrases in SKILL.md description enable auto-invocation for each skill
+- [x] **FOUND-04**: All skills invocable via `/expedite:` namespace (scope, research, design, plan, execute, status)
+- [x] **FOUND-05**: Trigger phrases in SKILL.md description enable auto-invocation for each skill
 
 ### State Management
 
@@ -176,10 +176,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | FOUND-01 | Phase 1 | Complete |
-| FOUND-02 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Complete |
 | FOUND-03 | Phase 1 | Complete |
-| FOUND-04 | Phase 1 | Pending |
-| FOUND-05 | Phase 1 | Pending |
+| FOUND-04 | Phase 1 | Complete |
+| FOUND-05 | Phase 1 | Complete |
 | STATE-01 | Phase 2 | Pending |
 | STATE-02 | Phase 2 | Pending |
 | STATE-03 | Phase 2 | Pending |
