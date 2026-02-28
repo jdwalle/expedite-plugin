@@ -72,9 +72,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **PLAN-01**: Plan generated in main session from design artifacts
 - [ ] **PLAN-02**: Engineering intent produces wave-ordered task structure; product intent produces epics/stories structure
-- [ ] **PLAN-03**: G4 gate validates plan completeness and feasibility
+- [ ] **PLAN-03**: G4 gate validates plan completeness: every design decision has at least one corresponding task, acceptance criteria trace back to design decisions (not invented independently)
 - [ ] **PLAN-04**: PLAN.md artifact written to `.expedite/plan/PLAN.md`
 - [ ] **PLAN-05**: Every Decision Area (DA-1 through DA-N) from scope maps to at least one plan phase/task
+- [ ] **PLAN-06**: Acceptance criteria in each task cite the specific design decision(s) they verify (contract chain traceability)
 
 ### Execute Skill
 
@@ -84,6 +85,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **EXEC-04**: Micro-interaction between tasks: freeform "yes / pause / review" prompt
 - [ ] **EXEC-05**: Pause writes checkpoint; `/expedite:execute` resumes from checkpoint
 - [ ] **EXEC-06**: Between-wave prompts for wave transitions
+- [ ] **EXEC-07**: Per-task verification confirms code change addresses the design decision it traces to (not just passing a disconnected acceptance check)
 
 ### Quality Gates
 
@@ -239,12 +241,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLAN-03 | Phase 8 | Pending |
 | PLAN-04 | Phase 8 | Pending |
 | PLAN-05 | Phase 8 | Pending |
+| PLAN-06 | Phase 8 | Pending |
 | EXEC-01 | Phase 9 | Pending |
 | EXEC-02 | Phase 9 | Pending |
 | EXEC-03 | Phase 9 | Pending |
 | EXEC-04 | Phase 9 | Pending |
 | EXEC-05 | Phase 9 | Pending |
 | EXEC-06 | Phase 9 | Pending |
+| EXEC-07 | Phase 9 | Pending |
 | INTNT-01 | Phase 10 | Pending |
 | INTNT-02 | Phase 10 | Pending |
 | INTNT-03 | Phase 10 | Pending |
@@ -255,8 +259,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TELE-05 | Phase 10 | Pending |
 
 **Coverage:**
-- v1 requirements: 78 total
-- Mapped to phases: 78
+- v1 requirements: 80 total
+- Mapped to phases: 80
 - Unmapped: 0
 
 ---
