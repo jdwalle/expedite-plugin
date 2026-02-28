@@ -17,12 +17,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### State Management
 
-- [ ] **STATE-01**: state.yml persists lifecycle state with max 2 nesting levels in `.expedite/` directory
-- [ ] **STATE-02**: Every state.yml write uses complete-file rewrite with backup-before-write (state.yml.bak)
-- [ ] **STATE-03**: state.yml includes version field for schema evolution
-- [ ] **STATE-04**: Phase transitions use granular sub-states (`scope_in_progress`, `scope_complete`, `research_recycled`, etc.)
-- [ ] **STATE-05**: Phase transitions are forward-only — no backward movement through lifecycle
-- [ ] **STATE-06**: Crash recovery is unambiguous from phase name alone (sub-state determines resume point)
+- [x] **STATE-01**: state.yml persists lifecycle state with max 2 nesting levels in `.expedite/` directory
+- [x] **STATE-02**: Every state.yml write uses complete-file rewrite with backup-before-write (state.yml.bak)
+- [x] **STATE-03**: state.yml includes version field for schema evolution
+- [x] **STATE-04**: Phase transitions use granular sub-states (`scope_in_progress`, `scope_complete`, `research_recycled`, etc.)
+- [x] **STATE-05**: Phase transitions are forward-only — no backward movement through lifecycle
+- [x] **STATE-06**: Crash recovery is unambiguous from phase name alone (sub-state determines resume point)
 
 ### Context Reconstruction
 
@@ -180,12 +180,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUND-03 | Phase 1 | Complete |
 | FOUND-04 | Phase 1 | Complete |
 | FOUND-05 | Phase 1 | Complete |
-| STATE-01 | Phase 2 | Pending |
-| STATE-02 | Phase 2 | Pending |
-| STATE-03 | Phase 2 | Pending |
-| STATE-04 | Phase 2 | Pending |
-| STATE-05 | Phase 2 | Pending |
-| STATE-06 | Phase 2 | Pending |
+| STATE-01 | Phase 2 | Complete |
+| STATE-02 | Phase 2 | Complete |
+| STATE-03 | Phase 2 | Complete |
+| STATE-04 | Phase 2 | Complete |
+| STATE-05 | Phase 2 | Complete |
+| STATE-06 | Phase 2 | Complete |
 | CTX-01 | Phase 2 | Pending |
 | CTX-02 | Phase 2 | Pending |
 | CTX-03 | Phase 2 | Pending |

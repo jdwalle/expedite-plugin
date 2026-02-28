@@ -53,9 +53,9 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md -- Create state.yml, gitignore, and sources.yml templates in templates/ directory (schema definition)
+- [ ] 02-02-PLAN.md -- Create SessionStart hook (hooks/hooks.json + scripts/session-start.sh) for automatic context injection
+- [ ] 02-03-PLAN.md -- Implement full status skill orchestration logic + verify CTX-01 !cat injection across all SKILL.md files
 
 ### Phase 3: Prompt Template System
 **Goal**: All prompt templates exist with correct structure so skills and subagents can reference them at invocation time
@@ -193,7 +193,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Plugin Scaffolding | 2/2 | Complete | 2026-02-28 |
-| 2. State Management and Context | 0/3 | Not started | - |
+| 2. State Management and Context | 1/3 | In Progress | - |
 | 3. Prompt Template System | 0/2 | Not started | - |
 | 4. Scope Skill | 0/3 | Not started | - |
 | 5. Research Orchestration Core | 0/3 | Not started | - |
