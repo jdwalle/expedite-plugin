@@ -1,0 +1,14 @@
+# Expedite Source Configuration
+# Persists across lifecycles. Edit via /expedite:scope source configuration step.
+sources:
+  web:
+    enabled: true
+    tools: ["WebSearch", "WebFetch"]
+  codebase:
+    enabled: true
+    tools: ["Grep", "Read", "Glob", "Bash"]
+  # Add MCP sources below. Example:
+  # github:
+  #   enabled: true
+  #   tools: ["mcp__github__*"]
+  #   note: "Requires GitHub MCP server configured"

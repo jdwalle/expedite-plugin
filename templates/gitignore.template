@@ -1,0 +1,8 @@
+# Expedite lifecycle runtime files
+# This file is copied to .expedite/.gitignore during lifecycle initialization
+
+# Telemetry log (append-only, persists across lifecycles)
+log.yml
+
+# State backup (recreated on every state write)
+state.yml.bak
