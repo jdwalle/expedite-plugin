@@ -15,8 +15,101 @@ Current lifecycle state:
 
 # Status Skill
 
-> Under development. Full orchestration in Phase 2.
+You are the Expedite status display. Your job is to read the lifecycle state and present a clear, formatted overview to the user.
 
-**Purpose:** Display current lifecycle phase, question status, gate history, and next action.
+## Instructions
 
-**Requires:** An active lifecycle (any phase).
+1. **Check for active lifecycle.** Look at the injected state above. If it says "No active lifecycle", respond with:
+   ```
+   No active Expedite lifecycle.
+   Run /expedite:scope to start a new lifecycle.
+   ```
+   Then stop. Do not proceed further.
+
+2. **Parse state fields.** Extract from the injected state.yml content:
+   - `project_name` -- the lifecycle name
+   - `intent` -- "product" or "engineering"
+   - `phase` -- the current lifecycle phase
+   - `questions` -- the list of research questions (may be empty)
+   - `gate_history` -- the list of gate evaluations (may be empty)
+   - `research_rounds` -- number of research rounds completed
+   - `current_task` -- current task ID during execute phase (may be null)
+   - `current_wave` -- current wave during execute phase (may be null)
+
+3. **Map phase to human-readable description.** Use this mapping:
+   - `scope_in_progress` -> "Scope: defining questions and intent"
+   - `scope_complete` -> "Scope: complete, ready for research"
+   - `research_in_progress` -> "Research: gathering evidence"
+   - `research_complete` -> "Research: complete, ready for design"
+   - `research_recycled` -> "Research: gaps identified, needs re-research"
+   - `design_in_progress` -> "Design: generating design document"
+   - `design_complete` -> "Design: complete, ready for planning"
+   - `design_recycled` -> "Design: needs revision"
+   - `plan_in_progress` -> "Plan: generating implementation plan"
+   - `plan_complete` -> "Plan: complete, ready for execution"
+   - `plan_recycled` -> "Plan: needs revision"
+   - `execute_in_progress` -> "Execute: implementing tasks"
+   - `complete` -> "Lifecycle complete"
+   - `archived` -> "Lifecycle archived"
+
+4. **Determine next action.** Use this routing (same as SessionStart hook):
+   - `scope_in_progress` -> "Continue with `/expedite:scope`"
+   - `scope_complete` -> "Run `/expedite:research` to begin evidence gathering"
+   - `research_in_progress` -> "Continue with `/expedite:research`"
+   - `research_complete` -> "Run `/expedite:design` to generate the design"
+   - `research_recycled` -> "Re-run `/expedite:research` to address gaps (or use `--override` to proceed)"
+   - `design_in_progress` -> "Continue with `/expedite:design`"
+   - `design_complete` -> "Run `/expedite:plan` to generate the plan"
+   - `design_recycled` -> "Re-run `/expedite:design` to address gaps (or use `--override` to proceed)"
+   - `plan_in_progress` -> "Continue with `/expedite:plan`"
+   - `plan_complete` -> "Run `/expedite:execute` to begin implementation"
+   - `plan_recycled` -> "Re-run `/expedite:plan` to address gaps (or use `--override` to proceed)"
+   - `execute_in_progress` -> "Resume with `/expedite:execute`"
+   - `complete` -> "Lifecycle complete. Run `/expedite:scope` for a new lifecycle."
+   - `archived` -> "Lifecycle archived. Run `/expedite:scope` for a new lifecycle."
+
+5. **Count question statuses.** If `questions` is non-empty, count:
+   - Total questions
+   - Questions with status `covered`
+   - Questions with status `partial`
+   - Questions with status `not_covered`
+   - Questions with status `pending`
+   - Questions with status `unavailable_source`
+
+6. **Display formatted output.** Use EXACTLY this format:
+
+```
+# Expedite Lifecycle Status
+
+**Project:** {project_name}
+**Intent:** {intent}
+**Phase:** {phase} ({human-readable description})
+
+## Next Action
+{phase-aware recommendation from step 4}
+
+## Questions ({total} total)
+| Status | Count |
+|--------|-------|
+| Covered | {n} |
+| Partial | {n} |
+| Not Covered | {n} |
+| Pending | {n} |
+| Unavailable Source | {n} |
+
+(Only show rows with count > 0. If no questions exist, display "No questions defined yet.")
+
+## Gate History
+| Gate | Outcome | Timestamp |
+|------|---------|-----------|
+| {gate} | {outcome} | {timestamp} |
+
+(If no gate history, display "No gates evaluated yet.")
+
+## Recovery Info
+State file: .expedite/state.yml
+Backup: .expedite/state.yml.bak
+Research rounds: {research_rounds}
+```
+
+7. **Do NOT modify any files.** This is a read-only skill. Do not write to state.yml or any other file.
