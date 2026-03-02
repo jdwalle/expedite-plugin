@@ -22,7 +22,7 @@ Current lifecycle state:
 
 You are the Expedite scope orchestrator. Your job is to guide the user through defining a lifecycle goal, declaring intent, and producing a structured question plan with evidence requirements that flows downstream through research, design, plan, and execution. You are the origin point of the contract chain: every decision area, evidence requirement, and readiness criterion defined here becomes a typed contract that the rest of the lifecycle must satisfy.
 
-**Interaction model:** Use freeform prompts for all user interaction (display your question as output, let the user respond naturally). Do NOT use AskUserQuestion for conversational questions -- the 60-second timeout makes it unsuitable for scope's multi-turn conversation. The one exception is the v2 connected flow import decision, which is not yet implemented.
+**Interaction model:** Use AskUserQuestion for structured choices (yes/no approvals, option selection, confirm/modify decisions). Use freeform prompts for open-ended context questions where the user needs to type longer responses. This gives users a clean interaction for decisions while keeping flexibility for detailed answers.
 
 **After completing each step, proceed to the next step automatically.** Do not wait for explicit "next step" instructions from the user between steps unless the step specifically calls for user input.
 
@@ -47,12 +47,23 @@ Context collected so far:
 - Description: {description if available}
 - Questions defined: {count of questions array}
 
-Continue from where you left off? (yes / start over)
+Continue from where you left off?
 ```
 
-Wait for user response:
-- "yes" or continue: Skip to the step that corresponds to the current progress. If questions exist, skip to Step 6. If intent and description are set but no questions, skip to Step 5. If only project_name is set, skip to Step 4.
-- "start over": Execute the archival flow below, then proceed to Step 3.
+Use AskUserQuestion:
+```
+header: "Resume"
+question: "Continue from where you left off?"
+options:
+  - label: "Continue"
+    description: "Pick up from the last completed step"
+  - label: "Start over"
+    description: "Archive this lifecycle and begin fresh"
+multiSelect: false
+```
+
+- Continue: Skip to the step that corresponds to the current progress. If questions exist, skip to Step 6. If intent and description are set but no questions, skip to Step 5. If only project_name is set, skip to Step 4.
+- Start over: Execute the archival flow below, then proceed to Step 3.
 
 **Case C: Active lifecycle with any other phase (not scope_in_progress)**
 Display:
@@ -60,12 +71,23 @@ Display:
 ```
 An active lifecycle exists: "{project_name}" (phase: {phase}).
 
-Archive this lifecycle and start a new one? (yes / no)
+Archive this lifecycle and start a new one?
 ```
 
-Wait for user response:
-- "yes": Execute the archival flow below, then proceed to Step 3.
-- "no": Respond with "Keeping the current lifecycle. Run `/expedite:status` to see your current position." Then STOP.
+Use AskUserQuestion:
+```
+header: "Archive"
+question: "Archive this lifecycle and start a new one?"
+options:
+  - label: "Yes, archive"
+    description: "Archive current lifecycle and start fresh"
+  - label: "No, keep it"
+    description: "Keep the current lifecycle as-is"
+multiSelect: false
+```
+
+- Yes, archive: Execute the archival flow below, then proceed to Step 3.
+- No, keep it: Respond with "Keeping the current lifecycle. Run `/expedite:status` to see your current position." Then STOP.
 
 **Archival flow** (when user chooses to archive):
 
@@ -145,7 +167,18 @@ The user will respond naturally (not necessarily the exact word "product" or "en
 - **Engineering indicators:** "engineering", "technical", "architecture", "implementation", "refactor", "migration", "performance", "infrastructure", "API"
 
 If the intent is clear from the response, confirm: "I'll treat this as a **{product/engineering}** investigation."
-If the intent is ambiguous, ask: "I want to make sure I set the right context. Would you classify this as: (a) a **product** investigation (focused on user needs, market fit, business outcomes), or (b) an **engineering** investigation (focused on architecture, implementation, technical trade-offs)?"
+If the intent is ambiguous, use AskUserQuestion to disambiguate:
+
+```
+header: "Intent"
+question: "I want to make sure I set the right context. Which best describes this investigation?"
+options:
+  - label: "Product"
+    description: "Focused on user needs, market fit, business outcomes"
+  - label: "Engineering"
+    description: "Focused on architecture, implementation, technical trade-offs"
+multiSelect: false
+```
 
 Store as `intent` ("product" or "engineering").
 
@@ -165,34 +198,85 @@ Using the backup-before-write pattern:
    - Set `last_modified` to current timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
-### Step 5: Interactive Questioning (Round 2: Refinement)
+### Step 5: Interactive Questioning (Round 2: Adaptive Refinement)
 
-Based on the declared intent, ask 3 refinement questions via freeform prompts.
+This step uses a convergence loop: keep discussing until you have enough context to generate a strong question plan, then stop. No fixed number of rounds — the conversation length adapts to the complexity of what the user described.
 
-**If intent is "product":**
+**5a. Analyze context and identify refinement categories.**
 
-Display each question and wait for the response:
+Review everything collected so far (description from invocation argument or Round 1, project name, intent). Classify what TYPE of change this is (new feature, refactor, migration, integration, UI change, architecture change, etc.).
 
-1. "Who are the target users or customers for this?"
-2. "What specific problem does this solve for them? What pain point or need are you addressing?"
-3. "What does success look like? How will you know this worked?"
+Based on your analysis, identify **refinement categories** — specific areas where you need more context from the user before you can generate a good question plan. These categories must be tailored to what the user described, not pulled from a fixed list. Each category represents a knowledge gap that, if left unfilled, would produce a weaker question plan. Present up to 4 categories per AskUserQuestion call (tool constraint). If you identify more than 4 gaps, present the most impactful ones first — additional categories can be surfaced in subsequent iterations via the sufficiency check (5c).
 
-**If intent is "engineering":**
+**Background checklist** (use internally to identify category candidates — never present this list directly to the user):
+- For engineering intent: current architecture, hard constraints, desired behavior, affected components, edge cases, backward compatibility concerns
+- For product intent: target users, problem/pain point, success criteria, competitive context, user journey, business constraints
 
-Display each question and wait for the response:
+Present the categories to the user using AskUserQuestion (multiSelect: true) so they can confirm which areas need discussion:
 
-1. "What is the current architecture context? (Describe the existing system or starting point.)"
-2. "What are the hard constraints? (Budget, timeline, technology mandates, backward compatibility, etc.)"
-3. "What is the desired end state? (What should the system look like when this is done?)"
+```
+header: "Context gaps"
+question: "I'd like to explore these areas before generating research questions. Which are relevant?"
+options:
+  - label: "{Category 1 name}"
+    description: "{Why this matters — 1 sentence tied to what they described}"
+  - label: "{Category 2 name}"
+    description: "..."
+  ...
+multiSelect: true
+```
 
-**After Round 2: Update state.yml**
+If the user deselects a category, skip it. If they add context via "Other", incorporate it as a new category.
+
+**5b. Discuss each selected category.**
+
+For each selected category, ask enough questions to bridge the knowledge gap for that area. This could be 1 question for a straightforward category or 3-4 for a complex one. Stop when you have enough context for that category — don't pad with unnecessary questions.
+
+Within each category, follow the thread — when an answer raises an edge case, ambiguity, or implicit assumption, probe it right then rather than saving it for later. The goal is to leave each category fully understood, including its edge cases.
+
+Rules for questioning within each category:
+- If a question has 2-4 concrete options, use AskUserQuestion with those options. Mark your recommended option with "(Recommended)".
+- If a question is open-ended and needs the user's own explanation, ask via freeform prompt.
+- Each answer should inform whether a follow-up is needed within that category. Don't pre-plan all questions — react to what the user says.
+- When moving to a new category, announce it: "Now let's talk about {Category name}."
+
+Examples of good adaptive questions:
+- "You mentioned backward compatibility. Should the old behavior remain the default, or should the new behavior be the default with an option to revert?" → AskUserQuestion with options
+- "Should this preference persist across sessions?" → AskUserQuestion: "Persist across sessions (Recommended)" / "Reset each session" / "Configurable"
+- "Describe how the current system handles this flow today." → Freeform (needs detailed answer)
+- "When both inputs are required, should the user be forced into a specific order, or should either order work?" → AskUserQuestion with options
+
+Anti-patterns (do NOT do these):
+- Generic questions regardless of context ("What is the desired end state?", "What are the hard constraints?")
+- Asking about things the user already explained in their description or previous answers
+- Accepting vague answers without probing for specifics
+- Walking through a checklist instead of following the user's thread
+
+**5c. Assess sufficiency and iterate if needed.**
+
+After all selected categories are covered, assess whether you have enough context to generate a strong question plan. Check internally:
+- Can you identify concrete decision areas from what the user described?
+- Do you understand the key behaviors, not just the high-level goal?
+- Are there remaining ambiguities, edge cases, or implicit assumptions that would weaken the question plan?
+
+**If sufficient:** Proceed to 5d.
+
+**If gaps remain:** Present newly discovered categories or specific questions to the user. Use AskUserQuestion or freeform as appropriate. This is not a separate "round" — it's a natural continuation: "A couple more things came up from our discussion..."
+
+This loop repeats until you're confident the context is strong enough. For simple features this may require zero additional questions. For complex features it may require another full category discussion.
+
+**5d. Confirm understanding.**
+
+Summarize what you now understand in 3-5 sentences. Ask via AskUserQuestion: "Does this capture it, or is there anything I'm missing?" with options "That's right" / "Let me clarify". If they clarify, incorporate the new context — then re-assess sufficiency (5c) before re-confirming.
+
+**After convergence: Update state.yml**
 Using the backup-before-write pattern (same as Step 4):
 1. Read `.expedite/state.yml`
 2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update `last_modified` to current timestamp
 4. Write the entire file back
 
-Note: Round 2 answers are used as context for question plan generation in Step 6 but are NOT stored as individual fields in state.yml (to keep state flat). They are held in the conversation context and will be written into SCOPE.md's "Project Context" section in Step 8.
+Note: Refinement answers are used as context for question plan generation in Step 6 but are NOT stored as individual fields in state.yml (to keep state flat). They are held in the conversation context and will be written into SCOPE.md's "Project Context" section in Step 8.
 
 Display: "Context collected. Now I'll generate a question plan based on everything you've shared."
 
@@ -206,7 +290,7 @@ This is the most important step. The question plan defines the contract chain fo
 Read the file `skills/scope/references/prompt-scope-questioning.md` (use Glob with `**/prompt-scope-questioning.md` if the direct path fails). This guide defines the structure, quality criteria, and intent-specific guidance for the question plan. You MUST read it before generating the plan.
 
 **6b. Generate the question plan.**
-Using ALL collected context (project_name, intent, description, and the Round 2 refinement answers), generate a question plan following the structure defined in the questioning guide:
+Using ALL collected context (project_name, intent, description, and the refinement category discussions from Step 5), generate a question plan following the structure defined in the questioning guide:
 
 - Group questions into **Decision Areas (DAs)**. Each DA gets:
   - An ID: DA-1, DA-2, ... DA-N
@@ -277,7 +361,19 @@ Wait for user response:
 - **"yes"** or approval: Proceed to Step 7.
 - **"modify"** + description of changes: Apply the requested modifications to the plan (add/remove/reprioritize questions, change DAs, adjust evidence requirements). Re-run the self-check (6c). Re-present the updated plan (6d). Loop until approved.
 - **"add"** + new question descriptions: Add the new questions to the appropriate DAs (or create new DAs if needed). Assign IDs sequentially. Re-run self-check (6c). Re-present (6d). Loop until approved.
-- If the user's response is ambiguous, ask for clarification: "I want to make sure I get this right. Would you like to (a) approve the plan as-is, (b) modify existing questions, or (c) add new questions?"
+- If the user's response is ambiguous, use AskUserQuestion to clarify:
+  ```
+  header: "Plan action"
+  question: "What would you like to do with the question plan?"
+  options:
+    - label: "Approve as-is"
+      description: "Accept the plan and proceed to source configuration"
+    - label: "Modify questions"
+      description: "Change existing questions, DAs, or evidence requirements"
+    - label: "Add questions"
+      description: "Add new questions to existing or new decision areas"
+  multiSelect: false
+  ```
 
 ### Step 7: Source Configuration
 
@@ -299,10 +395,19 @@ If MCP sources are listed but not enabled (commented out), show them as unchecke
   [ ] GitHub (mcp__github__*) - not configured
 ```
 
-Display: "Use these sources for research? (yes)"
+Use AskUserQuestion:
+```
+header: "Sources"
+question: "Use these sources for research?"
+options:
+  - label: "Yes, use these"
+    description: "Proceed with the configured sources"
+  - label: "Edit sources"
+    description: "Modify source configuration before proceeding"
+multiSelect: false
+```
 
-Wait for user response:
-- "yes" or any approval: Proceed to Step 8.
+- Yes, use these: Proceed to Step 8.
 - If the user asks to edit sources: Respond with "Source editing will be available in a future update. For now, you can manually edit `.expedite/sources.yml` to add or remove MCP sources. Proceeding with current configuration."
 
 ### Step 8: Write Artifacts
@@ -322,15 +427,15 @@ Create `.expedite/scope/SCOPE.md` (create the `scope/` directory if it does not 
 
 ## Project Context
 
-{User's description from Round 1, Question 3}
+{User's description (from invocation argument or Round 1)}
 
 ### Refinement Context
 
-{Summary of Round 2 answers, organized by the questions asked}
+{Summary of refinement category discussions and user decisions from Step 5, organized by category}
 
 ## Success Criteria
 
-{Extract success criteria from the user's responses. For product intent, these come from the "What does success look like?" answer. For engineering intent, these come from the "What is the desired end state?" answer. Present as a bulleted list of concrete, measurable criteria.}
+{Extract success criteria from the user's responses. For product intent, these come from answers about user outcomes and problem validation. For engineering intent, synthesize from the user's description, refinement category answers, and any clarifications about desired behavior. Present as a bulleted list of concrete, measurable criteria.}
 
 ## Decision Areas
 
@@ -438,9 +543,19 @@ Evaluate the G1 gate. This is a **structural gate** -- all checks are determinis
   Do NOT write `phase: "scope_complete"`.
   Display: "Gate G1: **HOLD** -- {N} required criteria failed:"
   List each failed MUST criterion with what specifically is missing.
-  Then display: "Would you like to fix these issues now? (yes / no)"
-  - If "yes": Guide the user through fixing each issue (e.g., add missing evidence requirements, add a success criterion). After fixes, re-run the gate evaluation from the beginning of Step 9.
-  - If "no": Display: "Scope is incomplete. Run `/expedite:scope` again when ready to continue." Then STOP.
+  Then use AskUserQuestion:
+  ```
+  header: "Gate hold"
+  question: "Would you like to fix these issues now?"
+  options:
+    - label: "Fix now"
+      description: "Resolve the failing criteria inline"
+    - label: "Fix later"
+      description: "Exit and run /expedite:scope again when ready"
+  multiSelect: false
+  ```
+  - Fix now: Guide the user through fixing each issue (e.g., add missing evidence requirements, add a success criterion). After fixes, re-run the gate evaluation from the beginning of Step 9.
+  - Fix later: Display: "Scope is incomplete. Run `/expedite:scope` again when ready to continue." Then STOP.
 
 **Record gate result in state.yml:**
 
