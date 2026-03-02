@@ -66,12 +66,12 @@ Plans:
   2. The 3 per-source researcher templates (web-researcher.md, codebase-researcher.md, mcp-researcher.md) include model tier in frontmatter (sonnet for researchers)
   3. Templates with `<intent_lens>` sections contain conditional blocks for both product and engineering intents
   4. Sufficiency evaluator reference template and design guide reference template exist in references/ with correct structure
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [x] 03-01-PLAN.md -- Create 3 per-source researcher templates (web-researcher, codebase-analyst, mcp-researcher) with frontmatter, 8-section XML, circuit breaker, contract chain enforcement
-- [ ] 03-02-PLAN.md -- Create research synthesizer (opus subagent), sufficiency evaluator (inline rubric), and scope questioning guide (inline reference)
-- [ ] 03-03-PLAN.md -- Create design guide, plan guide, and task verifier inline reference templates with intent-conditional formats and contract chain enforcement
+- [x] 03-02-PLAN.md -- Create research synthesizer (opus subagent), sufficiency evaluator (inline rubric), and scope questioning guide (inline reference)
+- [x] 03-03-PLAN.md -- Create design guide, plan guide, and task verifier inline reference templates with intent-conditional formats and contract chain enforcement
 
 ### Phase 4: Scope Skill
 **Goal**: Users can define a lifecycle goal, declare intent, and produce an approved question plan with evidence requirements ready for research
@@ -205,7 +205,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 |-------|----------------|--------|-----------|
 | 1. Plugin Scaffolding | 2/2 | Complete | 2026-02-28 |
 | 2. State Management and Context | 2/2 | Complete | 2026-02-28 |
-| 3. Prompt Template System | 1/3 | In progress | - |
+| 3. Prompt Template System | 3/3 | Complete | 2026-03-02 |
 | 4. Scope Skill | 0/3 | Not started | - |
 | 5. Research Orchestration Core | 0/3 | Not started | - |
 | 6. Research Quality and Synthesis | 0/3 | Not started | - |

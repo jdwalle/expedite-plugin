@@ -111,7 +111,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **TMPL-03**: Model tiers hardcoded in frontmatter: sonnet for researchers, opus for synthesis
 - [x] **TMPL-04**: 3 per-source researcher templates: web-researcher.md, codebase-researcher.md, mcp-researcher.md
 - [x] **TMPL-05**: Sufficiency evaluator reference template for inline assessment
-- [ ] **TMPL-06**: Design guide reference template with intent-conditional sections
+- [x] **TMPL-06**: Design guide reference template with intent-conditional sections
 
 ### Dual Intent
 
@@ -203,7 +203,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TMPL-03 | Phase 3 | Complete |
 | TMPL-04 | Phase 3 | Complete |
 | TMPL-05 | Phase 3 | Complete |
-| TMPL-06 | Phase 3 | Pending |
+| TMPL-06 | Phase 3 | Complete |
 | SCOPE-01 | Phase 4 | Pending |
 | SCOPE-02 | Phase 4 | Pending |
 | SCOPE-03 | Phase 4 | Pending |
