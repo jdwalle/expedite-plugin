@@ -86,12 +86,12 @@ Plans:
   6. User can modify the question plan (add, remove, reprioritize questions) before approving it
   7. G1 gate passes only when all required fields are present, at least one P0 question exists, and every question has evidence requirements defined (structural/deterministic validation)
   8. SCOPE.md artifact is written to `.expedite/scope/SCOPE.md` with the full question plan, evidence requirements, readiness criteria, and intent declaration
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [ ] 04-01-PLAN.md -- Replace scope SKILL.md stub with Steps 1-5: lifecycle check, archival, initialization, Round 1 context questions, Round 2 refinement questions
+- [ ] 04-02-PLAN.md -- Append Steps 6-8: question plan generation (using questioning guide reference), review loop, source config display, SCOPE.md + state.yml artifact writing
+- [ ] 04-03-PLAN.md -- Append Step 9: G1 structural gate (6 MUST + 3 SHOULD criteria), gate history, phase transition + human verification
 
 ### Phase 5: Research Orchestration Core
 **Goal**: The research skill dispatches parallel subagents that collect evidence against specific evidence requirements from scope, not just topic-level questions
