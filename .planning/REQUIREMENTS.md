@@ -34,15 +34,15 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **SCOPE-01**: User answers 5-8 interactive questions to define the lifecycle goal and context
 - [x] **SCOPE-02**: Intent (product or engineering) detected via freeform prompt parsing
-- [ ] **SCOPE-03**: Structured question plan generated with priorities (P0/P1/P2), decision areas (DA-1 through DA-N), and source hints
-- [ ] **SCOPE-04**: Question plan presented for user review before any research tokens are spent ("Terraform plan-apply" preview)
-- [ ] **SCOPE-05**: User can modify question plan (add, remove, reprioritize) before approval
+- [x] **SCOPE-03**: Structured question plan generated with priorities (P0/P1/P2), decision areas (DA-1 through DA-N), and source hints
+- [x] **SCOPE-04**: Question plan presented for user review before any research tokens are spent ("Terraform plan-apply" preview)
+- [x] **SCOPE-05**: User can modify question plan (add, remove, reprioritize) before approval
 - [x] **SCOPE-06**: Source configuration step: confirm default sources or edit sources.yml
 - [ ] **SCOPE-07**: G1 gate validates scope completeness (structural gate — all required fields present, at least 1 P0 question, every question has evidence requirements)
-- [ ] **SCOPE-08**: SCOPE.md artifact written to `.expedite/scope/SCOPE.md` with full question plan, evidence requirements, readiness criteria, and metadata
-- [ ] **SCOPE-09**: Each question/DA defines evidence requirements — what specific evidence would constitute a sufficient answer
-- [ ] **SCOPE-10**: Each DA defines a readiness criterion — how to know when enough evidence exists to make a design decision
-- [ ] **SCOPE-11**: Each DA has a depth calibration (Deep/Standard/Light) that sets evidence count expectations for research
+- [x] **SCOPE-08**: SCOPE.md artifact written to `.expedite/scope/SCOPE.md` with full question plan, evidence requirements, readiness criteria, and metadata
+- [x] **SCOPE-09**: Each question/DA defines evidence requirements — what specific evidence would constitute a sufficient answer
+- [x] **SCOPE-10**: Each DA defines a readiness criterion — how to know when enough evidence exists to make a design decision
+- [x] **SCOPE-11**: Each DA has a depth calibration (Deep/Standard/Light) that sets evidence count expectations for research
 
 ### Research Skill
 
@@ -206,15 +206,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TMPL-06 | Phase 3 | Complete |
 | SCOPE-01 | Phase 4 | Complete |
 | SCOPE-02 | Phase 4 | Complete |
-| SCOPE-03 | Phase 4 | Pending |
-| SCOPE-04 | Phase 4 | Pending |
-| SCOPE-05 | Phase 4 | Pending |
+| SCOPE-03 | Phase 4 | Complete |
+| SCOPE-04 | Phase 4 | Complete |
+| SCOPE-05 | Phase 4 | Complete |
 | SCOPE-06 | Phase 10 | Complete |
 | SCOPE-07 | Phase 4 | Pending |
-| SCOPE-08 | Phase 4 | Pending |
-| SCOPE-09 | Phase 4 | Pending |
-| SCOPE-10 | Phase 4 | Pending |
-| SCOPE-11 | Phase 4 | Pending |
+| SCOPE-08 | Phase 4 | Complete |
+| SCOPE-09 | Phase 4 | Complete |
+| SCOPE-10 | Phase 4 | Complete |
+| SCOPE-11 | Phase 4 | Complete |
 | GATE-01 | Phase 4 | Pending |
 | GATE-02 | Phase 4 | Pending |
 | GATE-03 | Phase 6 | Pending |

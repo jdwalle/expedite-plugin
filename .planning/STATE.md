@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T17:45:39Z"
+last_updated: "2026-03-02T17:49:58Z"
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 9
+  completed_plans: 9
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 4 -- Scope Skill (IN PROGRESS -- 1 of 3 plans done)
+**Current focus:** Phase 4 -- Scope Skill (IN PROGRESS -- 2 of 3 plans done)
 
 ## Current Position
 
 Phase: 4 of 10 (Scope Skill) -- IN PROGRESS
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-03-02 -- Completed 04-01-PLAN.md (scope SKILL.md Steps 1-5 orchestration)
+Last activity: 2026-03-02 -- Completed 04-02-PLAN.md (scope SKILL.md Steps 6-8 question plan and artifacts)
 
-Progress: [▓▓▓▓░░░░░░] 35%
+Progress: [▓▓▓▓░░░░░░] 38%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 2.6min
-- Total execution time: 0.35 hours
+- Total plans completed: 9
+- Average duration: 2.4min
+- Total execution time: 0.37 hours
 
 **By Phase:**
 
@@ -43,10 +43,10 @@ Progress: [▓▓▓▓░░░░░░] 35%
 | 1. Plugin Scaffolding | 2 | 3min | 1.5min |
 | 2. State Management | 2 | 5min | 2.5min |
 | 3. Prompt Templates | 3 | 11min | 3.7min |
-| 4. Scope Skill | 1 | 2min | 2min |
+| 4. Scope Skill | 2 | 4min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (3min), 03-01 (3min), 03-02 (4min), 03-03 (4min), 04-01 (2min)
+- Last 5 plans: 03-01 (3min), 03-02 (4min), 03-03 (4min), 04-01 (2min), 04-02 (2min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -81,6 +81,10 @@ Recent decisions affecting current work:
 - 03-03: All 9 prompt templates now complete -- Phase 03 done
 - 04-01: Preserved frontmatter and !cat injection exactly from Phase 1 stub -- only body replaced
 - 04-01: Followed plan specification verbatim for all 5 steps -- no deviations needed
+- 04-02: Followed plan specification verbatim -- all Steps 6-8 content matched the plan exactly
+- 04-02: DA-level metadata (depth, readiness) lives only in SCOPE.md (data plane), not state.yml (control plane)
+- 04-02: Evidence requirements enforced as concrete and checkable with GOOD/BAD examples inline
+- 04-02: Review loop uses freeform prompts with modify/add/approve flows
 
 ### Pending Todos
 
@@ -94,5 +98,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 04-01-PLAN.md -- Scope SKILL.md Steps 1-5 orchestration logic
+Stopped at: Completed 04-02-PLAN.md -- Scope SKILL.md Steps 6-8 question plan generation and artifact writing
 Resume file: None
