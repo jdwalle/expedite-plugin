@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Plugin Scaffolding** - Static plugin files, directory structure, and auto-discovery verification
 - [x] **Phase 2: State Management and Context** - state.yml schema, backup-before-write pattern, status skill, context reconstruction
-- [ ] **Phase 3: Prompt Template System** - All prompt templates (researcher, sufficiency, design guide) with 8-section XML structure
+- [x] **Phase 3: Prompt Template System** - All prompt templates (researcher, sufficiency, design guide) with 8-section XML structure
 - [ ] **Phase 4: Scope Skill** - Interactive scoping, intent detection, question plan generation, G1 gate
 - [ ] **Phase 5: Research Orchestration Core** - Subagent dispatch, source-affinity batching, parallel evidence collection
 - [ ] **Phase 6: Research Quality and Synthesis** - Sufficiency assessment, G2 gate, gap-fill rounds, dynamic question discovery, SYNTHESIS.md
