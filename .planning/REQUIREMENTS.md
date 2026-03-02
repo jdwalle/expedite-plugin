@@ -32,12 +32,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Scope Skill
 
-- [ ] **SCOPE-01**: User answers 5-8 interactive questions to define the lifecycle goal and context
-- [ ] **SCOPE-02**: Intent (product or engineering) detected via freeform prompt parsing
+- [x] **SCOPE-01**: User answers 5-8 interactive questions to define the lifecycle goal and context
+- [x] **SCOPE-02**: Intent (product or engineering) detected via freeform prompt parsing
 - [ ] **SCOPE-03**: Structured question plan generated with priorities (P0/P1/P2), decision areas (DA-1 through DA-N), and source hints
 - [ ] **SCOPE-04**: Question plan presented for user review before any research tokens are spent ("Terraform plan-apply" preview)
 - [ ] **SCOPE-05**: User can modify question plan (add, remove, reprioritize) before approval
-- [ ] **SCOPE-06**: Source configuration step: confirm default sources or edit sources.yml
+- [x] **SCOPE-06**: Source configuration step: confirm default sources or edit sources.yml
 - [ ] **SCOPE-07**: G1 gate validates scope completeness (structural gate — all required fields present, at least 1 P0 question, every question has evidence requirements)
 - [ ] **SCOPE-08**: SCOPE.md artifact written to `.expedite/scope/SCOPE.md` with full question plan, evidence requirements, readiness criteria, and metadata
 - [ ] **SCOPE-09**: Each question/DA defines evidence requirements — what specific evidence would constitute a sufficient answer
@@ -129,8 +129,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Artifact Pipeline
 
-- [ ] **ARTF-01**: Each phase produces Markdown artifacts in `.expedite/` subdirectories
-- [ ] **ARTF-02**: Artifact paths: scope/SCOPE.md, research/SYNTHESIS.md, design/DESIGN.md, plan/PLAN.md, execute/PROGRESS.md
+- [x] **ARTF-01**: Each phase produces Markdown artifacts in `.expedite/` subdirectories
+- [x] **ARTF-02**: Artifact paths: scope/SCOPE.md, research/SYNTHESIS.md, design/DESIGN.md, plan/PLAN.md, execute/PROGRESS.md
 - [ ] **ARTF-03**: Archival flow moves completed lifecycle to `.expedite/archive/{slug}/`
 
 ## v2 Requirements
@@ -204,12 +204,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TMPL-04 | Phase 3 | Complete |
 | TMPL-05 | Phase 3 | Complete |
 | TMPL-06 | Phase 3 | Complete |
-| SCOPE-01 | Phase 4 | Pending |
-| SCOPE-02 | Phase 4 | Pending |
+| SCOPE-01 | Phase 4 | Complete |
+| SCOPE-02 | Phase 4 | Complete |
 | SCOPE-03 | Phase 4 | Pending |
 | SCOPE-04 | Phase 4 | Pending |
 | SCOPE-05 | Phase 4 | Pending |
-| SCOPE-06 | Phase 10 | Pending |
+| SCOPE-06 | Phase 10 | Complete |
 | SCOPE-07 | Phase 4 | Pending |
 | SCOPE-08 | Phase 4 | Pending |
 | SCOPE-09 | Phase 4 | Pending |
@@ -222,8 +222,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GATE-05 | Phase 10 | Pending |
 | GATE-06 | Phase 4 | Pending |
 | GATE-07 | Phase 6 | Pending |
-| ARTF-01 | Phase 4 | Pending |
-| ARTF-02 | Phase 4 | Pending |
+| ARTF-01 | Phase 4 | Complete |
+| ARTF-02 | Phase 4 | Complete |
 | ARTF-03 | Phase 10 | Pending |
 | RSCH-01 | Phase 5 | Pending |
 | RSCH-02 | Phase 5 | Pending |

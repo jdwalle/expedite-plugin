@@ -89,7 +89,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md -- Replace scope SKILL.md stub with Steps 1-5: lifecycle check, archival, initialization, Round 1 context questions, Round 2 refinement questions
+- [x] 04-01-PLAN.md -- Replace scope SKILL.md stub with Steps 1-5: lifecycle check, archival, initialization, Round 1 context questions, Round 2 refinement questions
 - [ ] 04-02-PLAN.md -- Append Steps 6-8: question plan generation (using questioning guide reference), review loop, source config display, SCOPE.md + state.yml artifact writing
 - [ ] 04-03-PLAN.md -- Append Step 9: G1 structural gate (6 MUST + 3 SHOULD criteria), gate history, phase transition + human verification
 
