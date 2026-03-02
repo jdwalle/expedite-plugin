@@ -396,3 +396,86 @@ Using the backup-before-write pattern:
 Display: "Scope artifacts written. Running gate evaluation..."
 
 Proceed to Step 9.
+
+### Step 9: Gate G1 Evaluation
+
+Evaluate the G1 gate. This is a **structural gate** -- all checks are deterministic (counts, field existence, string matching). Do NOT apply LLM judgment. For each criterion, state the specific evidence from the artifacts.
+
+**Read the artifacts for evaluation:**
+1. Read `.expedite/scope/SCOPE.md`
+2. Read `.expedite/state.yml`
+
+**Evaluate MUST criteria (all must pass for Go):**
+
+| # | Criterion | How to Check | Result |
+|---|-----------|-------------|--------|
+| M1 | SCOPE.md exists and is non-empty | Check that `.expedite/scope/SCOPE.md` exists and has content | PASS/FAIL |
+| M2 | At least 3 questions defined | Count entries in state.yml `questions` array. State the count: "Found {N} questions" | PASS/FAIL |
+| M3 | Intent declared (product or engineering) | Check `intent` field in state.yml is "product" or "engineering", not null | PASS/FAIL |
+| M4 | At least one success criterion defined | Check SCOPE.md "Success Criteria" section has at least one bullet point | PASS/FAIL |
+| M5 | Every question has evidence_requirements defined | Check each question in state.yml has a non-null, non-empty `evidence_requirements` field. State: "Checked {N} questions, all have evidence_requirements" or "{N} missing" | PASS/FAIL |
+| M6 | Every DA has a readiness criterion and depth calibration | Check SCOPE.md "Decision Areas" section: each DA heading includes a depth (Deep/Standard/Light) and has a "Readiness criterion:" line | PASS/FAIL |
+
+**Evaluate SHOULD criteria (failures produce advisory, do not block):**
+
+| # | Criterion | How to Check | Result |
+|---|-----------|-------------|--------|
+| S1 | Questions have source_hints | Check each question in state.yml has non-empty `source_hints`. State: "{N}/{M} questions have source_hints" | PASS/ADVISORY |
+| S2 | Questions span at least 2 decision areas | Count unique `decision_area` values in state.yml questions. State: "Found {N} distinct DAs" | PASS/ADVISORY |
+| S3 | No more than 15 questions | Count questions array. State: "Found {N} questions" | PASS/ADVISORY |
+
+**Determine gate outcome:**
+
+- **All MUST pass + All SHOULD pass → "go"**
+  Write `phase: "scope_complete"` to state.yml.
+  Display: "Gate G1: **PASS** -- All criteria met. Scope is complete."
+
+- **All MUST pass + Some SHOULD fail → "go_advisory"**
+  Write `phase: "scope_complete"` to state.yml.
+  Display: "Gate G1: **PASS with advisory** -- All required criteria met. Advisory notes: {list which SHOULD criteria failed and why}."
+
+- **Any MUST fail → "hold"**
+  Do NOT write `phase: "scope_complete"`.
+  Display: "Gate G1: **HOLD** -- {N} required criteria failed:"
+  List each failed MUST criterion with what specifically is missing.
+  Then display: "Would you like to fix these issues now? (yes / no)"
+  - If "yes": Guide the user through fixing each issue (e.g., add missing evidence requirements, add a success criterion). After fixes, re-run the gate evaluation from the beginning of Step 9.
+  - If "no": Display: "Scope is incomplete. Run `/expedite:scope` again when ready to continue." Then STOP.
+
+**Record gate result in state.yml:**
+
+Using the backup-before-write pattern:
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Update:
+   - If outcome is "go" or "go_advisory": set `phase: "scope_complete"`
+   - Set `last_modified` to current timestamp
+   - Append to `gate_history` array:
+     ```yaml
+     - gate: "G1"
+       timestamp: "{current timestamp ISO 8601}"
+       outcome: "{go/go_advisory/hold}"
+       must_passed: {count of passed MUST criteria}
+       must_failed: {count of failed MUST criteria}
+       should_passed: {count of passed SHOULD criteria}
+       should_failed: {count of failed SHOULD criteria}
+       notes: {null if all pass, or description of SHOULD failures for go_advisory, or MUST failures for hold}
+       overridden: false
+     ```
+4. Write the entire file back to `.expedite/state.yml`
+
+**After successful gate (go or go_advisory):**
+
+Display:
+```
+Scope complete! Here is a summary:
+
+Project: {project_name}
+Intent: {intent}
+Questions: {N} across {M} decision areas
+Estimated research batches: {K}
+
+Next step: Run `/expedite:research` to begin evidence gathering.
+```
+
+STOP. Do not proceed to any other step.
