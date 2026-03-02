@@ -13,7 +13,7 @@ Expedite is a Claude Code plugin implementing a 5-phase research-to-implementati
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Plugin Scaffolding** - Static plugin files, directory structure, and auto-discovery verification
-- [ ] **Phase 2: State Management and Context** - state.yml schema, backup-before-write pattern, status skill, context reconstruction
+- [x] **Phase 2: State Management and Context** - state.yml schema, backup-before-write pattern, status skill, context reconstruction
 - [ ] **Phase 3: Prompt Template System** - All prompt templates (researcher, sufficiency, design guide) with 8-section XML structure
 - [ ] **Phase 4: Scope Skill** - Interactive scoping, intent detection, question plan generation, G1 gate
 - [ ] **Phase 5: Research Orchestration Core** - Subagent dispatch, source-affinity batching, parallel evidence collection
@@ -50,12 +50,12 @@ Plans:
   3. state.yml uses max 2 nesting levels, includes a version field, and every write creates a `.bak` backup before overwriting
   4. Phase sub-states (e.g. `scope_in_progress`, `scope_complete`, `research_recycled`) are granular enough that crash recovery resumes at the correct point from phase name alone
   5. Phase transitions enforce forward-only movement -- no backward lifecycle regression
-**Plans**: TBD
+**Plans**: 2 plans (1 deferred to v2)
 
 Plans:
-- [ ] 02-01-PLAN.md -- Create state.yml, gitignore, and sources.yml templates in templates/ directory (schema definition)
-- [ ] 02-02-PLAN.md -- Create SessionStart hook (hooks/hooks.json + scripts/session-start.sh) for automatic context injection
-- [ ] 02-03-PLAN.md -- Implement full status skill orchestration logic + verify CTX-01 !cat injection across all SKILL.md files
+- [x] 02-01-PLAN.md -- Create state.yml, gitignore, and sources.yml templates in templates/ directory (schema definition)
+- ~~02-02-PLAN.md -- Create SessionStart hook~~ (deferred to v2)
+- [x] 02-03-PLAN.md -- Implement full status skill orchestration logic + verify CTX-01 !cat injection across all SKILL.md files
 
 ### Phase 3: Prompt Template System
 **Goal**: All prompt templates exist with correct structure so skills and subagents can reference them at invocation time
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Plugin Scaffolding | 2/2 | Complete | 2026-02-28 |
-| 2. State Management and Context | 1/3 | In Progress | - |
+| 2. State Management and Context | 2/2 | Complete | 2026-02-28 |
 | 3. Prompt Template System | 0/2 | Not started | - |
 | 4. Scope Skill | 0/3 | Not started | - |
 | 5. Research Orchestration Core | 0/3 | Not started | - |

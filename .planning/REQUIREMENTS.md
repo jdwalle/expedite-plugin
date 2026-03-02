@@ -26,9 +26,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Context Reconstruction
 
-- [ ] **CTX-01**: Every SKILL.md includes `!cat .expedite/state.yml` for dynamic context injection on invocation
-- [ ] **CTX-02**: `/expedite:status` displays full lifecycle overview (current phase, question status, gate history, next action)
-- [ ] **CTX-03**: Context reconstruction works after `/clear` via `!cat` injection + manual status (two-layer fallback)
+- [x] **CTX-01**: Every SKILL.md includes `!cat .expedite/state.yml` for dynamic context injection on invocation
+- [x] **CTX-02**: `/expedite:status` displays full lifecycle overview (current phase, question status, gate history, next action)
+- [x] **CTX-03**: Context reconstruction works after `/clear` via `!cat` injection + manual status (two-layer fallback)
 
 ### Scope Skill
 
@@ -195,9 +195,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | STATE-04 | Phase 2 | Complete |
 | STATE-05 | Phase 2 | Complete |
 | STATE-06 | Phase 2 | Complete |
-| CTX-01 | Phase 2 | Pending |
-| CTX-02 | Phase 2 | Pending |
-| CTX-03 | Phase 2 | Pending |
+| CTX-01 | Phase 2 | Complete |
+| CTX-02 | Phase 2 | Complete |
+| CTX-03 | Phase 2 | Complete |
 | TMPL-01 | Phase 3 | Pending |
 | TMPL-02 | Phase 3 | Pending |
 | TMPL-03 | Phase 3 | Pending |
