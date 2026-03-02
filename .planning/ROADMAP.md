@@ -69,7 +69,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 03-01-PLAN.md -- Create 3 per-source researcher templates (web-researcher, codebase-analyst, mcp-researcher) with frontmatter, 8-section XML, circuit breaker, contract chain enforcement
+- [x] 03-01-PLAN.md -- Create 3 per-source researcher templates (web-researcher, codebase-analyst, mcp-researcher) with frontmatter, 8-section XML, circuit breaker, contract chain enforcement
 - [ ] 03-02-PLAN.md -- Create research synthesizer (opus subagent), sufficiency evaluator (inline rubric), and scope questioning guide (inline reference)
 - [ ] 03-03-PLAN.md -- Create design guide, plan guide, and task verifier inline reference templates with intent-conditional formats and contract chain enforcement
 
@@ -205,7 +205,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 |-------|----------------|--------|-----------|
 | 1. Plugin Scaffolding | 2/2 | Complete | 2026-02-28 |
 | 2. State Management and Context | 2/2 | Complete | 2026-02-28 |
-| 3. Prompt Template System | 0/3 | Not started | - |
+| 3. Prompt Template System | 1/3 | In progress | - |
 | 4. Scope Skill | 0/3 | Not started | - |
 | 5. Research Orchestration Core | 0/3 | Not started | - |
 | 6. Research Quality and Synthesis | 0/3 | Not started | - |

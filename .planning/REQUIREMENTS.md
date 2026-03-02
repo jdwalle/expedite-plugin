@@ -106,10 +106,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Prompt Templates
 
-- [ ] **TMPL-01**: All prompt templates follow 8-section XML structure: role, context, intent_lens, downstream_consumer, instructions, output_format, quality_gate, input_data
-- [ ] **TMPL-02**: Templates use conditional `<intent_lens>` sections for product vs engineering adaptation
-- [ ] **TMPL-03**: Model tiers hardcoded in frontmatter: sonnet for researchers, opus for synthesis
-- [ ] **TMPL-04**: 3 per-source researcher templates: web-researcher.md, codebase-researcher.md, mcp-researcher.md
+- [x] **TMPL-01**: All prompt templates follow 8-section XML structure: role, context, intent_lens, downstream_consumer, instructions, output_format, quality_gate, input_data
+- [x] **TMPL-02**: Templates use conditional `<intent_lens>` sections for product vs engineering adaptation
+- [x] **TMPL-03**: Model tiers hardcoded in frontmatter: sonnet for researchers, opus for synthesis
+- [x] **TMPL-04**: 3 per-source researcher templates: web-researcher.md, codebase-researcher.md, mcp-researcher.md
 - [ ] **TMPL-05**: Sufficiency evaluator reference template for inline assessment
 - [ ] **TMPL-06**: Design guide reference template with intent-conditional sections
 
@@ -198,10 +198,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CTX-01 | Phase 2 | Complete |
 | CTX-02 | Phase 2 | Complete |
 | CTX-03 | Phase 2 | Complete |
-| TMPL-01 | Phase 3 | Pending |
-| TMPL-02 | Phase 3 | Pending |
-| TMPL-03 | Phase 3 | Pending |
-| TMPL-04 | Phase 3 | Pending |
+| TMPL-01 | Phase 3 | Complete |
+| TMPL-02 | Phase 3 | Complete |
+| TMPL-03 | Phase 3 | Complete |
+| TMPL-04 | Phase 3 | Complete |
 | TMPL-05 | Phase 3 | Pending |
 | TMPL-06 | Phase 3 | Pending |
 | SCOPE-01 | Phase 4 | Pending |
