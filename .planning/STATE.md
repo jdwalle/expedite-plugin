@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-02T17:49:58Z"
+status: executing
+last_updated: "2026-03-03T17:05:47Z"
 progress:
   total_phases: 4
-  completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
+  completed_phases: 4
+  total_plans: 12
+  completed_plans: 12
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 4 -- Scope Skill (IN PROGRESS -- 2 of 3 plans done)
+**Current focus:** Phase 4 -- Scope Skill (COMPLETE -- 3 of 3 plans done)
 
 ## Current Position
 
-Phase: 4 of 10 (Scope Skill) -- IN PROGRESS
-Plan: 2 of 3 in current phase
-Status: Executing
-Last activity: 2026-03-02 -- Completed 04-02-PLAN.md (scope SKILL.md Steps 6-8 question plan and artifacts)
+Phase: 4 of 10 (Scope Skill) -- COMPLETE
+Plan: 3 of 3 in current phase (all done)
+Status: Phase complete
+Last activity: 2026-03-03 -- Completed 04-03-PLAN.md (Step 9 G1 gate evaluation + human verification)
 
-Progress: [▓▓▓▓░░░░░░] 38%
+Progress: [▓▓▓▓▓░░░░░] 46%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 9
-- Average duration: 2.4min
-- Total execution time: 0.37 hours
+- Total plans completed: 12
+- Average duration: 2.3min
+- Total execution time: 0.46 hours
 
 **By Phase:**
 
@@ -43,10 +43,10 @@ Progress: [▓▓▓▓░░░░░░] 38%
 | 1. Plugin Scaffolding | 2 | 3min | 1.5min |
 | 2. State Management | 2 | 5min | 2.5min |
 | 3. Prompt Templates | 3 | 11min | 3.7min |
-| 4. Scope Skill | 2 | 4min | 2min |
+| 4. Scope Skill | 3 | 6min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (3min), 03-02 (4min), 03-03 (4min), 04-01 (2min), 04-02 (2min)
+- Last 5 plans: 03-02 (4min), 03-03 (4min), 04-01 (2min), 04-02 (2min), 04-03 (2min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -85,6 +85,11 @@ Recent decisions affecting current work:
 - 04-02: DA-level metadata (depth, readiness) lives only in SCOPE.md (data plane), not state.yml (control plane)
 - 04-02: Evidence requirements enforced as concrete and checkable with GOOD/BAD examples inline
 - 04-02: Review loop uses freeform prompts with modify/add/approve flows
+- 04-03: Followed plan specification verbatim -- Step 9 G1 gate content matched the plan exactly
+- 04-03: G1 is purely structural (GATE-06): all checks are counts, field existence, or string matching -- no LLM judgment
+- 04-03: Per-criterion evidence required in gate output to prevent self-grading bias
+- 04-03: Hold outcome offers inline fix unique to scope (interactive skill); G2/G3 use Recycle instead
+- 04-03: Human verified -- complete scope skill works end-to-end (all 9 steps)
 
 ### Pending Todos
 
@@ -97,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-02
-Stopped at: Completed 04-02-PLAN.md -- Scope SKILL.md Steps 6-8 question plan generation and artifact writing
+Last session: 2026-03-03
+Stopped at: Completed 04-03-PLAN.md -- Phase 4 (Scope Skill) complete, all 3 plans done
 Resume file: None

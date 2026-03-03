@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Plugin Scaffolding** - Static plugin files, directory structure, and auto-discovery verification
 - [x] **Phase 2: State Management and Context** - state.yml schema, backup-before-write pattern, status skill, context reconstruction
 - [x] **Phase 3: Prompt Template System** - All prompt templates (researcher, sufficiency, design guide) with 8-section XML structure
-- [ ] **Phase 4: Scope Skill** - Interactive scoping, intent detection, question plan generation, G1 gate
+- [x] **Phase 4: Scope Skill** - Interactive scoping, intent detection, question plan generation, G1 gate
 - [ ] **Phase 5: Research Orchestration Core** - Subagent dispatch, source-affinity batching, parallel evidence collection
 - [ ] **Phase 6: Research Quality and Synthesis** - Sufficiency assessment, G2 gate, gap-fill rounds, dynamic question discovery, SYNTHESIS.md
 - [ ] **Phase 7: Design Skill** - Main-session design generation, RFC/PRD format, revision cycle, G3 gate
@@ -90,8 +90,8 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md -- Replace scope SKILL.md stub with Steps 1-5: lifecycle check, archival, initialization, Round 1 context questions, Round 2 refinement questions
-- [ ] 04-02-PLAN.md -- Append Steps 6-8: question plan generation (using questioning guide reference), review loop, source config display, SCOPE.md + state.yml artifact writing
-- [ ] 04-03-PLAN.md -- Append Step 9: G1 structural gate (6 MUST + 3 SHOULD criteria), gate history, phase transition + human verification
+- [x] 04-02-PLAN.md -- Append Steps 6-8: question plan generation (using questioning guide reference), review loop, source config display, SCOPE.md + state.yml artifact writing
+- [x] 04-03-PLAN.md -- Append Step 9: G1 structural gate (6 MUST + 3 SHOULD criteria), gate history, phase transition + human verification
 
 ### Phase 5: Research Orchestration Core
 **Goal**: The research skill dispatches parallel subagents that collect evidence against specific evidence requirements from scope, not just topic-level questions
@@ -206,7 +206,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 1. Plugin Scaffolding | 2/2 | Complete | 2026-02-28 |
 | 2. State Management and Context | 2/2 | Complete | 2026-02-28 |
 | 3. Prompt Template System | 3/3 | Complete | 2026-03-02 |
-| 4. Scope Skill | 0/3 | Not started | - |
+| 4. Scope Skill | 3/3 | Complete | 2026-03-03 |
 | 5. Research Orchestration Core | 0/3 | Not started | - |
 | 6. Research Quality and Synthesis | 0/3 | Not started | - |
 | 7. Design Skill | 0/2 | Not started | - |

@@ -38,7 +38,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **SCOPE-04**: Question plan presented for user review before any research tokens are spent ("Terraform plan-apply" preview)
 - [x] **SCOPE-05**: User can modify question plan (add, remove, reprioritize) before approval
 - [x] **SCOPE-06**: Source configuration step: confirm default sources or edit sources.yml
-- [ ] **SCOPE-07**: G1 gate validates scope completeness (structural gate — all required fields present, at least 1 P0 question, every question has evidence requirements)
+- [x] **SCOPE-07**: G1 gate validates scope completeness (structural gate — all required fields present, at least 1 P0 question, every question has evidence requirements)
 - [x] **SCOPE-08**: SCOPE.md artifact written to `.expedite/scope/SCOPE.md` with full question plan, evidence requirements, readiness criteria, and metadata
 - [x] **SCOPE-09**: Each question/DA defines evidence requirements — what specific evidence would constitute a sufficient answer
 - [x] **SCOPE-10**: Each DA defines a readiness criterion — how to know when enough evidence exists to make a design decision
@@ -96,12 +96,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Quality Gates
 
-- [ ] **GATE-01**: Every phase transition guarded by inline gate (G1-G4) evaluated in the producing skill
-- [ ] **GATE-02**: Each gate has MUST criteria (all must pass for Go) and SHOULD criteria (failures produce advisory)
+- [x] **GATE-01**: Every phase transition guarded by inline gate (G1-G4) evaluated in the producing skill
+- [x] **GATE-02**: Each gate has MUST criteria (all must pass for Go) and SHOULD criteria (failures produce advisory)
 - [ ] **GATE-03**: Four gate outcomes: Go, Go-with-advisory, Recycle, Override
 - [ ] **GATE-04**: Recycle escalation: 1st informational, 2nd suggest adjustment, 3rd recommend override
 - [ ] **GATE-05**: Override records severity and injects gap context into downstream phase prompts
-- [ ] **GATE-06**: G1 is structural (deterministic); G2 and G3 require LLM judgment; G4 is structural
+- [x] **GATE-06**: G1 is structural (deterministic); G2 and G3 require LLM judgment; G4 is structural
 - [ ] **GATE-07**: Anti-bias instructions in G2/G3 prompts ("evaluate as if someone else produced this")
 
 ### Prompt Templates
@@ -210,17 +210,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCOPE-04 | Phase 4 | Complete |
 | SCOPE-05 | Phase 4 | Complete |
 | SCOPE-06 | Phase 10 | Complete |
-| SCOPE-07 | Phase 4 | Pending |
+| SCOPE-07 | Phase 4 | Complete |
 | SCOPE-08 | Phase 4 | Complete |
 | SCOPE-09 | Phase 4 | Complete |
 | SCOPE-10 | Phase 4 | Complete |
 | SCOPE-11 | Phase 4 | Complete |
-| GATE-01 | Phase 4 | Pending |
-| GATE-02 | Phase 4 | Pending |
+| GATE-01 | Phase 4 | Complete |
+| GATE-02 | Phase 4 | Complete |
 | GATE-03 | Phase 6 | Pending |
 | GATE-04 | Phase 10 | Pending |
 | GATE-05 | Phase 10 | Pending |
-| GATE-06 | Phase 4 | Pending |
+| GATE-06 | Phase 4 | Complete |
 | GATE-07 | Phase 6 | Pending |
 | ARTF-01 | Phase 4 | Complete |
 | ARTF-02 | Phase 4 | Complete |
