@@ -195,6 +195,7 @@ Using the backup-before-write pattern:
    - Set `project_name` to the collected value
    - Set `intent` to "product" or "engineering"
    - Set `lifecycle_id` to `{project_name_slugified}-{YYYYMMDD}` (e.g., "auth-redesign-20260302")
+   - Set `description` to the collected value
    - Set `last_modified` to current timestamp
 4. Write the entire file back to `.expedite/state.yml`
 

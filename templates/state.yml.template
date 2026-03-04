@@ -8,6 +8,7 @@ last_modified: null
 project_name: null
 intent: null
 lifecycle_id: null
+description: null
 
 # Current position
 # Valid phases (forward-only transitions):
