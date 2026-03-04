@@ -32,7 +32,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `phase` -- the current lifecycle phase
    - `questions` -- the list of research questions (may be empty)
    - `gate_history` -- the list of gate evaluations (may be empty)
-   - `research_rounds` -- number of research rounds completed
+   - `research_round` -- number of research rounds completed
    - `current_task` -- current task ID during execute phase (may be null)
    - `current_wave` -- current wave during execute phase (may be null)
 
@@ -109,7 +109,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
 ## Recovery Info
 State file: .expedite/state.yml
 Backup: .expedite/state.yml.bak
-Research rounds: {research_rounds}
+Research rounds: {research_round}
 ```
 
 7. **Do NOT modify any files.** This is a read-only skill. Do not write to state.yml or any other file.

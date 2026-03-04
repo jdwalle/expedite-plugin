@@ -45,10 +45,10 @@ Then STOP. Do not proceed to any other step.
 
 **Case B: Phase IS "scope_complete"**
 
-Check the `research_rounds` field in state.yml.
+Check the `research_round` field in state.yml.
 
-- If `research_rounds` is 0: This is the initial research run. Display: "Starting research phase..."
-- If `research_rounds` is greater than 0: This is a re-entry (gap-fill round from Phase 6). Display: "Resuming research (round {research_rounds + 1})... This is a gap-fill round -- only pending/partial questions will be researched."
+- If `research_round` is 0: This is the initial research run. Display: "Starting research phase..."
+- If `research_round` is greater than 0: This is a re-entry (gap-fill round from Phase 6). Display: "Resuming research (round {research_round + 1})... This is a gap-fill round -- only pending/partial questions will be researched."
 
 Proceed to Step 2.
 
@@ -57,7 +57,7 @@ Proceed to Step 2.
 Read the following files:
 
 1. **`.expedite/scope/SCOPE.md`** -- Extract the full question plan with Decision Areas, questions, priorities, evidence requirements, source hints, depth calibration, and readiness criteria.
-2. **`.expedite/state.yml`** -- Extract the `questions` array with current statuses, plus `project_name`, `intent`, `lifecycle_id`, and `research_rounds`.
+2. **`.expedite/state.yml`** -- Extract the `questions` array with current statuses, plus `project_name`, `intent`, `lifecycle_id`, and `research_round`.
 3. **`.expedite/sources.yml`** -- Extract enabled sources and their tool lists.
 
 **Error handling:** If any of these files are missing or cannot be read, display:
@@ -83,11 +83,11 @@ Transition state.yml phase from "scope_complete" to "research_in_progress" using
 2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update the in-memory representation:
    - Set `phase` to `"research_in_progress"`
-   - Increment `research_rounds` by 1
+   - Increment `research_round` by 1
    - Set `last_modified` to current timestamp (ISO 8601 UTC)
 4. Write the entire file back to `.expedite/state.yml`
 
-Display: "Phase: research_in_progress (round {research_rounds})"
+Display: "Phase: research_in_progress (round {research_round})"
 
 Proceed to Step 4.
 
@@ -150,7 +150,7 @@ multiSelect: false
 ```
 
 - If "Continue anyway": Proceed to Step 6.
-- If "Cancel and modify scope": Transition phase back to "scope_complete" using backup-before-write pattern, decrement `research_rounds` by 1, display "Research cancelled. Run `/expedite:scope` to modify your question plan." Then STOP.
+- If "Cancel and modify scope": Transition phase back to "scope_complete" using backup-before-write pattern, decrement `research_round` by 1, display "Research cancelled. Run `/expedite:scope` to modify your question plan." Then STOP.
 
 5. If all DAs are covered, proceed to Step 6 without prompting.
 
@@ -197,7 +197,7 @@ Review the batch plan above. You can:
   1. Read `.expedite/state.yml`
   2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
   3. Set `phase` to `"scope_complete"`
-  4. Decrement `research_rounds` by 1
+  4. Decrement `research_round` by 1
   5. Set `last_modified` to current timestamp
   6. Write the entire file back
   Display: "Research cancelled. Run `/expedite:scope` to modify your question plan." Then STOP.
@@ -270,7 +270,7 @@ For each batch in the approved plan, assemble the full prompt that will be sent 
 4. **Replace ALL template placeholders** in the prompt body:
    - `{{project_name}}` -> from state.yml `project_name`
    - `{{intent}}` -> from state.yml `intent`
-   - `{{research_round}}` -> from state.yml `research_rounds`
+   - `{{research_round}}` -> from state.yml `research_round`
    - `{{output_dir}}` -> `".expedite/research"`
    - `{{output_file}}` -> `".expedite/research/evidence-{batch_id}.md"` (e.g., `evidence-batch-01.md`)
    - `{{batch_id}}` -> the batch identifier (e.g., `"batch-01"`)
@@ -363,7 +363,7 @@ Proceed to Step 11.
 Display a structured completion summary:
 
 ```
---- Research Complete (Round {research_rounds}) ---
+--- Research Complete (Round {research_round}) ---
 
 Results:
   Batches dispatched: {N}

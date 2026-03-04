@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: State Management and Context** - state.yml schema, backup-before-write pattern, status skill, context reconstruction
 - [x] **Phase 3: Prompt Template System** - All prompt templates (researcher, sufficiency, design guide) with 8-section XML structure
 - [x] **Phase 4: Scope Skill** - Interactive scoping, intent detection, question plan generation, G1 gate
-- [ ] **Phase 5: Research Orchestration Core** - Subagent dispatch, source-affinity batching, parallel evidence collection
+- [x] **Phase 5: Research Orchestration Core** - Subagent dispatch, source-affinity batching, parallel evidence collection
 - [ ] **Phase 6: Research Quality and Synthesis** - Sufficiency assessment, G2 gate, gap-fill rounds, dynamic question discovery, SYNTHESIS.md
 - [ ] **Phase 7: Design Skill** - Main-session design generation, RFC/PRD format, revision cycle, G3 gate
 - [ ] **Phase 8: Plan Skill** - Plan generation from design artifacts, wave/epic structure, G4 gate
@@ -122,7 +122,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 11-01: TBD
+- [x] 11-01-PLAN.md -- Fix 3 integration findings: description field, gate outcome schema, Glob fallback for template paths
 
 ### Phase 6: Research Quality and Synthesis
 **Goal**: Research output is assessed for sufficiency against the evidence requirements defined in scope, gaps are filled through targeted re-research, and a synthesis artifact is produced for downstream consumption
