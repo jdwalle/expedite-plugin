@@ -203,3 +203,128 @@ Review the batch plan above. You can:
   Display: "Research cancelled. Run `/expedite:scope` to modify your question plan." Then STOP.
 
 **Evidence requirements flow-through:** When constructing the batch data structures, ALWAYS include the full `evidence_requirements` string for each question. This is critical -- research agents must receive typed evidence targets (e.g., "At least 2 implementation examples with benchmarks"), not just the question text. This ensures agents know what specific evidence to find, satisfying the contract chain from scope through research.
+
+### Step 7: Pre-Validate Sources
+
+Create the output directory for evidence files:
+```bash
+mkdir -p .expedite/research
+```
+
+For each unique source in the approved batch plan, validate availability:
+
+- **If source is "web":** SKIP validation. Web is always available via WebSearch/WebFetch.
+- **If source is "codebase":** SKIP validation. Codebase tools (Grep, Read, Glob, Bash) are always available.
+- **If source is an MCP source** (any key other than "web" or "codebase" in sources.yml):
+  - Attempt a lightweight probe: call the first tool listed in that source's `tools` array from sources.yml with minimal parameters.
+  - If the tool call returns successfully or returns a server error (data accessible but query issue): mark source as **AVAILABLE**.
+  - If the tool call fails with a platform/connection error: mark source as **UNAVAILABLE**.
+
+**If any MCP source is UNAVAILABLE**, display clear messaging:
+
+```
+Source pre-validation failed:
+  [FAIL] mcp: {source_name} -- {error_description}
+
+Options:
+1. Fix connection -- Resolve the issue and retry validation
+2. Reroute questions -- Move {affected_question_ids} to web search instead
+3. Skip questions -- Mark {affected_question_ids} as UNAVAILABLE-SOURCE and continue
+
+Which would you like to do?
+```
+
+**Handling user responses:**
+
+- **If user chooses "fix":** Re-validate the source. Loop until available or user picks another option.
+- **If user chooses "reroute":** Move affected questions to the web batch. Re-display the updated batch plan for confirmation using the Step 6 format.
+- **If user chooses "skip":** Update those questions' `status` to `"unavailable_source"` in state.yml using the backup-before-write pattern (read, backup, modify, write). Remove them from the batch plan and continue.
+
+**If ALL sources validate** (or user resolved all failures): Display "All sources validated. Preparing agents..." and proceed to Step 8.
+
+### Step 8: Assemble Prompt Templates
+
+For each batch in the approved plan, assemble the full prompt that will be sent to the research subagent:
+
+1. **Determine the template file** based on the batch source:
+   - `"web"` source -> Read `skills/research/references/prompt-web-researcher.md`
+   - `"codebase"` source -> Read `skills/research/references/prompt-codebase-analyst.md`
+   - Any MCP source -> Read `skills/research/references/prompt-mcp-researcher.md`
+
+2. **Extract frontmatter metadata** from the template. Each template has YAML frontmatter with:
+   - `subagent_type`: the type of subagent (e.g., "general-purpose")
+   - `model`: the model tier (e.g., "sonnet")
+
+3. **Construct the `{{questions_yaml_block}}`** -- a YAML block containing, for each question in the batch:
+   ```yaml
+   - id: "{id}"
+     text: "{text}"
+     priority: "{priority}"
+     decision_area: "{decision_area}"
+     evidence_requirements: "{evidence_requirements}"
+   ```
+
+4. **Replace ALL template placeholders** in the prompt body:
+   - `{{project_name}}` -> from state.yml `project_name`
+   - `{{intent}}` -> from state.yml `intent`
+   - `{{research_round}}` -> from state.yml `research_rounds`
+   - `{{output_dir}}` -> `".expedite/research"`
+   - `{{output_file}}` -> `".expedite/research/evidence-{batch_id}.md"` (e.g., `evidence-batch-01.md`)
+   - `{{batch_id}}` -> the batch identifier (e.g., `"batch-01"`)
+   - `{{timestamp}}` -> current ISO 8601 UTC timestamp
+   - `{{questions_yaml_block}}` -> the constructed YAML block from step 3
+   - `{{codebase_root}}` -> current working directory (for codebase-analyst template ONLY)
+   - `{{mcp_sources}}` -> YAML block of the MCP source config from sources.yml (for mcp-researcher template ONLY)
+
+5. **CRITICAL: After replacement, verify no `{{` patterns remain in the assembled prompt.** Scan the entire assembled string for any remaining `{{` occurrences. If any placeholder was not replaced, display error:
+   ```
+   Template assembly failed: unreplaced placeholder found in {template_file}. Aborting dispatch.
+   ```
+   Then STOP. Do not proceed to dispatch.
+
+Store each assembled prompt with its batch metadata:
+- `batch_id`: the batch identifier
+- `source`: the source name
+- `question_ids`: list of question IDs in this batch
+- `subagent_type`: from template frontmatter
+- `assembled_prompt`: the fully-resolved prompt string
+
+Proceed to Step 9.
+
+### Step 9: Dispatch Parallel Subagents
+
+Display: "Dispatching {N} research agents in parallel..."
+
+For each batch, issue a Task() call **simultaneously** (all dispatched in parallel):
+
+```
+Task(
+  prompt: {assembled_prompt},
+  description: "Research {source} batch ({batch_id}): {comma-separated question ids}",
+  subagent_type: "general-purpose"
+)
+```
+
+**Concurrency limit:** Maximum 3 concurrent agents. If more than 3 batches exist, dispatch the first 3 and queue remaining batches. After any agent completes, dispatch the next queued batch immediately.
+
+**Progress notifications:** As each agent completes, display a progress notification:
+
+```
+Batch {N} complete ({source}) -- Evidence for {question_ids} written to evidence-{batch_id}.md ({remaining} remaining)
+```
+
+**Failure handling:** If an agent fails (Task() returns error or agent reports critical failure), surface the failure to user with options:
+
+```
+Agent failure in Batch {N} ({source}):
+  Error: {error_description}
+
+Options:
+1. Retry -- Dispatch this batch again
+2. Skip -- Mark questions {question_ids} as failed and continue
+```
+
+- **If user retries:** Re-dispatch the same Task() with the same assembled prompt. Maximum 1 retry per batch -- if the retry also fails, only the "Skip" option remains.
+- **If user skips:** Mark those questions as `"not_covered"` in state.yml using the backup-before-write pattern (read, backup, modify, write).
+
+Continue until all batches are complete or user has addressed all failures. Then proceed to Step 10.
