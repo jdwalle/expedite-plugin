@@ -328,3 +328,79 @@ Options:
 - **If user skips:** Mark those questions as `"not_covered"` in state.yml using the backup-before-write pattern (read, backup, modify, write).
 
 Continue until all batches are complete or user has addressed all failures. Then proceed to Step 10.
+
+### Step 10: Collect Results and Update State
+
+After ALL agents have completed (or been skipped/failed), collect and process results:
+
+For each completed batch:
+
+1. **Read the agent's condensed return summary** (the ~500 token summary returned by Task(), NOT the full evidence file). This avoids context bloat -- the detailed findings are already written to the evidence files on disk.
+
+2. **Extract per-question results** from the summary:
+   - Per-question status: Did the agent find evidence meeting the requirements? Infer from the GAPS section of the return summary.
+   - `PROPOSED_QUESTIONS`: Any new questions the agent discovered during research.
+   - `CONFIDENCE` level: high, medium, or low.
+
+3. **Update state.yml for each question in the batch** using the backup-before-write pattern (read, backup, modify, write for EACH update cycle):
+   - Set `evidence_files` to include the evidence file path (e.g., `[".expedite/research/evidence-batch-01.md"]`)
+   - Set `status` based on agent findings:
+     - If agent found evidence meeting requirements -> `"covered"` (preliminary -- Phase 6 sufficiency evaluator makes final determination)
+     - If agent found partial evidence -> `"partial"`
+     - If agent found no relevant evidence -> `"not_covered"`
+     - If source was unavailable -> `"unavailable_source"`
+   - **Note:** These are PRELIMINARY statuses. The Phase 6 sufficiency evaluator will make the final assessment using the full evidence files and the typed rubric. Do not treat these statuses as final.
+
+4. **Collect all PROPOSED_QUESTIONS** from all agents into a single queue. Do NOT present these to the user yet -- per user decision, dynamic question proposals are queued until all agents finish and are surfaced during Phase 6 sufficiency assessment.
+
+Proceed to Step 11.
+
+### Step 11: Research Completion Summary
+
+Display a structured completion summary:
+
+```
+--- Research Complete (Round {research_rounds}) ---
+
+Results:
+  Batches dispatched: {N}
+  Batches completed: {M}
+  Batches failed/skipped: {F}
+
+Question Status:
+  Covered (preliminary): {count}
+  Partial: {count}
+  Not Covered: {count}
+  Unavailable Source: {count}
+
+Evidence files:
+  {list each evidence file path, one per line}
+
+{If proposed_questions > 0:}
+Dynamic Questions Discovered: {count} new questions proposed by agents
+(These will be presented for your approval in Phase 6 sufficiency assessment)
+```
+
+**If there are proposed questions**, write them to `.expedite/research/proposed-questions.yml` as a YAML list:
+
+```yaml
+# Proposed questions discovered during research round {N}
+# Phase 6 will present these for user approval
+proposed_questions:
+  - text: "{question text}"
+    proposed_by: "{batch_id}"
+    related_da: "{decision_area if identifiable}"
+```
+
+**Display next step guidance:**
+
+```
+Research evidence collected. Next steps:
+- Review evidence files in .expedite/research/ if desired
+- Run `/expedite:research` again when Phase 6 is implemented for sufficiency assessment and synthesis
+- Current status: research_in_progress (Phase 6 will transition to research_complete after G2 gate)
+```
+
+**Phase transition:** Do NOT transition phase to `"research_complete"`. That is Phase 6's responsibility after the G2 gate passes. The phase stays at `"research_in_progress"` -- this correctly reflects that evidence has been collected but not yet assessed for sufficiency.
+
+Display "Proceed to Step 12" (placeholder for Phase 6 continuation: sufficiency assessment, G2 gate, gap-fill, synthesis).
