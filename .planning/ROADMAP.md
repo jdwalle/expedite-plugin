@@ -103,12 +103,12 @@ Plans:
   3. Up to 3 research subagents are dispatched in parallel via Task() API, each using the correct per-source prompt template
   4. Each subagent writes detailed findings to evidence files and returns a condensed summary (max 500 tokens)
   5. Source routing handles failures with circuit breaker logic: retry once on server failure, never retry platform failures, classify failed sources as UNAVAILABLE-SOURCE
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
+- [ ] 05-01-PLAN.md -- Replace research SKILL.md stub with Steps 1-6: prerequisite check, scope loading, state initialization, source-affinity batch formation, DA coverage validation, batch plan approval
+- [ ] 05-02-PLAN.md -- Append Steps 7-11: source pre-validation, template assembly with placeholder injection, parallel subagent dispatch via Task(), result collection with state updates, completion summary with dynamic question queuing
+- [ ] 05-03-PLAN.md -- Coherence review of complete 11-step research SKILL.md + human verification
 
 ### Phase 6: Research Quality and Synthesis
 **Goal**: Research output is assessed for sufficiency against the evidence requirements defined in scope, gaps are filled through targeted re-research, and a synthesis artifact is produced for downstream consumption
