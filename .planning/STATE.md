@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-04T21:47:39.309Z"
+last_updated: "2026-03-04T22:16:44Z"
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 13
-  completed_plans: 13
+  total_phases: 6
+  completed_phases: 6
+  total_plans: 14
+  completed_plans: 14
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 5 -- Research Orchestration Core (COMPLETE -- 3 of 3 plans done)
+**Current focus:** Phase 11 -- Integration Fixes (COMPLETE -- 1 of 1 plans done)
 
 ## Current Position
 
-Phase: 5 of 10 (Research Orchestration Core) -- COMPLETE
-Plan: 3 of 3 in current phase (05-03 complete)
+Phase: 11 (Integration Fixes) -- COMPLETE
+Plan: 1 of 1 in current phase (11-01 complete)
 Status: Phase complete
-Last activity: 2026-03-04 -- Completed 05-03-PLAN.md (Research SKILL.md coherence review)
+Last activity: 2026-03-04 -- Completed 11-01-PLAN.md (Integration fixes gap closure)
 
-Progress: [▓▓▓▓▓▓▓░░░] 62%
+Progress: [▓▓▓▓▓▓▓░░░] 64%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 15
-- Average duration: 2.2min
-- Total execution time: 0.58 hours
+- Total plans completed: 16
+- Average duration: 2.1min
+- Total execution time: 0.60 hours
 
 **By Phase:**
 
@@ -45,9 +45,10 @@ Progress: [▓▓▓▓▓▓▓░░░] 62%
 | 3. Prompt Templates | 3 | 11min | 3.7min |
 | 4. Scope Skill | 3 | 6min | 2min |
 | 5. Research Orchestration Core | 3 | 7min | 2.3min |
+| 11. Integration Fixes | 1 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (2min), 04-03 (2min), 05-01 (3min), 05-02 (2min), 05-03 (2min)
+- Last 5 plans: 04-03 (2min), 05-01 (3min), 05-02 (2min), 05-03 (2min), 11-01 (1min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -97,6 +98,9 @@ Recent decisions affecting current work:
 - 05-02: Preliminary question statuses set by orchestrator; Phase 6 sufficiency evaluator makes final determination
 - 05-03: Fixed Step 8 template verification to scan for unreplaced {{ patterns instead of listing individual placeholders
 - 05-03: Human verified complete 11-step research skill reads correctly end-to-end
+- 11-01: description field placed at root level in state.yml (not nested) to respect STATE-01 2-level nesting limit
+- 11-01: hold added to schema comment to document all valid gate outcomes rather than narrowing scope skill
+- 11-01: Glob fallback uses parenthetical style matching scope SKILL.md's established pattern
 
 ### Pending Todos
 
@@ -110,5 +114,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 05-03-PLAN.md -- Research SKILL.md coherence review (Phase 5 complete)
+Stopped at: Completed 11-01-PLAN.md -- Integration fixes gap closure (Phase 11 complete)
 Resume file: None
