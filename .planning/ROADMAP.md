@@ -106,9 +106,23 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- Replace research SKILL.md stub with Steps 1-6: prerequisite check, scope loading, state initialization, source-affinity batch formation, DA coverage validation, batch plan approval
-- [ ] 05-02-PLAN.md -- Append Steps 7-11: source pre-validation, template assembly with placeholder injection, parallel subagent dispatch via Task(), result collection with state updates, completion summary with dynamic question queuing
-- [ ] 05-03-PLAN.md -- Coherence review of complete 11-step research SKILL.md + human verification
+- [x] 05-01-PLAN.md -- Replace research SKILL.md stub with Steps 1-6: prerequisite check, scope loading, state initialization, source-affinity batch formation, DA coverage validation, batch plan approval
+- [x] 05-02-PLAN.md -- Append Steps 7-11: source pre-validation, template assembly with placeholder injection, parallel subagent dispatch via Task(), result collection with state updates, completion summary with dynamic question queuing
+- [x] 05-03-PLAN.md -- Coherence review of complete 11-step research SKILL.md + human verification
+
+### Phase 11: Integration Fixes (Gap Closure)
+**Goal**: Fix 3 integration findings from v1.0 audit — persist description field, align gate outcome schema, add Glob fallback for template paths
+**Depends on**: Phase 4, Phase 5
+**Requirements**: STATE-02, STATE-04, CTX-01, GATE-02, STATE-05, RSCH-02, TMPL-04
+**Gap Closure**: Closes INT-01, INT-02, INT-03 from v1.0-MILESTONE-AUDIT.md
+**Success Criteria** (what must be TRUE):
+  1. `description` field exists in state.yml.template schema and scope SKILL.md Step 4 writes it to state.yml after Round 1
+  2. state.yml.template gate outcome schema comment includes `hold` and `go_advisory` matching actual scope Step 9 outputs
+  3. Research SKILL.md Step 8 uses Glob fallback pattern for template paths, consistent with scope SKILL.md approach
+**Plans**: TBD
+
+Plans:
+- [ ] 11-01: TBD
 
 ### Phase 6: Research Quality and Synthesis
 **Goal**: Research output is assessed for sufficiency against the evidence requirements defined in scope, gaps are filled through targeted re-research, and a synthesis artifact is produced for downstream consumption
@@ -199,7 +213,8 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 11 -> 6 -> 7 -> 8 -> 9 -> 10
+Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration issues Phase 6+ depends on.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -207,7 +222,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 2. State Management and Context | 2/2 | Complete | 2026-02-28 |
 | 3. Prompt Template System | 3/3 | Complete | 2026-03-02 |
 | 4. Scope Skill | 3/3 | Complete | 2026-03-03 |
-| 5. Research Orchestration Core | 0/3 | Not started | - |
+| 5. Research Orchestration Core | 3/3 | Complete | 2026-03-04 |
+| 11. Integration Fixes (Gap Closure) | 0/1 | Not started | - |
 | 6. Research Quality and Synthesis | 0/3 | Not started | - |
 | 7. Design Skill | 0/2 | Not started | - |
 | 8. Plan Skill | 0/2 | Not started | - |
