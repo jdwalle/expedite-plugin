@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-03T19:30:24.449Z"
+last_updated: "2026-03-04T21:25:11Z"
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
-  total_plans: 10
-  completed_plans: 10
+  total_plans: 13
+  completed_plans: 11
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 4 -- Scope Skill (COMPLETE -- 3 of 3 plans done)
+**Current focus:** Phase 5 -- Research Orchestration Core (IN PROGRESS -- 1 of 3 plans done)
 
 ## Current Position
 
-Phase: 4 of 10 (Scope Skill) -- COMPLETE
-Plan: 3 of 3 in current phase (all done)
-Status: Phase complete
-Last activity: 2026-03-03 -- Completed 04-03-PLAN.md (Step 9 G1 gate evaluation + human verification)
+Phase: 5 of 10 (Research Orchestration Core)
+Plan: 1 of 3 in current phase (05-01 complete)
+Status: In progress
+Last activity: 2026-03-04 -- Completed 05-01-PLAN.md (Research SKILL.md Steps 1-6)
 
-Progress: [▓▓▓▓▓░░░░░] 46%
+Progress: [▓▓▓▓▓▓░░░░] 54%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 2.3min
-- Total execution time: 0.46 hours
+- Total execution time: 0.51 hours
 
 **By Phase:**
 
@@ -44,9 +44,10 @@ Progress: [▓▓▓▓▓░░░░░] 46%
 | 2. State Management | 2 | 5min | 2.5min |
 | 3. Prompt Templates | 3 | 11min | 3.7min |
 | 4. Scope Skill | 3 | 6min | 2min |
+| 5. Research Orchestration Core | 1 | 3min | 3min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (4min), 03-03 (4min), 04-01 (2min), 04-02 (2min), 04-03 (2min)
+- Last 5 plans: 03-03 (4min), 04-01 (2min), 04-02 (2min), 04-03 (2min), 05-01 (3min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -90,6 +91,8 @@ Recent decisions affecting current work:
 - 04-03: Per-criterion evidence required in gate output to prevent self-grading bias
 - 04-03: Hold outcome offers inline fix unique to scope (interactive skill); G2/G3 use Recycle instead
 - 04-03: Human verified -- complete scope skill works end-to-end (all 9 steps)
+- 05-01: Followed plan specification verbatim -- all Steps 1-6 content matched the plan exactly
+- 05-01: Evidence requirements explicitly included in batch data structures to satisfy RSCH-15 contract chain
 
 ### Pending Todos
 
@@ -102,6 +105,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-03
-Stopped at: Completed 04-03-PLAN.md -- Phase 4 (Scope Skill) complete, all 3 plans done
+Last session: 2026-03-04
+Stopped at: Completed 05-01-PLAN.md -- Research SKILL.md Steps 1-6 (batch preparation)
 Resume file: None
