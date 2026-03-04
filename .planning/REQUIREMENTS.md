@@ -47,14 +47,14 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Research Skill
 
 - [x] **RSCH-01**: Questions grouped into 3-5 batches by source-affinity (web, codebase, MCP)
-- [ ] **RSCH-02**: Up to 3 research subagents dispatched in parallel via Task() API
-- [ ] **RSCH-03**: Each subagent uses per-source prompt template (web-researcher.md, codebase-researcher.md, mcp-researcher.md)
-- [ ] **RSCH-04**: Subagents write detailed findings to evidence files and return condensed summary (max 500 tokens)
+- [x] **RSCH-02**: Up to 3 research subagents dispatched in parallel via Task() API
+- [x] **RSCH-03**: Each subagent uses per-source prompt template (web-researcher.md, codebase-researcher.md, mcp-researcher.md)
+- [x] **RSCH-04**: Subagents write detailed findings to evidence files and return condensed summary (max 500 tokens)
 - [ ] **RSCH-05**: Per-question sufficiency assessed using categorical model: COVERED, PARTIAL, NOT COVERED, UNAVAILABLE-SOURCE
 - [ ] **RSCH-06**: Sufficiency evaluated across 3 dimensions: Coverage, Corroboration, Actionability (each rated Strong/Adequate/Weak/None)
 - [ ] **RSCH-07**: Dynamic question discovery: subagents propose new questions via `# --- PROPOSED QUESTIONS ---` YAML block
 - [ ] **RSCH-08**: Discovered questions deduplicated via LLM judgment, max 4 presented to user for approval
-- [ ] **RSCH-09**: Source routing with circuit breaker: retry once on server failure, never retry platform failures, classify as UNAVAILABLE-SOURCE
+- [x] **RSCH-09**: Source routing with circuit breaker: retry once on server failure, never retry platform failures, classify as UNAVAILABLE-SOURCE
 - [ ] **RSCH-10**: G2 gate evaluates research sufficiency using count-based criteria (majority COVERED, all P0 COVERED or PARTIAL)
 - [ ] **RSCH-11**: Recycle triggers gap-fill mode: filters to PARTIAL/NOT COVERED questions, re-batches by decision area
 - [ ] **RSCH-12**: Gap-fill agents produce `round-{N}/supplement-*.md` with additive supplement-synthesis
@@ -226,14 +226,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ARTF-02 | Phase 4 | Complete |
 | ARTF-03 | Phase 10 | Pending |
 | RSCH-01 | Phase 5 | Complete |
-| RSCH-02 | Phase 5 | Pending |
-| RSCH-03 | Phase 5 | Pending |
-| RSCH-04 | Phase 5 | Pending |
+| RSCH-02 | Phase 5 | Complete |
+| RSCH-03 | Phase 5 | Complete |
+| RSCH-04 | Phase 5 | Complete |
 | RSCH-05 | Phase 6 | Pending |
 | RSCH-06 | Phase 6 | Pending |
 | RSCH-07 | Phase 6 | Pending |
 | RSCH-08 | Phase 6 | Pending |
-| RSCH-09 | Phase 5 | Pending |
+| RSCH-09 | Phase 5 | Complete |
 | RSCH-10 | Phase 6 | Pending |
 | RSCH-11 | Phase 6 | Pending |
 | RSCH-12 | Phase 6 | Pending |
