@@ -248,8 +248,11 @@ For each batch in the approved plan, assemble the full prompt that will be sent 
 
 1. **Determine the template file** based on the batch source:
    - `"web"` source -> Read `skills/research/references/prompt-web-researcher.md`
+     (use Glob with `**/prompt-web-researcher.md` if the direct path fails)
    - `"codebase"` source -> Read `skills/research/references/prompt-codebase-analyst.md`
+     (use Glob with `**/prompt-codebase-analyst.md` if the direct path fails)
    - Any MCP source -> Read `skills/research/references/prompt-mcp-researcher.md`
+     (use Glob with `**/prompt-mcp-researcher.md` if the direct path fails)
 
 2. **Extract frontmatter metadata** from the template. Each template has YAML frontmatter with:
    - `subagent_type`: the type of subagent (e.g., "general-purpose")
