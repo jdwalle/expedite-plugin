@@ -54,7 +54,7 @@ gate_history: []
 # Gate history item schema:
 #   gate: "G1"
 #   timestamp: "2026-01-01T00:00:00Z"
-#   outcome: "go"            # go | go_advisory | recycle | override
+#   outcome: "go"            # go | go_advisory | hold | recycle | override
 #   must_passed: 0
 #   must_failed: 0
 #   should_passed: 0
