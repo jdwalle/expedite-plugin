@@ -276,7 +276,7 @@ For each batch in the approved plan, assemble the full prompt that will be sent 
    - `{{codebase_root}}` -> current working directory (for codebase-analyst template ONLY)
    - `{{mcp_sources}}` -> YAML block of the MCP source config from sources.yml (for mcp-researcher template ONLY)
 
-5. **CRITICAL: After replacement, verify no `{{` patterns remain in the assembled prompt.** Scan the entire assembled string for any remaining `{{` occurrences. If any placeholder was not replaced, display error:
+5. **CRITICAL: After replacement, verify no `{{` patterns remain in the assembled prompt.** Scan the assembled string for any remaining `{{` occurrences, **excluding** `{{` patterns inside triple-backtick code blocks (these are format examples for the agent, e.g., `{{question_id}}`, `{{question_text}}`, `{{evidence_requirements}}` in the output_format section). If any non-code-block placeholder was not replaced, display error:
    ```
    Template assembly failed: unreplaced placeholder found in {template_file}. Aborting dispatch.
    ```
