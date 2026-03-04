@@ -135,12 +135,12 @@ Plans:
   4. When G2 triggers Recycle, gap-fill mode dispatches targeted agents for PARTIAL/NOT COVERED questions only, producing additive supplement files — gap-fill agents receive the unmet evidence requirements so they know what's still missing
   5. Dynamic question discovery surfaces up to 4 new questions from subagent proposals (deduplicated via LLM judgment) for user approval
   6. SYNTHESIS.md artifact is written to `.expedite/research/SYNTHESIS.md` after gate pass, organized by Decision Area with evidence traceability (which evidence files support which DA)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
+- [ ] 06-01-PLAN.md -- Append Steps 12-13: sufficiency assessment (inline evaluator with anti-bias separation) and dynamic question discovery (LLM dedup, max 4, user approval)
+- [ ] 06-02-PLAN.md -- Append Steps 14-16: G2 gate evaluation (MUST/SHOULD criteria), gate outcome handling (Go/Go-with-advisory/Recycle/Override with escalation), gap-fill recycling dispatch by DA
+- [ ] 06-03-PLAN.md -- Append Steps 17-18: synthesis generation (opus Task() subagent), research completion + coherence review and human verification
 
 ### Phase 7: Design Skill
 **Goal**: Users receive a design document where every Decision Area has a corresponding design decision that references supporting research evidence
