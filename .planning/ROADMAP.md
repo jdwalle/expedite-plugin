@@ -154,11 +154,12 @@ Plans:
   5. Product-intent lifecycles also produce a HANDOFF.md with 9-section format for engineer consumption
   6. G3 gate evaluates design quality with MUST/SHOULD criteria and anti-bias instructions — MUST include "every DA has a decision" and "decisions reference evidence"
   7. DESIGN.md artifact is written to `.expedite/design/DESIGN.md`
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
+- [ ] 07-01-PLAN.md -- Replace design SKILL.md stub with Steps 1-5: prerequisite check, artifact loading, state initialization, inline design generation (RFC/PRD), DESIGN.md writing
+- [ ] 07-02-PLAN.md -- Append Steps 6-7: HANDOFF.md generation (product intent only, 9 sections), freeform revision cycle with change summaries
+- [ ] 07-03-PLAN.md -- Append Steps 8-10: G3 gate evaluation (MUST/SHOULD criteria), gate outcome handling (Go/Go-advisory/Recycle/Override), design completion + human verification
 
 ### Phase 8: Plan Skill
 **Goal**: A structured, executable plan is generated from the design where every design decision maps to tasks with acceptance criteria that trace back to those decisions
