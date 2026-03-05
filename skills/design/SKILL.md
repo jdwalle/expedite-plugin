@@ -67,11 +67,27 @@ Decision Areas: {count} (DA-1 through DA-{N})
 
 Verify all DAs from SCOPE.md appear in SYNTHESIS.md. If any DA is missing from synthesis, note it — the design must still address it with an explicit "insufficient evidence" flag and Low confidence.
 
+**Error handling:** If SCOPE.md or SYNTHESIS.md cannot be read, display:
+```
+Error: Required file missing: {filename}. Run `/expedite:research` to complete the research phase.
+```
+Then STOP. Do not proceed.
+
+**DA cross-reference:** Build a list of all DA IDs and names from SCOPE.md. For each DA, check that SYNTHESIS.md contains a corresponding section with findings. Track:
+- DAs with full synthesis coverage (findings + evidence references)
+- DAs with partial synthesis coverage (findings but gaps noted)
+- DAs missing from synthesis entirely (will need "insufficient evidence" treatment in design)
+
 ### Step 3: Initialize Design State
 
-Update state.yml using the backup-before-write pattern (read current -> cp state.yml state.yml.bak -> modify -> write entire file):
-- Set `phase` to `"design_in_progress"`
-- Set `last_modified` to current ISO 8601 UTC timestamp
+Update state.yml using the backup-before-write pattern:
+
+1. Read `.expedite/state.yml`
+2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Update the in-memory representation:
+   - Set `phase` to `"design_in_progress"`
+   - Set `last_modified` to current ISO 8601 UTC timestamp
+4. Write the entire file back to `.expedite/state.yml`
 
 Create the design output directory:
 ```bash
@@ -79,3 +95,107 @@ mkdir -p .expedite/design/
 ```
 
 Display: "Design phase initialized. Generating design document..."
+
+### Step 4: Generate Design Document
+
+This is inline generation in the main session — the design document is generated here, not dispatched to a subagent. Read `skills/design/references/prompt-design-guide.md` as a quality reference (use Glob with `**/prompt-design-guide.md` if the direct path fails). The design guide defines the required sections, quality criteria, and contract chain enforcement — but is NOT dispatched as a subagent. Its instructions guide the inline generation.
+
+Generate the design document following the correct format for the declared intent. Both formats include a Design Overview section (3-5 sentences) summarizing the overall direction before diving into per-DA decisions. This mirrors SYNTHESIS.md's Executive Summary pattern and helps readers quickly understand the design direction.
+
+The design document must be comprehensive enough to serve as the input for the plan phase, which creates implementation tasks traced to each design decision.
+
+Format selection is automatic based on the `intent` field in state.yml:
+
+**If intent is "engineering"** — RFC format with these sections in order:
+1. **Context and Scope** — What is being designed and why? The problem statement with technical context.
+2. **Goals and Non-Goals** — What this design achieves and explicitly does not attempt.
+3. **Design Overview** — A high-level summary (3-5 sentences) of the overall design direction before per-DA decisions.
+4. **Design Decisions by DA** — For EACH DA from SCOPE.md (DA-1 through DA-N):
+   - **Decision:** The specific architectural or implementation choice
+   - **Evidence:** Citations to SYNTHESIS.md findings and evidence files (e.g., "evidence-batch-01.md Finding 3")
+   - **Alternatives Considered:** Other approaches evaluated with evidence for/against each
+   - **Trade-offs:** What we gain and what we sacrifice
+   - **Confidence:** High/Medium/Low based on evidence quality. If DA was in override-context.md, mark as Low with note "affected by G2 override"
+   Target: 200-400 words per DA
+5. **Detailed Design** — Implementation specifics: data models, API contracts, component interactions.
+6. **Cross-Cutting Concerns** — Error handling, logging, security, performance, testing strategy.
+7. **Migration/Compatibility** — How this integrates with existing systems (if applicable).
+8. **Open Questions** — Unresolved items that the plan phase should account for.
+
+**If intent is "product"** — PRD format with these sections in order:
+1. **Problem Statement** — What user problem are we solving? Grounded in research evidence (user quotes, behavior data, market analysis from evidence files).
+2. **Personas** — Who are the target users? Based on user research evidence, not assumptions. Include behavioral traits and needs from evidence.
+3. **User Stories** — What do users need to do? In Given/When/Then or "As a... I want... So that..." format. Each story should trace to a DA.
+4. **User Flows** — How do users accomplish their goals? Step-by-step flows with decision points. Reference evidence for flow choices.
+5. **Design Overview** — A high-level summary (3-5 sentences) of the overall design direction before per-DA decisions.
+6. **Design Decisions by DA** — For EACH DA from SCOPE.md (DA-1 through DA-N):
+   - **Decision:** What we decided — the specific product choice
+   - **Evidence basis:** Citations to SYNTHESIS.md findings and evidence files (e.g., "evidence-batch-01.md Finding 3")
+   - **Alternatives Considered:** Other approaches evaluated with evidence for/against each
+   - **Trade-offs:** What we gain and what we sacrifice with this decision
+   - **Confidence:** High/Medium/Low based on evidence quality. If DA was in override-context.md, mark as Low with note "affected by G2 override"
+   Target: 200-400 words per DA
+7. **Success Metrics** — How do we measure success? Observable, measurable metrics tied to evidence. Each metric should be connected to at least one DA.
+8. **Scope Boundaries** — What is in scope and out of scope for this design. Reference DAs to clarify boundaries.
+9. **Open Questions** — Unresolved items that the plan phase should account for. Include questions arising from evidence gaps or conflicting findings.
+
+**Contract chain enforcement (both intents):**
+- Every DA from SCOPE.md MUST have a corresponding `### DA-N: {Name}` section
+- Each decision MUST cite specific evidence files and findings from SYNTHESIS.md — not just "research showed that..."
+- If evidence is insufficient for a DA, acknowledge the gap explicitly, state what additional evidence would change the decision, and mark confidence as Low
+- Where evidence conflicts, present both perspectives and state which was chosen and why
+
+**Evidence citation pattern:** Use inline citations within the decision text (e.g., "Based on evidence-batch-01.md Finding 3, the recommended approach is...") for primary supporting evidence. For each DA section, all referenced evidence files and specific findings should be traceable back to SYNTHESIS.md.
+
+**Self-check before writing:** Before proceeding to Step 5, verify the generated content against these criteria:
+- [ ] Every DA from SCOPE.md has a corresponding design decision section (count DAs in scope vs decisions in design)
+- [ ] Every design decision cites specific evidence (not vague references)
+- [ ] No design decision exists without evidence basis (insufficient evidence is explicitly flagged with Low confidence)
+- [ ] The document follows the correct format for the declared intent (PRD for product, RFC for engineering)
+- [ ] All required sections are present (no missing sections from the format above)
+- [ ] Trade-offs are articulated for each decision (not just "we chose X")
+- [ ] Open questions section captures genuine uncertainties (not manufactured)
+- [ ] Confidence levels assigned per DA (High/Medium/Low)
+
+If any check fails, revise the content before writing to disk. Do NOT write a design document that fails self-check.
+
+**Handling known gaps from synthesis:** If SYNTHESIS.md flags gaps or insufficient evidence for a DA:
+- Acknowledge the gap explicitly in the design decision section
+- State the best-effort decision with rationale given available evidence
+- State what additional evidence would change or strengthen the decision
+- Mark confidence as Low or Medium accordingly
+- If override-context.md exists and affects this DA, add note: "This DA was affected by a G2 gate override. Evidence gaps acknowledged."
+
+### Step 5: Write DESIGN.md
+
+Write the generated design document to `.expedite/design/DESIGN.md`.
+
+Document header (both formats):
+```markdown
+# {Technical Design | Product Design}: {project_name}
+Generated: {ISO 8601 UTC timestamp}
+Intent: {Engineering | Product}
+Source: SCOPE.md + SYNTHESIS.md
+```
+
+After writing, display:
+```
+Design document written to .expedite/design/DESIGN.md
+
+--- Design Summary ---
+Project: {project_name}
+Intent: {intent}
+Decision Areas covered: {N}/{M} (should be N/N if all DAs addressed)
+Format: {RFC | PRD}
+{If override context:} Override-affected DAs flagged with Low confidence: {list}
+```
+
+If the count of DAs in DESIGN.md does not match the count from SCOPE.md, display a warning: "WARNING: {missing_count} Decision Areas not addressed in design. Missing: {list}. These must be added before G3 gate."
+
+**Post-write verification:** After writing DESIGN.md, read it back and verify:
+1. The file exists and is non-empty
+2. The header contains the correct project_name, intent, and timestamp
+3. Count `### DA-` sections in the written file and compare to SCOPE.md DA count
+4. Verify each DA section contains the required subsections (Decision, Evidence, Trade-offs, Confidence)
+
+If post-write verification fails on any check, display the specific failure and attempt to fix the content before re-writing. Do not proceed to the next step with a malformed DESIGN.md.
