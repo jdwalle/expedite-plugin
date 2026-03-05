@@ -306,3 +306,145 @@ Proceed to Step 8.
 - Interpret "looks good", "done", "approved", "no changes", "yes", "lgtm" as "proceed" — do NOT ask for more revisions when the user signals satisfaction.
 - Interpret "skip" or "skip to gate" as "proceed".
 - If user feedback is ambiguous (cannot determine which DAs or sections to change), ask for clarification rather than guessing.
+
+### Step 8: G3 Gate Evaluation
+
+Read `.expedite/design/DESIGN.md` and `.expedite/scope/SCOPE.md` (for DA reference).
+
+Evaluate the design document with explicit anti-bias instructions: **"Evaluate as if someone else produced this design. For each criterion, state the specific evidence from the artifact that supports your pass/fail determination."**
+
+**MUST criteria (all must pass for Go):**
+
+| # | Criterion | How to Check | Result |
+|---|-----------|-------------|--------|
+| M1 | Every DA has a design decision | Count DAs in SCOPE.md, count `### DA-` sections in DESIGN.md. State: "Found {N}/{M} DAs covered" | PASS/FAIL |
+| M2 | Every decision references evidence | For each DA section, check for evidence citations (evidence file references or SYNTHESIS.md finding references). State: "{N}/{M} decisions cite evidence" | PASS/FAIL |
+| M3 | Correct format for intent | Check document structure matches PRD (product) or RFC (engineering) required sections from design guide. State: "Found {N}/{M} required sections" | PASS/FAIL |
+| M4 | DESIGN.md exists and is non-empty | File exists and has substantive content (not just headers). State: "DESIGN.md: {line_count} lines" | PASS/FAIL |
+
+**SHOULD criteria (failures produce advisory, not block):**
+
+| # | Criterion | How to Check | Result |
+|---|-----------|-------------|--------|
+| S1 | Trade-offs articulated for each DA | Check each DA section has trade-offs content (not just "we chose X"). State: "{N}/{M} DAs have trade-offs" | PASS/ADVISORY |
+| S2 | Confidence levels assigned per DA | Each DA decision has High/Medium/Low confidence. State: "{N}/{M} DAs have confidence" | PASS/ADVISORY |
+| S3 | Open questions section is genuine | Check Open Questions contains genuine uncertainties (not manufactured padding). Use LLM judgment. | PASS/ADVISORY |
+| S4 | HANDOFF.md exists (product intent only) | If intent == product, check `.expedite/design/HANDOFF.md` exists with 9 sections. If engineering, auto-PASS. | PASS/ADVISORY |
+
+Display gate results:
+```
+--- G3 Gate Evaluation ---
+(Evaluated as if produced by someone else)
+
+MUST Criteria:
+  M1: {PASS|FAIL} — {evidence}
+  M2: {PASS|FAIL} — {evidence}
+  M3: {PASS|FAIL} — {evidence}
+  M4: {PASS|FAIL} — {evidence}
+
+SHOULD Criteria:
+  S1: {PASS|ADVISORY} — {evidence}
+  S2: {PASS|ADVISORY} — {evidence}
+  S3: {PASS|ADVISORY} — {evidence}
+  S4: {PASS|ADVISORY} — {evidence}
+
+Gate Outcome: {Go | Go-with-advisory | Recycle}
+```
+
+**Gate outcomes:**
+- **Go**: All MUST pass AND all SHOULD pass
+- **Go-with-advisory**: All MUST pass, one or more SHOULD failures
+- **Recycle**: Any MUST criterion fails
+- **Override**: Only when user explicitly requests it (not auto-determined)
+
+Proceed to Step 9.
+
+### Step 9: Gate Outcome Handling
+
+**9a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write):
+
+```yaml
+- gate: "G3"
+  timestamp: "{ISO 8601 UTC}"
+  outcome: "{go|go_advisory|recycle|override}"
+  must_passed: {count}
+  must_failed: {count}
+  should_passed: {count}
+  should_failed: {count}
+  notes: "{brief summary}"
+  overridden: false
+```
+
+**9b: Route by outcome:**
+
+**Go** — Display "G3 gate passed. Design is ready for planning." Proceed to Step 10.
+
+**Go-with-advisory** — Show user which SHOULD criteria failed. Display: "Design passed with advisories. These will be noted in the plan phase." Present via freeform prompt: "1. Proceed with advisory | 2. Revise to address advisories". If proceed, proceed to Step 10. If revise, return to Step 7 (revision cycle).
+
+**Recycle** — Count previous G3 recycle outcomes in gate_history (entries where `gate` = `"G3"` AND `outcome` = `"recycle"`).
+
+- **1st Recycle (recycle_count == 0):** Informational tone. Display which MUST criteria failed with specific evidence. Offer via freeform prompt: "1. Revise (fix the issues above) | 2. Override (proceed with documented gaps)". If revise, return to Step 7 with the gate feedback visible. If override, proceed to 9c.
+
+- **2nd Recycle (recycle_count == 1):** Suggest adjustment. Display: "This is the second G3 recycle. Consider whether the design scope needs adjustment." Show persistently failing criteria. Offer: "1. Revise | 2. Override (recommended if same criteria keep failing)". If revise, return to Step 7. If override, proceed to 9c.
+
+- **3rd+ Recycle (recycle_count >= 2):** Recommend override. Display: "This is recycle #{recycle_count + 1}. Recommend overriding the gate. Remaining issues may require scope adjustment rather than design revision." Offer: "1. Override (recommended) | 2. One more attempt (not recommended)". If override, proceed to 9c. If attempt, return to Step 7.
+
+**9c: Override handling.**
+
+1. Update gate_history entry: set `overridden: true`, update `outcome` to `"override"`.
+2. Determine severity based on MUST failures: low (0 MUST failures — user-initiated override), medium (1 MUST failure), high (2+ MUST failures).
+3. Write `.expedite/design/override-context.md`:
+
+```markdown
+# G3 Override Context
+
+Timestamp: {ISO 8601 UTC}
+Severity: {low|medium|high}
+Recycle count: {N}
+
+## Overridden Issues
+
+{For each failed MUST criterion:}
+- {criterion_id}: {criterion description}
+  Evidence: {what the gate found}
+  Impact: {which DAs are affected}
+
+## Plan Phase Advisory
+
+The following design quality issues were overridden. The plan phase should
+account for these gaps when creating tasks.
+{List affected criteria and recommendations}
+```
+
+4. Proceed to Step 10.
+
+### Step 10: Design Completion
+
+Update state.yml (backup-before-write): set `phase` to `"design_complete"`, update `last_modified`.
+
+Display design completion summary:
+
+```
+## Design Complete
+
+Project: {project_name}
+Intent: {intent}
+
+### Artifacts Produced
+- Design: .expedite/design/DESIGN.md
+{If product intent:} - Handoff: .expedite/design/HANDOFF.md
+{If override:} - Override context: .expedite/design/override-context.md
+
+### Gate Results
+G3 outcome: {outcome}
+MUST: {passed}/{total} | SHOULD: {passed}/{total}
+{If advisory:} Advisories: {list SHOULD failures}
+{If override:} Override severity: {severity}
+
+### Contract Chain
+Scope -> Research -> Design (complete)
+Decision Areas: {N} designed | Evidence citations: {count}
+
+### Next Step
+Run `/expedite:plan` to generate an implementation plan from the design.
+```
