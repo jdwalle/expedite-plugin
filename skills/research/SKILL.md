@@ -406,4 +406,132 @@ Research evidence collected. Next steps:
 
 **Phase transition:** Do NOT transition phase to `"research_complete"`. That is Phase 6's responsibility after the G2 gate passes. The phase stays at `"research_in_progress"` -- this correctly reflects that evidence has been collected but not yet assessed for sufficiency.
 
-Display "Proceed to Step 12" (placeholder for Phase 6 continuation: sufficiency assessment, G2 gate, gap-fill, synthesis).
+Display "Proceed to Step 12" and continue automatically.
+
+### Step 12: Sufficiency Assessment
+
+Evaluate whether the collected evidence meets the specific evidence requirements defined during scope. This step invokes the sufficiency evaluator as an inline reference (not a subagent) with strict structural separation: the evaluator only receives evidence files and scope artifacts -- never dispatch metadata, agent reasoning, or Phase 5 preliminary statuses.
+
+#### 12a: Input Assembly for Evaluator
+
+Read the following files to assemble the evaluator input:
+
+1. **`.expedite/scope/SCOPE.md`** -- Extract for each question:
+   - Evidence requirements (typed requirements from the question plan)
+   - DA depth calibration (Deep / Standard / Light) for each Decision Area
+   - Readiness criteria
+
+2. **`.expedite/state.yml`** -- Extract:
+   - `project_name` and `intent` (for evaluator placeholders)
+   - `questions` array with each question's `evidence_files` paths
+
+3. **Evidence files** -- For each question, read the full content of every file listed in that question's `evidence_files` array in state.yml. If gap-fill rounds have occurred (research_round > 1), also read `round-{N}/supplement-*.md` files from `.expedite/research/` by scanning for matching supplement files using Glob with `.expedite/research/round-*/supplement-*.md`.
+
+4. **Assemble the `{{questions_with_evidence}}` placeholder block.** For each question, include:
+   - `question_id`: the question ID (e.g., "q01")
+   - `question_text`: the full question text
+   - `decision_area`: the DA name
+   - `da_depth`: the DA depth calibration from SCOPE.md (Deep / Standard / Light)
+   - `evidence_requirements`: the typed evidence requirements from SCOPE.md
+   - Full evidence content from the relevant evidence files (paste the entire content, not summaries)
+
+**Anti-bias structural separation (GATE-07):** Do NOT include any of the following in the evaluator input:
+- Dispatch metadata (batch IDs, source assignments, agent configuration)
+- Agent reasoning or agent-reported statuses
+- Phase 5 preliminary question statuses
+- Batch configuration or source validation results
+
+Only evidence files and scope artifacts are passed to the evaluator. This ensures the evaluator assesses evidence quality independently, without anchoring to prior judgments.
+
+#### 12b: Invoke Sufficiency Evaluator (Inline Reference)
+
+Read the evaluator template from `skills/research/references/prompt-sufficiency-evaluator.md`. If the direct path fails, use Glob with `**/prompt-sufficiency-evaluator.md` to locate it.
+
+This is an **inline reference** -- the template has no frontmatter, no `subagent_type`, and is NOT dispatched via Task(). The orchestrator fills placeholders and applies the evaluation logic directly in the main session.
+
+Fill the following placeholders in the template:
+- `{{project_name}}` -- from state.yml `project_name`
+- `{{intent}}` -- from state.yml `intent`
+- `{{questions_with_evidence}}` -- from the assembled block in 12a
+
+Apply the conditional blocks based on intent:
+- If intent is "product": apply the `<if_intent_product>` blocks and remove `<if_intent_engineering>` blocks
+- If intent is "engineering": apply the `<if_intent_engineering>` blocks and remove `<if_intent_product>` blocks
+
+Execute the evaluation following the template's instructions exactly:
+1. Assess each question individually across the 3 dimensions (Coverage, Corroboration, Actionability)
+2. Apply DA depth calibration for corroboration thresholds:
+   - **Deep DAs:** Require Strong or Adequate corroboration. Single-source evidence is insufficient.
+   - **Standard DAs:** Require at least Adequate corroboration. Single-source acceptable only from authoritative primary sources.
+   - **Light DAs:** Accept Adequate or Weak corroboration. Single-source acceptable from credible sources.
+3. Assign categorical rating per the template's rules (COVERED, PARTIAL, NOT COVERED, UNAVAILABLE-SOURCE)
+4. Write gap details for every non-COVERED question
+
+Perform the evaluator's quality gate (anti-bias self-check) before finalizing: re-read each rating and verify it passes all checklist items in the template's `<quality_gate>` section. If any check fails, revise the assessment before proceeding.
+
+#### 12c: UNAVAILABLE-SOURCE Short-Circuit
+
+After completing the evaluation, check for any questions rated UNAVAILABLE-SOURCE.
+
+For each UNAVAILABLE-SOURCE question, surface it immediately to the user using AskUserQuestion:
+
+```
+header: "Source Unavailable: {question_id}"
+question: "Question '{question_text}' was rated UNAVAILABLE-SOURCE — the source was inaccessible, not just unhelpful. How would you like to handle this?"
+options:
+  - label: "Accept gap"
+    description: "Acknowledge this gap — it will appear as an advisory in SYNTHESIS.md"
+  - label: "Suggest alternative source"
+    description: "Provide a different source to try for this question"
+  - label: "Override and proceed"
+    description: "Proceed as if this question is not needed"
+multiSelect: false
+```
+
+**Handling responses:**
+
+- **"Accept gap":** Record the user's decision. The question keeps its UNAVAILABLE-SOURCE status and will flow into the SYNTHESIS.md advisory section documenting the known gap.
+
+- **"Suggest alternative source":** Ask the user for the alternative source details using a freeform prompt. Update the question's `source_hints` in state.yml using the backup-before-write pattern (read, backup, modify, write). Do NOT re-run sufficiency assessment now -- the question will be handled in gap-fill if G2 triggers Recycle.
+
+- **"Override and proceed":** Record the override decision. The question is treated as resolved for gate purposes.
+
+This mirrors the Phase 5 circuit breaker pattern -- the user decides how to handle source failures, not automated retry.
+
+#### 12d: Update state.yml with Evaluator Results
+
+Update state.yml with the final sufficiency ratings using the backup-before-write pattern:
+
+1. Read `.expedite/state.yml`
+2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. For each question in state.yml, update:
+   - `status`: Set to the evaluator's categorical rating in lowercase (`covered`, `partial`, `not_covered`, or `unavailable_source`)
+   - `gap_details`: Set to `null` if COVERED, otherwise set to the evaluator's gap description (which evidence requirements remain unmet, what type of evidence would satisfy them, which sources might have this evidence)
+4. Write the entire file back to `.expedite/state.yml`
+
+These are **FINAL statuses** replacing Phase 5's preliminary statuses. The sufficiency evaluator has now made the definitive assessment using the full evidence files and the typed rubric from scope.
+
+#### 12e: Display Assessment Summary
+
+Display a structured summary of the sufficiency assessment:
+
+```
+--- Sufficiency Assessment Summary ---
+
+| Question | Priority | DA | Status | Coverage | Corroboration | Actionability |
+|----------|----------|----|--------|----------|---------------|---------------|
+| {q_id}   | {P0/P1/P2} | {DA name} | {COVERED/PARTIAL/NOT COVERED/UNAVAILABLE-SOURCE} | {Strong/Adequate/Weak/None} | {Strong/Adequate/Weak/None} | {Strong/Adequate/Weak/None} |
+...
+
+Summary:
+  COVERED: {count}
+  PARTIAL: {count}
+  NOT COVERED: {count}
+  UNAVAILABLE-SOURCE: {count}
+```
+
+Based on results:
+- If ALL questions are COVERED: Display "All questions sufficiently covered. Proceeding to G2 gate."
+- If gaps exist (any PARTIAL, NOT COVERED, or unresolved UNAVAILABLE-SOURCE): Display "Gaps identified. G2 gate will determine next action."
+
+Proceed to Step 13.
