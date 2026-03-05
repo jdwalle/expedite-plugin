@@ -30,7 +30,36 @@ You are the Expedite design orchestrator. Your job is to generate a design docum
 
 Look at the injected lifecycle state above.
 
-**Case A: Phase is NOT "research_complete"**
+**Case A: Phase is "research_complete"**
+
+Display: "Starting design phase..."
+
+Proceed to Step 2.
+
+**Case B: Phase is "research_recycled" AND `--override` flag is present**
+
+The user's research did not pass G2 but they want to proceed to design with known gaps. This is the override entry path from the original design.
+
+1. Read `.expedite/research/override-context.md` (must exist after a G2 override/recycle). If it doesn't exist, display error: "Override requested but no override-context.md found. Run `/expedite:research` first." → STOP.
+2. Record the override entry in state.yml gate_history (backup-before-write):
+   ```yaml
+   - gate: "G2-design-entry"
+     timestamp: "{ISO 8601 UTC}"
+     outcome: "override"
+     notes: "Entered design via --override with research_recycled phase"
+     overridden: true
+   ```
+3. Display:
+   ```
+   Starting design phase with --override...
+
+   WARNING: Research gate (G2) was not passed. Override context will be injected.
+   Affected DAs will be flagged with Low confidence in the design document.
+   ```
+
+Proceed to Step 2. (Step 2 already reads override-context.md if it exists and flags affected DAs.)
+
+**Case C: Phase is anything else (not "research_complete", not "research_recycled" with --override)**
 
 Display:
 ```
@@ -38,13 +67,9 @@ Error: Research is not complete. Run `/expedite:research` to gather evidence bef
 
 Current phase: {phase}
 ```
+If phase is "research_recycled", additionally display: "Research was recycled. Use `--override` flag to proceed with known gaps: `/expedite:design --override`"
+
 Then STOP. Do not proceed to any other step.
-
-**Case B: Phase IS "research_complete"**
-
-Display: "Starting design phase..."
-
-Proceed to Step 2.
 
 ### Step 2: Read Scope + Research Artifacts
 
