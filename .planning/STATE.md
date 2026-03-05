@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 06 -- Research Quality and Synthesis (IN PROGRESS -- 2 of 3 plans done)
+**Current focus:** Phase 06 -- Research Quality and Synthesis (COMPLETE -- 3 of 3 plans done)
 
 ## Current Position
 
 Phase: 06 (Research Quality and Synthesis)
-Plan: 2 of 3 in current phase (06-02 complete)
-Status: In progress
-Last activity: 2026-03-04 -- Completed 06-02-PLAN.md (G2 gate evaluation and gap-fill recycling)
+Plan: 3 of 3 in current phase (06-03 complete)
+Status: Complete
+Last activity: 2026-03-04 -- Completed 06-03-PLAN.md (synthesis generation and research completion)
 
-Progress: [▓▓▓▓▓▓▓▓░░] 75%
+Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
 
 ## Performance Metrics
 
@@ -104,6 +104,8 @@ Recent decisions affecting current work:
 - 11-01: Glob fallback uses parenthetical style matching scope SKILL.md's established pattern
 - 06-01: Followed plan exactly -- all Step 12 and Step 13 content matched the specification verbatim
 - 06-02: Followed plan exactly -- all Steps 14-16 content matched the specification verbatim
+- 06-03: SKILL.md refactored 1233→611 lines at human checkpoint -- embedded prompts moved to references/ files; SKILL.md is now a lean orchestration script
+- 06-03: Human approved refactor as checkpoint resolution -- SKILL.md-as-orchestrator is the preferred pattern going forward
 
 ### Pending Todos
 
@@ -117,5 +119,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 06-02-PLAN.md -- G2 gate evaluation and gap-fill recycling
+Stopped at: Completed 06-03-PLAN.md -- synthesis generation and research completion (Phase 06 complete)
 Resume file: None

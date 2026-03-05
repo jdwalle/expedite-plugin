@@ -58,7 +58,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **RSCH-10**: G2 gate evaluates research sufficiency using count-based criteria (majority COVERED, all P0 COVERED or PARTIAL)
 - [x] **RSCH-11**: Recycle triggers gap-fill mode: filters to PARTIAL/NOT COVERED questions, re-batches by decision area
 - [x] **RSCH-12**: Gap-fill agents produce `round-{N}/supplement-*.md` with additive supplement-synthesis
-- [ ] **RSCH-13**: SYNTHESIS.md artifact written to `.expedite/research/SYNTHESIS.md` after gate pass
+- [x] **RSCH-13**: SYNTHESIS.md artifact written to `.expedite/research/SYNTHESIS.md` after gate pass
 - [x] **RSCH-14**: Every Decision Area (DA-1 through DA-N) from scope has at least one research question covering it
 - [x] **RSCH-15**: Research agents receive evidence requirements for their batch — agents know what specific evidence to find, not just the topic
 - [x] **RSCH-16**: Sufficiency evaluator assesses evidence against the evidence requirements defined in scope (not just general topical coverage)
@@ -237,7 +237,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RSCH-10 | Phase 6 | Complete |
 | RSCH-11 | Phase 6 | Complete |
 | RSCH-12 | Phase 6 | Complete |
-| RSCH-13 | Phase 6 | Pending |
+| RSCH-13 | Phase 6 | Complete |
 | RSCH-14 | Phase 5 | Complete |
 | RSCH-15 | Phase 5 | Complete |
 | RSCH-16 | Phase 6 | Complete |
