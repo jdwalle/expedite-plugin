@@ -55,9 +55,9 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **RSCH-07**: Dynamic question discovery: subagents propose new questions via `# --- PROPOSED QUESTIONS ---` YAML block
 - [x] **RSCH-08**: Discovered questions deduplicated via LLM judgment, max 4 presented to user for approval
 - [x] **RSCH-09**: Source routing with circuit breaker: retry once on server failure, never retry platform failures, classify as UNAVAILABLE-SOURCE
-- [ ] **RSCH-10**: G2 gate evaluates research sufficiency using count-based criteria (majority COVERED, all P0 COVERED or PARTIAL)
-- [ ] **RSCH-11**: Recycle triggers gap-fill mode: filters to PARTIAL/NOT COVERED questions, re-batches by decision area
-- [ ] **RSCH-12**: Gap-fill agents produce `round-{N}/supplement-*.md` with additive supplement-synthesis
+- [x] **RSCH-10**: G2 gate evaluates research sufficiency using count-based criteria (majority COVERED, all P0 COVERED or PARTIAL)
+- [x] **RSCH-11**: Recycle triggers gap-fill mode: filters to PARTIAL/NOT COVERED questions, re-batches by decision area
+- [x] **RSCH-12**: Gap-fill agents produce `round-{N}/supplement-*.md` with additive supplement-synthesis
 - [ ] **RSCH-13**: SYNTHESIS.md artifact written to `.expedite/research/SYNTHESIS.md` after gate pass
 - [x] **RSCH-14**: Every Decision Area (DA-1 through DA-N) from scope has at least one research question covering it
 - [x] **RSCH-15**: Research agents receive evidence requirements for their batch — agents know what specific evidence to find, not just the topic
@@ -98,8 +98,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **GATE-01**: Every phase transition guarded by inline gate (G1-G4) evaluated in the producing skill
 - [x] **GATE-02**: Each gate has MUST criteria (all must pass for Go) and SHOULD criteria (failures produce advisory)
-- [ ] **GATE-03**: Four gate outcomes: Go, Go-with-advisory, Recycle, Override
-- [ ] **GATE-04**: Recycle escalation: 1st informational, 2nd suggest adjustment, 3rd recommend override
+- [x] **GATE-03**: Four gate outcomes: Go, Go-with-advisory, Recycle, Override
+- [x] **GATE-04**: Recycle escalation: 1st informational, 2nd suggest adjustment, 3rd recommend override
 - [ ] **GATE-05**: Override records severity and injects gap context into downstream phase prompts
 - [x] **GATE-06**: G1 is structural (deterministic); G2 and G3 require LLM judgment; G4 is structural
 - [x] **GATE-07**: Anti-bias instructions in G2/G3 prompts ("evaluate as if someone else produced this")
@@ -217,8 +217,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCOPE-11 | Phase 4 | Complete |
 | GATE-01 | Phase 4 | Complete |
 | GATE-02 | Phase 4 | Complete |
-| GATE-03 | Phase 6 | Pending |
-| GATE-04 | Phase 10 | Pending |
+| GATE-03 | Phase 6 | Complete |
+| GATE-04 | Phase 10 | Complete |
 | GATE-05 | Phase 10 | Pending |
 | GATE-06 | Phase 4 | Complete |
 | GATE-07 | Phase 6 | Complete |
@@ -234,9 +234,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RSCH-07 | Phase 6 | Complete |
 | RSCH-08 | Phase 6 | Complete |
 | RSCH-09 | Phase 5 | Complete |
-| RSCH-10 | Phase 6 | Pending |
-| RSCH-11 | Phase 6 | Pending |
-| RSCH-12 | Phase 6 | Pending |
+| RSCH-10 | Phase 6 | Complete |
+| RSCH-11 | Phase 6 | Complete |
+| RSCH-12 | Phase 6 | Complete |
 | RSCH-13 | Phase 6 | Pending |
 | RSCH-14 | Phase 5 | Complete |
 | RSCH-15 | Phase 5 | Complete |
