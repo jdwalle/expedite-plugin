@@ -173,11 +173,11 @@ Plans:
   4. Each phase identifies tactical decisions and classifies them as "resolved" (informed by strategic design) or "needs-spike" (requires investigation)
   5. G4 gate validates: every DA covered by a phase, phase sizing within bounds, tactical decisions listed per phase, acceptance criteria trace to design decisions
   6. PLAN.md artifact is written to `.expedite/plan/PLAN.md` with phase structure including tactical decision tables
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
+- [ ] 08-01-PLAN.md -- Replace plan SKILL.md stub with Steps 1-5: prerequisite check, artifact loading, state initialization, inline plan generation with tactical decisions, PLAN.md writing
+- [ ] 08-02-PLAN.md -- Append Steps 6-9: freeform revision cycle, G4 structural gate (5 MUST + 4 SHOULD), gate outcome handling with recycle escalation, plan completion + human verification
 
 ### Phase 9: Spike and Execute Skills
 **Goal**: Users can optionally investigate tactical decisions and plan implementation steps (spike), then execute the plan with per-task verification tracing back to design decisions (execute)
