@@ -254,3 +254,55 @@ WARNING: HANDOFF.md ({handoff_words} words) is longer than DESIGN.md ({design_wo
 ```
 
 Proceed to Step 7.
+
+### Step 7: Revision Cycle
+
+Present the design document to the user for review. This is a freeform revision loop with no hard round limit — the user keeps revising until satisfied, then proceeds to gate evaluation.
+
+**7a: Present design for review.** Display:
+
+```
+--- Design Review ---
+
+The design document has been written to .expedite/design/DESIGN.md
+{If product intent:} HANDOFF.md has been written to .expedite/design/HANDOFF.md
+
+Review the design document above. You can:
+- **revise** — describe changes you'd like (e.g., "change DA-3 to use approach B", "strengthen the caching rationale in DA-5")
+- **proceed** — run G3 gate evaluation on the current design
+
+What would you like to do?
+```
+
+Wait for user input.
+
+**7b: On "revise" (user provides feedback):**
+
+1. Parse the user's freeform feedback. Identify which DAs or sections they want changed.
+2. Apply the changes to the in-memory design document.
+3. **Summarize changes before rewriting.** Display a change summary:
+
+```
+Changes applied:
+- DA-{N}: {brief description of change}
+- DA-{M}: {brief description of change}
+- {Section}: {brief description of change}
+```
+
+4. Rewrite `.expedite/design/DESIGN.md` with the updated content.
+5. If product intent AND changes affect sections mirrored in HANDOFF.md (Problem Statement, Key Decisions, Scope Boundaries, Success Metrics, User Flows), also rewrite `.expedite/design/HANDOFF.md` with corresponding updates.
+6. Re-validate DA coverage: verify every DA from SCOPE.md still has a section in the updated DESIGN.md. If any DA section was accidentally removed during revision, display warning and restore it.
+7. Return to 7a — present the revision prompt again.
+
+**7c: On "proceed" (user wants gate evaluation):**
+
+Display: "Proceeding to G3 gate evaluation..."
+
+Proceed to Step 8.
+
+**Key behaviors:**
+- No round counter displayed. No "you have N revisions remaining" messaging.
+- Every iteration of the loop presents both "revise" and "proceed" options.
+- Interpret "looks good", "done", "approved", "no changes", "yes", "lgtm" as "proceed" — do NOT ask for more revisions when the user signals satisfaction.
+- Interpret "skip" or "skip to gate" as "proceed".
+- If user feedback is ambiguous (cannot determine which DAs or sections to change), ask for clarification rather than guessing.
