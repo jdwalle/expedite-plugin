@@ -50,10 +50,10 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **RSCH-02**: Up to 3 research subagents dispatched in parallel via Task() API
 - [x] **RSCH-03**: Each subagent uses per-source prompt template (web-researcher.md, codebase-researcher.md, mcp-researcher.md)
 - [x] **RSCH-04**: Subagents write detailed findings to evidence files and return condensed summary (max 500 tokens)
-- [ ] **RSCH-05**: Per-question sufficiency assessed using categorical model: COVERED, PARTIAL, NOT COVERED, UNAVAILABLE-SOURCE
-- [ ] **RSCH-06**: Sufficiency evaluated across 3 dimensions: Coverage, Corroboration, Actionability (each rated Strong/Adequate/Weak/None)
-- [ ] **RSCH-07**: Dynamic question discovery: subagents propose new questions via `# --- PROPOSED QUESTIONS ---` YAML block
-- [ ] **RSCH-08**: Discovered questions deduplicated via LLM judgment, max 4 presented to user for approval
+- [x] **RSCH-05**: Per-question sufficiency assessed using categorical model: COVERED, PARTIAL, NOT COVERED, UNAVAILABLE-SOURCE
+- [x] **RSCH-06**: Sufficiency evaluated across 3 dimensions: Coverage, Corroboration, Actionability (each rated Strong/Adequate/Weak/None)
+- [x] **RSCH-07**: Dynamic question discovery: subagents propose new questions via `# --- PROPOSED QUESTIONS ---` YAML block
+- [x] **RSCH-08**: Discovered questions deduplicated via LLM judgment, max 4 presented to user for approval
 - [x] **RSCH-09**: Source routing with circuit breaker: retry once on server failure, never retry platform failures, classify as UNAVAILABLE-SOURCE
 - [ ] **RSCH-10**: G2 gate evaluates research sufficiency using count-based criteria (majority COVERED, all P0 COVERED or PARTIAL)
 - [ ] **RSCH-11**: Recycle triggers gap-fill mode: filters to PARTIAL/NOT COVERED questions, re-batches by decision area
@@ -61,7 +61,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **RSCH-13**: SYNTHESIS.md artifact written to `.expedite/research/SYNTHESIS.md` after gate pass
 - [x] **RSCH-14**: Every Decision Area (DA-1 through DA-N) from scope has at least one research question covering it
 - [x] **RSCH-15**: Research agents receive evidence requirements for their batch — agents know what specific evidence to find, not just the topic
-- [ ] **RSCH-16**: Sufficiency evaluator assesses evidence against the evidence requirements defined in scope (not just general topical coverage)
+- [x] **RSCH-16**: Sufficiency evaluator assesses evidence against the evidence requirements defined in scope (not just general topical coverage)
 
 ### Design Skill
 
@@ -102,7 +102,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **GATE-04**: Recycle escalation: 1st informational, 2nd suggest adjustment, 3rd recommend override
 - [ ] **GATE-05**: Override records severity and injects gap context into downstream phase prompts
 - [x] **GATE-06**: G1 is structural (deterministic); G2 and G3 require LLM judgment; G4 is structural
-- [ ] **GATE-07**: Anti-bias instructions in G2/G3 prompts ("evaluate as if someone else produced this")
+- [x] **GATE-07**: Anti-bias instructions in G2/G3 prompts ("evaluate as if someone else produced this")
 
 ### Prompt Templates
 
@@ -221,7 +221,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GATE-04 | Phase 10 | Pending |
 | GATE-05 | Phase 10 | Pending |
 | GATE-06 | Phase 4 | Complete |
-| GATE-07 | Phase 6 | Pending |
+| GATE-07 | Phase 6 | Complete |
 | ARTF-01 | Phase 4 | Complete |
 | ARTF-02 | Phase 4 | Complete |
 | ARTF-03 | Phase 10 | Pending |
@@ -229,10 +229,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RSCH-02 | Phase 5 | Complete |
 | RSCH-03 | Phase 5 | Complete |
 | RSCH-04 | Phase 5 | Complete |
-| RSCH-05 | Phase 6 | Pending |
-| RSCH-06 | Phase 6 | Pending |
-| RSCH-07 | Phase 6 | Pending |
-| RSCH-08 | Phase 6 | Pending |
+| RSCH-05 | Phase 6 | Complete |
+| RSCH-06 | Phase 6 | Complete |
+| RSCH-07 | Phase 6 | Complete |
+| RSCH-08 | Phase 6 | Complete |
 | RSCH-09 | Phase 5 | Complete |
 | RSCH-10 | Phase 6 | Pending |
 | RSCH-11 | Phase 6 | Pending |
@@ -240,7 +240,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RSCH-13 | Phase 6 | Pending |
 | RSCH-14 | Phase 5 | Complete |
 | RSCH-15 | Phase 5 | Complete |
-| RSCH-16 | Phase 6 | Pending |
+| RSCH-16 | Phase 6 | Complete |
 | DSGN-01 | Phase 7 | Pending |
 | DSGN-02 | Phase 7 | Pending |
 | DSGN-03 | Phase 7 | Pending |
