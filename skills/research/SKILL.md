@@ -409,70 +409,23 @@ Proceed to Step 12.
 
 ### Step 12: Sufficiency Assessment
 
-Evaluate whether the collected evidence meets the specific evidence requirements defined during scope. This step invokes the sufficiency evaluator as an inline reference (not a subagent) with strict structural separation: the evaluator only receives evidence files and scope artifacts -- never dispatch metadata, agent reasoning, or Phase 5 preliminary statuses.
+Dispatch the sufficiency evaluator as a Task() subagent. The evaluator reads all evidence files and scope artifacts in its own fresh context — keeping evidence content out of the orchestrator's context.
 
-#### 12a: Input Assembly for Evaluator
-
-Read the following files to assemble the evaluator input:
-
-1. **`.expedite/scope/SCOPE.md`** -- Extract for each question:
-   - Evidence requirements (typed requirements from the question plan)
-   - DA depth calibration (Deep / Standard / Light) for each Decision Area
-   - Readiness criteria
-
-2. **`.expedite/state.yml`** -- Extract:
-   - `project_name` and `intent` (for evaluator placeholders)
-   - `questions` array with each question's `evidence_files` paths
-
-3. **Evidence files** -- For each question, read the full content of every file listed in that question's `evidence_files` array in state.yml. If gap-fill rounds have occurred (research_round > 1), also read `round-{N}/supplement-*.md` files from `.expedite/research/` by scanning for matching supplement files using Glob with `.expedite/research/round-*/supplement-*.md`.
-
-4. **Assemble the `{{questions_with_evidence}}` placeholder block.** For each question, include:
-   - `question_id`: the question ID (e.g., "q01")
-   - `question_text`: the full question text
-   - `decision_area`: the DA name
-   - `da_depth`: the DA depth calibration from SCOPE.md (Deep / Standard / Light)
-   - `evidence_requirements`: the typed evidence requirements from SCOPE.md
-   - Full evidence content from the relevant evidence files (paste the entire content, not summaries)
-
-**Anti-bias structural separation (GATE-07):** Do NOT include any of the following in the evaluator input:
-- Dispatch metadata (batch IDs, source assignments, agent configuration)
-- Agent reasoning or agent-reported statuses
-- Phase 5 preliminary question statuses
-- Batch configuration or source validation results
-
-Only evidence files and scope artifacts are passed to the evaluator. This ensures the evaluator assesses evidence quality independently, without anchoring to prior judgments.
-
-#### 12b: Invoke Sufficiency Evaluator (Inline Reference)
-
-Read the evaluator template from `skills/research/references/prompt-sufficiency-evaluator.md`. If the direct path fails, use Glob with `**/prompt-sufficiency-evaluator.md` to locate it.
-
-This is an **inline reference** -- the template has no frontmatter, no `subagent_type`, and is NOT dispatched via Task(). The orchestrator fills placeholders and applies the evaluation logic directly in the main session.
+Read the evaluator template from `skills/research/references/prompt-sufficiency-evaluator.md` (use Glob with `**/prompt-sufficiency-evaluator.md` if the direct path fails). This template HAS frontmatter (`subagent_type: general-purpose`, `model: sonnet`) — it runs as a Task() subagent.
 
 Fill the following placeholders in the template:
-- `{{project_name}}` -- from state.yml `project_name`
-- `{{intent}}` -- from state.yml `intent`
-- `{{questions_with_evidence}}` -- from the assembled block in 12a
+- `{{project_name}}` — from state.yml `project_name`
+- `{{intent}}` — from state.yml `intent`
 
 Apply the conditional blocks based on intent:
-- If intent is "product": apply the `<if_intent_product>` blocks and remove `<if_intent_engineering>` blocks
-- If intent is "engineering": apply the `<if_intent_engineering>` blocks and remove `<if_intent_product>` blocks
+- If intent is "product": keep `<if_intent_product>` blocks, remove `<if_intent_engineering>` blocks
+- If intent is "engineering": keep `<if_intent_engineering>` blocks, remove `<if_intent_product>` blocks
 
-Execute the evaluation following the template's instructions exactly:
-1. Assess each question individually across the 3 dimensions (Coverage, Corroboration, Actionability)
-2. Apply DA depth calibration for corroboration thresholds:
-   - **Deep DAs:** Require Strong or Adequate corroboration. Single-source evidence is insufficient.
-   - **Standard DAs:** Require at least Adequate corroboration. Single-source acceptable only from authoritative primary sources.
-   - **Light DAs:** Accept Adequate or Weak corroboration. Single-source acceptable from credible sources.
-3. Assign categorical rating per the template's rules (COVERED, PARTIAL, NOT COVERED, UNAVAILABLE-SOURCE)
-4. Write gap details for every non-COVERED question
+Dispatch via Task(). The subagent will read evidence files + scope itself (per its `<self_contained_reads>` instructions) and write results to `.expedite/research/sufficiency-results.yml`.
 
-Perform the evaluator's quality gate (anti-bias self-check) before finalizing: re-read each rating and verify it passes all checklist items in the template's `<quality_gate>` section. If any check fails, revise the assessment before proceeding.
+**After the subagent completes**, read `.expedite/research/sufficiency-results.yml`. If the file is missing, display an error and offer to re-dispatch.
 
-#### 12c: UNAVAILABLE-SOURCE Short-Circuit
-
-After completing the evaluation, check for any questions rated UNAVAILABLE-SOURCE.
-
-For each UNAVAILABLE-SOURCE question, surface it immediately to the user using AskUserQuestion:
+**UNAVAILABLE-SOURCE short-circuit:** Check for any questions rated UNAVAILABLE-SOURCE. For each, surface immediately to the user using AskUserQuestion:
 
 ```
 header: "Source Unavailable: {question_id}"
@@ -487,715 +440,153 @@ options:
 multiSelect: false
 ```
 
-**Handling responses:**
+Handling: "Accept gap" keeps UNAVAILABLE-SOURCE status (flows to SYNTHESIS.md advisory). "Suggest alternative source" asks user for details via freeform, updates `source_hints` in state.yml (backup-before-write). "Override and proceed" treats question as resolved for gate purposes.
 
-- **"Accept gap":** Record the user's decision. The question keeps its UNAVAILABLE-SOURCE status and will flow into the SYNTHESIS.md advisory section documenting the known gap.
+**Update state.yml** with the evaluator's results using the backup-before-write pattern. For each question, set `status` to the evaluator's categorical rating in lowercase (`covered`, `partial`, `not_covered`, or `unavailable_source`) and set `gap_details` to `null` if COVERED or to the evaluator's gap description otherwise. These are FINAL statuses replacing Phase 5's preliminary statuses.
 
-- **"Suggest alternative source":** Ask the user for the alternative source details using a freeform prompt. Update the question's `source_hints` in state.yml using the backup-before-write pattern (read, backup, modify, write). Do NOT re-run sufficiency assessment now -- the question will be handled in gap-fill if G2 triggers Recycle.
-
-- **"Override and proceed":** Record the override decision. The question is treated as resolved for gate purposes.
-
-This mirrors the Phase 5 circuit breaker pattern -- the user decides how to handle source failures, not automated retry.
-
-#### 12d: Update state.yml with Evaluator Results
-
-Update state.yml with the final sufficiency ratings using the backup-before-write pattern:
-
-1. Read `.expedite/state.yml`
-2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
-3. For each question in state.yml, update:
-   - `status`: Set to the evaluator's categorical rating in lowercase (`covered`, `partial`, `not_covered`, or `unavailable_source`)
-   - `gap_details`: Set to `null` if COVERED, otherwise set to the evaluator's gap description (which evidence requirements remain unmet, what type of evidence would satisfy them, which sources might have this evidence)
-4. Write the entire file back to `.expedite/state.yml`
-
-These are **FINAL statuses** replacing Phase 5's preliminary statuses. The sufficiency evaluator has now made the definitive assessment using the full evidence files and the typed rubric from scope.
-
-#### 12e: Display Assessment Summary
-
-Display a structured summary of the sufficiency assessment:
+**Display assessment summary:**
 
 ```
 --- Sufficiency Assessment Summary ---
 
 | Question | Priority | DA | Status | Coverage | Corroboration | Actionability |
 |----------|----------|----|--------|----------|---------------|---------------|
-| {q_id}   | {P0/P1/P2} | {DA name} | {COVERED/PARTIAL/NOT COVERED/UNAVAILABLE-SOURCE} | {Strong/Adequate/Weak/None} | {Strong/Adequate/Weak/None} | {Strong/Adequate/Weak/None} |
+| {q_id}   | {P0/P1/P2} | {DA name} | {status} | {dim} | {dim} | {dim} |
 ...
 
-Summary:
-  COVERED: {count}
-  PARTIAL: {count}
-  NOT COVERED: {count}
-  UNAVAILABLE-SOURCE: {count}
+Summary: COVERED: {count} | PARTIAL: {count} | NOT COVERED: {count} | UNAVAILABLE-SOURCE: {count}
 ```
 
-Based on results:
-- If ALL questions are COVERED: Display "All questions sufficiently covered. Proceeding to G2 gate."
-- If gaps exist (any PARTIAL, NOT COVERED, or unresolved UNAVAILABLE-SOURCE): Display "Gaps identified. G2 gate will determine next action."
+If ALL COVERED: "All questions sufficiently covered. Proceeding to G2 gate."
+If gaps exist: "Gaps identified. G2 gate will determine next action."
 
 Proceed to Step 13.
 
 ### Step 13: Dynamic Question Discovery
 
-Surface new questions discovered by research agents during evidence gathering. Agents may propose questions they encountered while investigating the assigned questions. These proposals are deduplicated via LLM judgment (not string matching), capped at 4, and presented to the user for approval before being added to the question plan.
+Surface new questions discovered by research agents during evidence gathering. Proposals are deduplicated via LLM judgment (not string matching), capped at 4, and presented to the user for approval.
 
-#### 13a: Read Proposed Questions
+Read `.expedite/research/proposed-questions.yml`. If the file does not exist or is empty, display "No new questions discovered by research agents." and skip to Step 14.
 
-Read `.expedite/research/proposed-questions.yml`. If the file does not exist or is empty (no `proposed_questions` list, or the list is empty), display:
+If proposed questions exist (each with `text`, `proposed_by`, `related_da`), deduplicate them:
 
-```
-No new questions discovered by research agents.
-```
+1. **Against existing questions in state.yml:** Discard if semantically equivalent to an existing question (same underlying information need, regardless of wording). Note: "Duplicate of {existing_question_id}".
+2. **Cross-dedup within proposals:** If two proposals are semantically equivalent, keep the more specific one.
 
-Then skip to Step 14.
+This is **inline LLM semantic deduplication** — not string matching, not a subagent. Display dedup results: "{N} proposals received, {M} duplicates removed, {K} unique remaining."
 
-If the file exists and contains proposed questions, parse the `proposed_questions` list. Each entry has:
-- `text`: the proposed question text
-- `proposed_by`: which batch proposed it (e.g., "batch-01")
-- `related_da`: the Decision Area the question relates to (if identifiable by the agent)
+**Cap at 4:** If more than 4 unique proposals remain, prioritize by: P0-related DAs first, then gap-relevance (PARTIAL/NOT COVERED questions), then specificity. Keep top 4.
 
-Display: "Found {N} proposed questions from research agents. Deduplicating..."
-
-#### 13b: Deduplicate via LLM Judgment
-
-For each proposed question, compare semantically against two sets:
-
-1. **All existing questions in state.yml** (the current question plan). For each existing question, determine whether the proposed question is asking essentially the same thing, even if worded differently. Focus on the underlying information need, not surface-level phrasing.
-
-2. **All other proposed questions** (cross-deduplication within the proposals themselves). If two proposals are semantically equivalent, keep the one with better rationale or greater specificity.
-
-This is **LLM-based semantic deduplication** performed inline in the main session -- not string matching, not regex, not a subagent. The orchestrator uses its own judgment to determine semantic equivalence.
-
-**Deduplication rules:**
-- If a proposed question is semantically equivalent to an existing question in state.yml: discard it with a note "Duplicate of {existing_question_id}: {existing_question_text}"
-- If a proposed question is semantically equivalent to another proposed question: keep the one with better rationale or greater specificity, discard the other with a note explaining the merge
-- "Semantically equivalent" means the questions seek the same underlying information, even if they use different terminology, scope, or framing
-
-Display the deduplication results:
-```
-Deduplication results:
-  {N} proposals received
-  {M} duplicates removed:
-    - "{discarded_text}" -- duplicate of {reason}
-  {K} unique proposals remaining
-```
-
-#### 13c: Cap and Prioritize
-
-After deduplication, if more than 4 unique proposals remain, select the top 4 using these prioritization criteria (in order):
-
-1. **P0-related proposals first:** Proposals related to Decision Areas that contain P0 questions get priority
-2. **Gap-relevance:** Proposals related to questions identified as PARTIAL or NOT COVERED in Step 12 get priority (these could help fill gaps in a future gap-fill round)
-3. **Specificity:** More specific, actionable questions are preferred over broad or exploratory ones
-
-If 4 or fewer unique proposals remain after dedup, keep all of them.
-
-Display: "{K} unique proposals after deduplication (max 4 presented)."
-
-#### 13d: Present to User for Approval
-
-Present each proposed question to the user with its full context:
+**Present to user** via freeform prompt (not AskUserQuestion — too complex for multi-choice):
 
 ```
 --- Discovered Questions ---
 
-The following questions were discovered by research agents during evidence gathering.
+The following questions were discovered by research agents.
 Select which to add to the question plan:
 
 1. "{question_text}"
-   Proposed by: {batch_id} ({source_type})
-   Related DA: {related_da}
-
-2. "{question_text}"
-   Proposed by: {batch_id} ({source_type})
-   Related DA: {related_da}
-
+   Proposed by: {batch_id} ({source_type}) | Related DA: {related_da}
 ...
 
-Options:
-- Approve all -- Add all questions to the question plan
-- Approve specific -- Enter numbers to approve (e.g., "1,3")
-- Approve none -- Skip all proposed questions
-- Modify -- Change a question's text or DA before approving
+Options: Approve all | Approve specific (e.g., "1,3") | Approve none | Modify
 ```
 
-This is a **freeform prompt** (not AskUserQuestion) because the interaction is too complex for a simple multi-choice: users may want to approve a subset, modify text, or reassign DAs.
+**For each approved question:** Assign next sequential `question_id`, set `priority` to P1 (user can override), set `status` to `"pending"`, set `source` to `"discovered-round-{research_round}"`. Add to state.yml's `questions` array (backup-before-write) and to SCOPE.md's question plan in the appropriate DA section.
 
-**Handling responses:**
-
-- **"Approve all":** Add all presented questions to the plan.
-- **"Approve specific" (e.g., "1,3"):** Add only the selected questions.
-- **"Approve none":** Skip all questions. Display "No discovered questions added."
-- **"Modify":** Ask the user which question to modify and what changes to make. Apply the modification, then re-present the updated list for approval. Loop until the user approves or declines.
-
-**For each approved question:**
-1. Assign a `question_id` continuing the existing sequence (e.g., if the last question is q08, new questions start at q09)
-2. Set `priority` to P1 (suggest to user -- they can override during approval)
-3. Set `status` to `"pending"`
-4. Set `source` to `"discovered-round-{research_round}"`
-5. Add the question to state.yml's `questions` array using the backup-before-write pattern (read, backup, modify, write)
-6. Add the question to SCOPE.md's question plan, appended to the appropriate Decision Area section
-
-#### 13e: Display Discovery Summary
-
-Display a structured summary:
-
-```
---- Dynamic Question Discovery Summary ---
-
-Questions proposed by agents: {total_proposed}
-Duplicates removed: {duplicates_removed}
-Presented to user: {presented_count}
-Approved by user: {approved_count}
-```
-
-If questions were approved:
-```
-Approved questions added to question plan:
-  {q_id}: "{question_text}" [DA: {related_da}] [Priority: {priority}]
-  ...
-
-These questions will be included in gap-fill research if the G2 gate triggers a Recycle.
-```
-
-If no questions were approved (either none proposed or user declined all):
-```
-No new questions added to the question plan.
-```
+Display discovery summary: questions proposed, duplicates removed, presented, approved.
 
 Proceed to Step 14.
 
 ### Step 14: G2 Gate Evaluation
 
-Evaluate whether the collected evidence meets the quality threshold required to proceed to synthesis. The G2 gate uses count-based MUST criteria (structural checks) and SHOULD criteria (quality aspirations), following the same pattern as the G1 gate in scope SKILL.md Step 9.
+Count-based gate evaluation from state.yml question statuses (set in Step 12). No LLM judgment — pure counting.
 
-#### 14a: Compute Gate Criteria from Evaluator Output
+Compute counts: `total_questions`, `covered_count`, `partial_count`, `not_covered_count`, `unavailable_count`, `p0_questions`, `p0_not_covered`, `unresolved_unavailable`.
 
-Count from state.yml question statuses (set in Step 12):
+**MUST criteria (all must pass for Go):**
+- M1: Every question assessed (covered + partial + not_covered + unavailable = total)
+- M2: Majority COVERED (covered_count > total / 2)
+- M3: All P0 questions COVERED or PARTIAL (p0_not_covered == 0)
+- M4: No unresolved UNAVAILABLE-SOURCE (unresolved_unavailable == 0)
 
-- `total_questions`: count of all questions in the `questions` array
-- `covered_count`: count where `status` = `"covered"`
-- `partial_count`: count where `status` = `"partial"`
-- `not_covered_count`: count where `status` = `"not_covered"`
-- `unavailable_count`: count where `status` = `"unavailable_source"`
-- `p0_questions`: subset of questions where `priority` = `"P0"`
-- `p0_not_covered`: P0 questions where `status` = `"not_covered"`
-- `unresolved_unavailable`: UNAVAILABLE-SOURCE questions where the user has NOT yet decided (should be 0 after Step 12c)
+**SHOULD criteria (failures produce advisory, not block):**
+- S1: All questions COVERED (covered_count == total)
+- S2: No PARTIAL ratings remain (partial_count == 0)
+- S3: All evidence requirements MET (no PARTIALLY MET in evaluator output)
 
-All counts are derived from the current state.yml -- no LLM judgment involved in counting.
+**Gate outcomes:**
+- **Go**: All MUST pass AND all SHOULD pass
+- **Go-with-advisory**: All MUST pass, SHOULD failures exist
+- **Recycle**: Any MUST criterion fails
+- **Override**: Only when user explicitly requests it (not auto-determined)
 
-#### 14b: Evaluate MUST Criteria
-
-Following the G1 gate pattern from scope SKILL.md Step 9, evaluate each MUST criterion. All must pass for a Go outcome:
-
-```
-MUST criteria (all must pass for Go):
-M1: Every question has been assessed (covered + partial + not_covered + unavailable = total)
-M2: Majority of questions rated COVERED (covered_count > total / 2)
-M3: All P0 questions rated COVERED or PARTIAL (p0_not_covered == 0)
-M4: No UNAVAILABLE-SOURCE questions remain unresolved (unresolved_unavailable == 0)
-```
-
-For each MUST criterion, record pass/fail with evidence. Example format:
-- "M1: PASS -- 10/10 questions assessed (7 covered + 2 partial + 1 not_covered = 10)"
-- "M2: PASS -- 7/10 covered (70% > 50%)"
-- "M3: PASS -- 3/3 P0 questions are COVERED or PARTIAL (0 P0 not_covered)"
-- "M4: PASS -- 0 unresolved UNAVAILABLE-SOURCE questions"
-
-#### 14c: Evaluate SHOULD Criteria
-
-Evaluate each SHOULD criterion. Failures produce advisory notes but do not block the gate:
-
-```
-SHOULD criteria (failures produce advisory, not block):
-S1: All questions rated COVERED (covered_count == total)
-S2: No PARTIAL ratings remain (partial_count == 0)
-S3: All evidence requirements MET (no PARTIALLY MET in evaluator output)
-```
-
-For each SHOULD criterion, record pass/fail with evidence. Example format:
-- "S1: FAIL -- 7/10 covered (3 not fully covered)"
-- "S2: FAIL -- 2 questions still PARTIAL"
-- "S3: PASS -- all evidence requirements fully MET"
-
-#### 14d: Determine Gate Outcome
-
-Based on the MUST and SHOULD evaluations, determine the gate outcome:
-
-- **Go**: All MUST criteria pass AND all SHOULD criteria pass. Research quality is fully sufficient.
-- **Go-with-advisory**: All MUST criteria pass, but one or more SHOULD criteria fail. Research is sufficient but has known weak areas that will be documented as advisory in SYNTHESIS.md.
-- **Recycle**: Any MUST criterion fails (except M4, which was handled in Step 12c via the UNAVAILABLE-SOURCE short-circuit). Gap-fill research is needed.
-- **Override**: Only available when the user explicitly requests it. This is NOT auto-determined by the gate -- only the user can choose to override a failing gate. Override allows proceeding despite MUST failures, with all gaps documented.
-
-#### 14e: Display Gate Result
-
-Show gate evaluation results in the same format as G1:
-
-```
-## G2 Gate Evaluation
-
-MUST Criteria:
-  M1: {PASS|FAIL} -- {evidence}
-  M2: {PASS|FAIL} -- {evidence}
-  M3: {PASS|FAIL} -- {evidence}
-  M4: {PASS|FAIL} -- {evidence}
-
-SHOULD Criteria:
-  S1: {PASS|FAIL} -- {evidence}
-  S2: {PASS|FAIL} -- {evidence}
-  S3: {PASS|FAIL} -- {evidence}
-
-Outcome: {Go | Go-with-advisory | Recycle}
-```
-
-Proceed to Step 15 for outcome handling.
+Display gate results (MUST and SHOULD with pass/fail + evidence for each), then outcome. Proceed to Step 15.
 
 ### Step 15: Gate Outcome Handling
 
-Handle the G2 gate outcome determined in Step 14. Each outcome has a distinct handling path with appropriate state transitions, user interactions, and documentation.
+**15a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write):
 
-#### 15a: Record Gate History
-
-Before handling the outcome, record the gate evaluation in state.yml using the backup-before-write pattern:
-
-1. Read `.expedite/state.yml`
-2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
-3. Append to the `gate_history` array in state.yml:
-   ```yaml
-   - gate: "G2"
-     timestamp: "{ISO 8601 UTC}"
-     outcome: "{go|go_advisory|recycle|override}"
-     must_passed: {count}
-     must_failed: {count}
-     should_passed: {count}
-     should_failed: {count}
-     notes: "{brief summary of gate result}"
-     overridden: false
-   ```
-4. Set `last_modified` to current timestamp (ISO 8601 UTC)
-5. Write the entire file back to `.expedite/state.yml`
-
-#### 15b: Recycle Escalation Logic (GATE-04)
-
-Before handling Recycle or Override outcomes, determine the recycle escalation level. Count previous G2 recycle outcomes in gate_history (entries where `gate` = `"G2"` AND `outcome` = `"recycle"`).
-
-Escalation messaging by recycle count:
-
-- **1st recycle (recycle_count == 0 before this recycle):** Informational tone. Display:
-  ```
-  Some questions need additional evidence. Here's what's missing:
-  {For each PARTIAL/NOT COVERED question: question_id, question_text, status, gap_details}
-  ```
-  Then ask the user via freeform prompt:
-  ```
-  Approve gap-fill research? Options:
-  - yes -- dispatch gap-fill agents for the questions above
-  - adjust questions -- reprioritize or accept gaps for specific questions
-  - override -- proceed to synthesis with documented gaps
-  ```
-
-- **2nd recycle (recycle_count == 1 before this recycle):** Suggest adjustment. Display:
-  ```
-  This is the second recycle. Consider adjusting expectations:
-
-  Persistently weak questions:
-  {For each question that was PARTIAL/NOT COVERED in BOTH this and previous evaluation:
-    question_id, question_text, status history}
-
-  Suggestions:
-  - Lower priority of stubborn questions (P0 -> P1 or P1 -> P2)
-  - Accept weak areas as advisory (they'll be documented in SYNTHESIS.md)
-  - Try different sources for specific questions
-  ```
-  Then ask the user via freeform prompt:
-  ```
-  Options:
-  - approve gap-fill -- one more round targeting remaining gaps
-  - adjust -- reprioritize or accept gaps (describe changes)
-  - override -- proceed to synthesis with documented gaps (recommended if same questions keep failing)
-  ```
-
-- **3rd+ recycle (recycle_count >= 2 before this recycle):** Recommend override. Display:
-  ```
-  This is recycle #{recycle_count + 1}. Recommend overriding the gate.
-
-  Remaining gaps may not be resolvable through additional research. The same questions
-  have been recycled {recycle_count} times without reaching COVERED status.
-
-  Recommendation: Override with documented gaps flowing to design as advisory.
-  The design phase will flag decisions in affected areas as lower confidence.
-  ```
-  Then ask the user via freeform prompt:
-  ```
-  Options:
-  - override (recommended) -- proceed to synthesis with gaps documented as advisory
-  - one more attempt -- dispatch gap-fill agents again (not recommended)
-  ```
-
-#### 15c: Handle Go Outcome
-
-If the gate outcome is **Go** (all MUST pass, all SHOULD pass):
-
-Display:
-```
-G2 gate passed. Research is sufficient for design.
-All questions have adequate evidence coverage.
+```yaml
+- gate: "G2"
+  timestamp: "{ISO 8601 UTC}"
+  outcome: "{go|go_advisory|recycle|override}"
+  must_passed: {count}
+  must_failed: {count}
+  should_passed: {count}
+  should_failed: {count}
+  notes: "{brief summary}"
+  overridden: false
 ```
 
-Proceed to Step 17 (synthesis generation).
+**15b: Route by outcome:**
 
-#### 15d: Handle Go-with-Advisory Outcome
+**Go** → Display "G2 gate passed. Research is sufficient for design." → Proceed to Step 17.
 
-If the gate outcome is **Go-with-advisory** (all MUST pass, one or more SHOULD fail):
+**Go-with-advisory** → Show user which SHOULD criteria failed and which questions have weak areas. Present via freeform prompt: "1. Proceed with advisory (weak areas documented in SYNTHESIS.md) | 2. Run gap-fill to strengthen." If proceed → record advisory data for synthesizer, proceed to Step 17. If gap-fill → treat as Recycle, proceed to Step 16.
 
-Pause and show the user which SHOULD criteria failed and which questions have weak areas:
+**Recycle** → Read `skills/research/references/ref-recycle-escalation.md` for escalation messaging appropriate to the current recycle count (GATE-04). Show gap details for each deficient question. Wait for user decision:
+- **Approve gap-fill** → Proceed to Step 16.
+- **Adjust** → User reprioritizes or accepts gaps. Update state.yml (backup-before-write), then re-run Step 14.
+- **Override** → Proceed to 15c.
 
-```
-G2 gate passed with advisory. Research meets minimum thresholds but has weak areas:
-
-SHOULD failures:
-{For each failed SHOULD criterion: criterion ID, description, evidence}
-
-Weak areas:
-{For each PARTIAL question: question_id, question_text, DA, gap_details}
-{For each question with PARTIALLY MET evidence requirements: question_id, requirement, current status}
-```
-
-Present via freeform prompt:
-```
-Some areas are weak but not blocking. You can:
-1. Proceed with advisory -- weak areas documented in SYNTHESIS.md for design phase awareness
-2. Run gap-fill to strengthen these areas before synthesis
-```
-
-**Handling responses:**
-
-- **If user chooses to proceed (option 1):** Record advisory data for the synthesizer -- a list of SHOULD failures and PARTIAL question details that will be included in SYNTHESIS.md's advisory section. Proceed to Step 17.
-- **If user chooses gap-fill (option 2):** Treat as Recycle -- proceed to Step 16.
-
-#### 15e: Handle Recycle Outcome
-
-If the gate outcome is **Recycle** (any MUST criterion failed):
-
-Apply escalation messaging from 15b based on the current recycle count.
-
-Show gap details for each deficient question:
-```
-Gap Details:
-{For each PARTIAL/NOT COVERED question:}
-  {question_id}: "{question_text}"
-    Status: {status}
-    DA: {decision_area}
-    Priority: {priority}
-    Gap: {gap_details from evaluator -- what evidence is still missing}
-```
-
-Wait for user decision based on the escalation prompt from 15b:
-
-- **Approve gap-fill:** Proceed to Step 16.
-- **Adjust:** User can reprioritize questions (lower priority, e.g., P0 to P1) or mark specific questions as "accept gap" (status set to `"covered"` with a note in gap_details that the gap was user-accepted). Update state.yml accordingly using the backup-before-write pattern, then re-run Step 14 with updated statuses.
-- **Override:** Proceed to 15f.
-
-#### 15f: Handle Override Outcome
-
-If the user explicitly chooses to override (from any escalation level or from Go-with-advisory gap-fill choice):
-
-1. Update the gate_history entry for this evaluation: set `overridden: true` and update the `outcome` to `"override"`.
-
-2. Determine severity based on how many MUST criteria failed:
-   - **low**: 0 MUST failures (override from Go-with-advisory or user-initiated)
-   - **medium**: 1 MUST failure
-   - **high**: 2+ MUST failures
-
-3. Write override context to `.expedite/research/override-context.md`:
-   ```
-   # G2 Override Context
-
-   Timestamp: {ISO 8601 UTC}
-   Severity: {low|medium|high}
-   Recycle count: {N}
-
-   ## Overridden Gaps
-
-   {For each NOT COVERED/PARTIAL question:}
-   - {question_id}: {question_text}
-     Status: {status}
-     Missing: {gap_details}
-     Impact: {which DA is affected}
-
-   ## Design Phase Advisory
-
-   The following decision areas have insufficient evidence. Design decisions
-   for these areas should be flagged as lower confidence.
-   {List affected DAs with their deficient question counts}
-   ```
-
-4. Transition phase: The phase stays at `"research_in_progress"` -- synthesis (Step 17) will transition to `"research_complete"` upon completion.
-
-5. Proceed to Step 17.
+**15c: Override handling.** Read `skills/research/references/ref-override-handling.md` and follow its instructions: record override in gate_history, determine severity, write `.expedite/research/override-context.md`. Then proceed to Step 17.
 
 ### Step 16: Gap-Fill Dispatch
 
-Dispatch targeted research agents for only the deficient questions identified by the G2 gate. Gap-fill agents receive the evaluator's gap_details so they know exactly what evidence is still missing. Results are written as additive supplement files -- originals are never overwritten.
+Filter deficient questions from state.yml: include `"partial"` or `"not_covered"` status + any newly discovered `"pending"` questions from Step 13. Exclude UNAVAILABLE-SOURCE (handled in Step 12) and user-accepted gaps.
 
-#### 16a: Filter to Deficient Questions
+Display: "Gap-fill targets: {count} questions (Partial: {N}, Not covered: {N}, Pending: {N})"
 
-From state.yml, collect questions that need additional evidence:
+Read `skills/research/references/ref-gapfill-dispatch.md` for detailed batch structure and dispatch modifications.
 
-- Include questions where `status` is `"partial"` or `"not_covered"`
-- Include any newly approved discovered questions (from Step 13) that have `status` = `"pending"`
-- Exclude UNAVAILABLE-SOURCE questions (user already decided how to handle these in Step 12c)
-- Exclude questions where the user chose "accept gap" in Step 15e (these have been marked as `"covered"` with user-accepted gap notes)
+Increment `research_round` in state.yml (backup-before-write). Create output directory: `mkdir -p .expedite/research/round-{research_round}/`.
 
-Display:
-```
-Gap-fill targets: {count} questions
-  Partial: {partial_count}
-  Not covered: {not_covered_count}
-  Pending (discovered): {pending_count}
-```
+Re-batch deficient questions by Decision Area (not source affinity). Dispatch gap-fill agents using the Phase 5 pipeline (Steps 7-11) with the modifications described in the reference file: narrowed question set, DA-based batches, gap_context injection, additive supplement output paths, same 3-agent max concurrency.
 
-#### 16b: Re-Batch by Decision Area
-
-Group deficient questions by `decision_area` -- this is a USER DECISION that differs from first-round source-affinity batching. DA-based batching ensures gap-fill agents have full context for all gaps within a single decision area, enabling more targeted evidence gathering.
-
-Each DA becomes one batch. Within each batch, include:
-- `batch_id`: sequential identifier continuing from prior batches (e.g., "batch-gap-01", "batch-gap-02")
-- `decision_area`: the DA name
-- `questions`: array of question objects, each containing:
-  - `id`: question ID
-  - `text`: question text
-  - `priority`: P0, P1, or P2
-  - `decision_area`: DA name
-  - `evidence_requirements`: full evidence requirements string from SCOPE.md
-  - `gap_details`: the evaluator's gap description from state.yml (what evidence is still missing, what type of evidence would satisfy the requirements, which sources might have this evidence)
-  - `existing_evidence_files`: list of evidence file paths already collected for this question (so agents can read what was already found and avoid duplication)
-
-Display the gap-fill batch plan:
-```
---- Gap-Fill Batch Plan ---
-
-Batch gap-01 (DA: {decision_area}) - {N} questions:
-  [{priority}] {id}: {text}
-    Gap: {gap_details summary}
-  ...
-
---- {total_questions} questions across {total_batches} DA batches ---
-```
-
-#### 16c: Increment Research Round
-
-Update state.yml to reflect the new research round using the backup-before-write pattern:
-
-1. Read `.expedite/state.yml`
-2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
-3. Increment `research_round` by 1 (e.g., 1 -> 2)
-4. Set `phase` to `"research_in_progress"` (from `"research_recycled"` if it was set)
-5. Set `last_modified` to current timestamp (ISO 8601 UTC)
-6. Write the entire file back to `.expedite/state.yml`
-
-Create the output directory for supplement files:
-```bash
-mkdir -p .expedite/research/round-{research_round}/
-```
-
-Display: "Research round {research_round} -- gap-fill dispatch"
-
-#### 16d: Dispatch Gap-Fill Agents
-
-Use the SAME dispatch pipeline as Phase 5 (Steps 7-11), but with the following modifications:
-
-1. **Narrowed question set:** Only deficient questions (from 16a), not the full question plan.
-
-2. **DA-based batches:** Use the batches from 16b instead of source-affinity batches.
-
-3. **Gap context injection:** Add a `<gap_context>` block to the template's input_data section. For each question in the batch, inject:
-   ```
-   <gap_context>
-   The following questions have been previously researched but evidence gaps remain.
-   Focus on finding the SPECIFIC missing evidence described in each gap_details field.
-   Do NOT duplicate existing findings -- read the existing evidence files first.
-
-   {For each question:}
-   Question: {question_id} - {question_text}
-   Current status: {status}
-   Gap details: {gap_details}
-   Existing evidence: {existing_evidence_files}
-   </gap_context>
-   ```
-
-4. **Output path:** Evidence files are written to `.expedite/research/round-{research_round}/supplement-{DA-slug}.md` where `{DA-slug}` is the Decision Area name converted to lowercase with spaces replaced by hyphens (e.g., "Authentication Strategy" -> "authentication-strategy"). These are **additive** -- original evidence files in `.expedite/research/` are never overwritten.
-
-5. **Parallel dispatch:** Same 3-agent max concurrency as first-round dispatch.
-
-6. **Template assembly:** Use the same per-source templates (web-researcher, codebase-analyst, mcp-researcher). Fill the same placeholders as Step 8. Add the gap_context injection after the questions_yaml_block.
-
-7. **Source selection for gap-fill:** For each DA batch, determine the source based on the gap_details recommendations. If gap_details suggests specific sources, use those. Otherwise, default to web search. The source determines which template to use.
-
-Gap-fill agents produce ONLY supplement evidence targeting the specific gaps -- not duplicate existing findings. The gap_context block instructs agents to read existing evidence files first to avoid redundancy.
-
-#### 16e: After Gap-Fill Completes
-
-After all gap-fill agents have completed (following the same completion handling as Step 10):
-
-1. **Dynamic question discovery:** Gap-fill agents may also propose new questions. Collect any `PROPOSED_QUESTIONS` from gap-fill agent summaries and append to `.expedite/research/proposed-questions.yml`. These will be surfaced in the next Step 13 pass.
-
-2. **Update evidence_files in state.yml:** For each question that received gap-fill evidence, append the new supplement file paths to the question's `evidence_files` array using the backup-before-write pattern (read, backup, modify, write).
-
-3. **Display gap-fill summary:**
-   ```
-   --- Gap-Fill Complete (Round {research_round}) ---
-
-   Supplement files produced: {count}
-   Decision Areas covered: {count}
-   Files:
-     {list each supplement file path}
-   ```
-
-4. **Return to Step 12** to re-assess sufficiency with the new evidence. The sufficiency evaluator will now evaluate ALL evidence files (originals + supplements) for each question.
-
-**Loop structure:** The recycling loop is Step 12 -> Step 13 -> Step 14 -> Step 15 -> Step 16 -> back to Step 12. This continues until the G2 gate passes (Go or Go-with-advisory where user chooses to proceed) or the user overrides.
+After gap-fill completes: collect proposed questions, update evidence_files in state.yml, display summary. **Return to Step 12** to re-assess sufficiency with new evidence.
 
 ### Step 17: Synthesis Generation
 
-After the G2 gate passes (Go or Go-with-advisory), generate a SYNTHESIS.md artifact that organizes all evidence by Decision Area with full traceability. This step dispatches the synthesizer as a Task() subagent using the opus model for highest-capability cross-referencing and contradiction detection.
+Read the synthesizer template from `skills/research/references/prompt-research-synthesizer.md` (use Glob with `**/prompt-research-synthesizer.md` if the direct path fails). This template HAS frontmatter (`model: opus`, `subagent_type: general-purpose`) — it runs as a Task() subagent.
 
-#### 17a: Assemble Synthesizer Input
+Fill template placeholders: `{{project_name}}`, `{{intent}}`, `{{research_round}}` from state.yml. `{{evidence_dir}}` = ".expedite/research". `{{scope_file}}` = ".expedite/scope/SCOPE.md". `{{output_file}}` = ".expedite/research/SYNTHESIS.md". `{{timestamp}}` = current ISO 8601 UTC. `{{decision_areas_yaml}}` = DA block from SCOPE.md. `{{evidence_files_list}}` = ALL evidence files (Glob `evidence-batch-*.md` + `round-*/supplement-*.md`) with contents. `{{scope_content}}` = full SCOPE.md.
 
-Read the synthesizer template from `skills/research/references/prompt-research-synthesizer.md` (use Glob with `**/prompt-research-synthesizer.md` if the direct path fails).
+Apply intent lens (keep matching `<if_intent_*>` blocks, remove other).
 
-This template HAS frontmatter (`model: opus`, `subagent_type: general-purpose`) -- it runs as a Task() subagent, not an inline reference.
+**If Go-with-advisory:** Inject `<advisory_context>` before `<input_data>` — list failed SHOULD criteria and PARTIAL question details. Instruct synthesizer to include a `## Advisory` section in SYNTHESIS.md.
 
-Read the following files to assemble the synthesizer input:
+**If override-context.md exists:** Read it and inject as `<override_context>` — instruct synthesizer to prominently flag overridden gaps in DA sections and a `## Override Advisory` section.
 
-1. **`.expedite/scope/SCOPE.md`** -- Extract:
-   - Full scope content for `{{scope_content}}`
-   - Decision areas block (id, name, depth, readiness criterion) for `{{decision_areas_yaml}}`
-
-2. **`.expedite/state.yml`** -- Extract:
-   - `project_name` for `{{project_name}}`
-   - `intent` for `{{intent}}`
-   - `research_round` for `{{research_round}}`
-
-3. **ALL evidence files** -- Collect comprehensively:
-   - First-round evidence files: Glob `.expedite/research/evidence-batch-*.md`
-   - Gap-fill supplement files: Glob `.expedite/research/round-*/supplement-*.md`
-   - Use both explicit file list AND directory path to ensure completeness
-   - Build `{{evidence_files_list}}` as a formatted list of all evidence file paths with their contents
-
-Fill template placeholders:
-- `{{project_name}}`: from state.yml
-- `{{intent}}`: from state.yml
-- `{{research_round}}`: from state.yml
-- `{{evidence_dir}}`: ".expedite/research"
-- `{{scope_file}}`: ".expedite/scope/SCOPE.md"
-- `{{output_file}}`: ".expedite/research/SYNTHESIS.md"
-- `{{timestamp}}`: current ISO 8601 UTC timestamp
-- `{{decision_areas_yaml}}`: YAML block of all DAs from SCOPE.md (id, name, depth, readiness criterion)
-- `{{evidence_files_list}}`: list of ALL evidence files including round-N supplements, with their full contents
-- `{{scope_content}}`: full SCOPE.md content
-
-Apply the intent lens: keep the `<if_intent_product>` blocks if intent is "product", or keep the `<if_intent_engineering>` blocks if intent is "engineering". Remove the blocks for the other intent type.
-
-#### 17b: Inject Advisory Context (if applicable)
-
-**If gate outcome was Go-with-advisory:** Inject additional context into the synthesizer prompt before the `<input_data>` section:
-
-```
-<advisory_context>
-The G2 sufficiency gate passed with advisory notes. The following issues were accepted by the user:
-
-SHOULD criteria that failed:
-{list each failed SHOULD criterion with description}
-
-Per-question details for PARTIAL ratings:
-{for each PARTIAL question: question ID, text, gap_details from evaluator}
-
-The user chose to proceed despite these gaps. Include a ## Advisory section at the end of SYNTHESIS.md
-(before the Overall Assessment) documenting these known weaknesses and their potential impact on
-design decisions. For PARTIAL questions, note what evidence is available vs what is missing.
-</advisory_context>
-```
-
-**If override-context.md exists** (gate was overridden): Read `.expedite/research/override-context.md` and inject its content as an `<override_context>` block:
-
-```
-<override_context>
-The G2 sufficiency gate was OVERRIDDEN by the user. The following context was recorded at override time:
-
-{contents of override-context.md}
-
-IMPORTANT: Prominently flag overridden gaps in BOTH the relevant DA sections AND a separate
-## Override Advisory section. Design decisions in affected DAs carry higher risk due to
-insufficient evidence. Each affected DA section should include a warning callout.
-</override_context>
-```
-
-**If gate outcome was Go (clean pass):** No additional context injection needed. Proceed without advisory or override blocks.
-
-#### 17c: Dispatch Synthesizer Subagent
-
-Dispatch the synthesizer via Task() API:
-
-```
-Task(
-  prompt: {assembled_prompt_with_all_placeholders_filled},
-  description: "Research synthesis: produce SYNTHESIS.md organized by decision area",
-  subagent_type: "general-purpose"
-)
-```
-
-Wait for the subagent to complete. The synthesizer will:
-- Read all evidence files
-- Map findings to decision areas
-- Cross-reference across sources
-- Write `.expedite/research/SYNTHESIS.md`
-- Return a condensed summary
-
-#### 17d: Verify Synthesis Output
-
-After the synthesizer subagent completes:
-
-1. **Check file exists:** Verify `.expedite/research/SYNTHESIS.md` was written by the subagent.
-
-2. **If file missing:** Display error and offer recovery:
-   ```
-   Error: SYNTHESIS.md was not written by the synthesizer subagent.
-   Expected file: .expedite/research/SYNTHESIS.md
-
-   Options:
-   1. Re-dispatch synthesizer
-   2. Skip synthesis and proceed to completion (not recommended)
-   ```
-   Use AskUserQuestion with options "Re-dispatch" and "Skip synthesis". If re-dispatch, return to 17c. If skip, proceed to Step 18 with a warning.
-
-3. **If file exists:** Display confirmation:
-   ```
-   Synthesis complete.
-   File: .expedite/research/SYNTHESIS.md
-   Size: {file_size_in_bytes} bytes
-   ```
+Dispatch via Task(). After completion, verify `.expedite/research/SYNTHESIS.md` exists. If missing, offer re-dispatch via AskUserQuestion. If present, display confirmation with file size.
 
 Proceed to Step 18.
 
 ### Step 18: Research Completion
 
-The research phase is complete. Transition the lifecycle phase and display a comprehensive summary.
+Update state.yml to mark research complete (backup-before-write): set `phase` to `"research_complete"`, update `last_modified`.
 
-#### 18a: Final State Update
-
-Update state.yml to mark research as complete using the backup-before-write pattern:
-
-1. Read `.expedite/state.yml`
-2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
-3. Update the in-memory representation:
-   - Set `phase` to `"research_complete"`
-   - Set `last_modified` to current timestamp (ISO 8601 UTC)
-4. Write the entire file back to `.expedite/state.yml`
-
-#### 18b: Display Research Summary
-
-Display a comprehensive research completion summary:
+Display research completion summary:
 
 ```
 ## Research Complete
@@ -1206,28 +597,15 @@ Research rounds: {research_round}
 
 ### Evidence Summary
 Total questions: {count}
-  COVERED: {count}
-  PARTIAL: {count} (advisory)
-  NOT COVERED: {count} (advisory/overridden)
-  UNAVAILABLE-SOURCE: {count} (accepted)
+  COVERED: {count} | PARTIAL: {count} (advisory) | NOT COVERED: {count} (advisory/overridden) | UNAVAILABLE-SOURCE: {count} (accepted)
 
 ### Artifacts Produced
 - Scope: .expedite/scope/SCOPE.md
 - Evidence: .expedite/research/evidence-batch-*.md
-{If gap-fill rounds:}
-- Supplements: .expedite/research/round-{N}/supplement-*.md
+{If gap-fill rounds:} Supplements: .expedite/research/round-{N}/supplement-*.md
 - Synthesis: .expedite/research/SYNTHESIS.md
-{If override:}
-- Override context: .expedite/research/override-context.md
+{If override:} Override context: .expedite/research/override-context.md
 
 ### Next Step
 Run `/expedite:design` to generate a design document from the research synthesis.
 ```
-
-#### 18c: Completion
-
-This completes the research skill. The full 18-step sequence covers:
-- **Prerequisite and setup** (Steps 1-3): prerequisite check, scope loading, state initialization
-- **First-round dispatch** (Steps 4-11): batch formation, DA coverage validation, batch approval, source pre-validation, template assembly, parallel dispatch, result collection, completion summary
-- **Quality loop** (Steps 12-16): sufficiency assessment, dynamic question discovery, G2 gate evaluation, gate outcome handling, gap-fill dispatch (loops back to Step 12)
-- **Synthesis and completion** (Steps 17-18): synthesis generation, research completion
