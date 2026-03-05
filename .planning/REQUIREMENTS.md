@@ -67,9 +67,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **DSGN-01**: Design generated in main session (not subagent) from research artifacts
 - [x] **DSGN-02**: Engineering intent produces RFC-style DESIGN.md; product intent produces PRD-style DESIGN.md
-- [ ] **DSGN-03**: Revision cycle: user can request up to 2 rounds of changes before gate evaluation
-- [ ] **DSGN-04**: Freeform feedback accepted during revision (not AskUserQuestion)
-- [ ] **DSGN-05**: Product-intent design generates HANDOFF.md with 9-section format for engineer consumption
+- [x] **DSGN-03**: Revision cycle: user can request up to 2 rounds of changes before gate evaluation
+- [x] **DSGN-04**: Freeform feedback accepted during revision (not AskUserQuestion)
+- [x] **DSGN-05**: Product-intent design generates HANDOFF.md with 9-section format for engineer consumption
 - [ ] **DSGN-06**: G3 gate evaluates design quality with MUST/SHOULD criteria — MUST include "every DA has a decision" and "decisions reference evidence"
 - [x] **DSGN-07**: DESIGN.md artifact written to `.expedite/design/DESIGN.md`
 - [x] **DSGN-08**: Every DA from scope has a corresponding design decision — no DA is left without a decision
@@ -243,9 +243,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RSCH-16 | Phase 6 | Complete |
 | DSGN-01 | Phase 7 | Complete |
 | DSGN-02 | Phase 7 | Complete |
-| DSGN-03 | Phase 7 | Pending |
-| DSGN-04 | Phase 7 | Pending |
-| DSGN-05 | Phase 7 | Pending |
+| DSGN-03 | Phase 7 | Complete |
+| DSGN-04 | Phase 7 | Complete |
+| DSGN-05 | Phase 7 | Complete |
 | DSGN-06 | Phase 7 | Pending |
 | DSGN-07 | Phase 7 | Complete |
 | DSGN-08 | Phase 7 | Complete |
