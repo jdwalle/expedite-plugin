@@ -535,3 +535,133 @@ Based on results:
 - If gaps exist (any PARTIAL, NOT COVERED, or unresolved UNAVAILABLE-SOURCE): Display "Gaps identified. G2 gate will determine next action."
 
 Proceed to Step 13.
+
+### Step 13: Dynamic Question Discovery
+
+Surface new questions discovered by research agents during evidence gathering. Agents may propose questions they encountered while investigating the assigned questions. These proposals are deduplicated via LLM judgment (not string matching), capped at 4, and presented to the user for approval before being added to the question plan.
+
+#### 13a: Read Proposed Questions
+
+Read `.expedite/research/proposed-questions.yml`. If the file does not exist or is empty (no `proposed_questions` list, or the list is empty), display:
+
+```
+No new questions discovered by research agents.
+```
+
+Then skip to Step 14.
+
+If the file exists and contains proposed questions, parse the `proposed_questions` list. Each entry has:
+- `text`: the proposed question text
+- `proposed_by`: which batch proposed it (e.g., "batch-01")
+- `related_da`: the Decision Area the question relates to (if identifiable by the agent)
+
+Display: "Found {N} proposed questions from research agents. Deduplicating..."
+
+#### 13b: Deduplicate via LLM Judgment
+
+For each proposed question, compare semantically against two sets:
+
+1. **All existing questions in state.yml** (the current question plan). For each existing question, determine whether the proposed question is asking essentially the same thing, even if worded differently. Focus on the underlying information need, not surface-level phrasing.
+
+2. **All other proposed questions** (cross-deduplication within the proposals themselves). If two proposals are semantically equivalent, keep the one with better rationale or greater specificity.
+
+This is **LLM-based semantic deduplication** performed inline in the main session -- not string matching, not regex, not a subagent. The orchestrator uses its own judgment to determine semantic equivalence.
+
+**Deduplication rules:**
+- If a proposed question is semantically equivalent to an existing question in state.yml: discard it with a note "Duplicate of {existing_question_id}: {existing_question_text}"
+- If a proposed question is semantically equivalent to another proposed question: keep the one with better rationale or greater specificity, discard the other with a note explaining the merge
+- "Semantically equivalent" means the questions seek the same underlying information, even if they use different terminology, scope, or framing
+
+Display the deduplication results:
+```
+Deduplication results:
+  {N} proposals received
+  {M} duplicates removed:
+    - "{discarded_text}" -- duplicate of {reason}
+  {K} unique proposals remaining
+```
+
+#### 13c: Cap and Prioritize
+
+After deduplication, if more than 4 unique proposals remain, select the top 4 using these prioritization criteria (in order):
+
+1. **P0-related proposals first:** Proposals related to Decision Areas that contain P0 questions get priority
+2. **Gap-relevance:** Proposals related to questions identified as PARTIAL or NOT COVERED in Step 12 get priority (these could help fill gaps in a future gap-fill round)
+3. **Specificity:** More specific, actionable questions are preferred over broad or exploratory ones
+
+If 4 or fewer unique proposals remain after dedup, keep all of them.
+
+Display: "{K} unique proposals after deduplication (max 4 presented)."
+
+#### 13d: Present to User for Approval
+
+Present each proposed question to the user with its full context:
+
+```
+--- Discovered Questions ---
+
+The following questions were discovered by research agents during evidence gathering.
+Select which to add to the question plan:
+
+1. "{question_text}"
+   Proposed by: {batch_id} ({source_type})
+   Related DA: {related_da}
+
+2. "{question_text}"
+   Proposed by: {batch_id} ({source_type})
+   Related DA: {related_da}
+
+...
+
+Options:
+- Approve all -- Add all questions to the question plan
+- Approve specific -- Enter numbers to approve (e.g., "1,3")
+- Approve none -- Skip all proposed questions
+- Modify -- Change a question's text or DA before approving
+```
+
+This is a **freeform prompt** (not AskUserQuestion) because the interaction is too complex for a simple multi-choice: users may want to approve a subset, modify text, or reassign DAs.
+
+**Handling responses:**
+
+- **"Approve all":** Add all presented questions to the plan.
+- **"Approve specific" (e.g., "1,3"):** Add only the selected questions.
+- **"Approve none":** Skip all questions. Display "No discovered questions added."
+- **"Modify":** Ask the user which question to modify and what changes to make. Apply the modification, then re-present the updated list for approval. Loop until the user approves or declines.
+
+**For each approved question:**
+1. Assign a `question_id` continuing the existing sequence (e.g., if the last question is q08, new questions start at q09)
+2. Set `priority` to P1 (suggest to user -- they can override during approval)
+3. Set `status` to `"pending"`
+4. Set `source` to `"discovered-round-{research_round}"`
+5. Add the question to state.yml's `questions` array using the backup-before-write pattern (read, backup, modify, write)
+6. Add the question to SCOPE.md's question plan, appended to the appropriate Decision Area section
+
+#### 13e: Display Discovery Summary
+
+Display a structured summary:
+
+```
+--- Dynamic Question Discovery Summary ---
+
+Questions proposed by agents: {total_proposed}
+Duplicates removed: {duplicates_removed}
+Presented to user: {presented_count}
+Approved by user: {approved_count}
+```
+
+If questions were approved:
+```
+Approved questions added to question plan:
+  {q_id}: "{question_text}" [DA: {related_da}] [Priority: {priority}]
+  ...
+
+These questions will be included in gap-fill research if the G2 gate triggers a Recycle.
+```
+
+If no questions were approved (either none proposed or user declined all):
+```
+No new questions added to the question plan.
+```
+
+Proceed to Step 14.
