@@ -750,3 +750,309 @@ Outcome: {Go | Go-with-advisory | Recycle}
 ```
 
 Proceed to Step 15 for outcome handling.
+
+### Step 15: Gate Outcome Handling
+
+Handle the G2 gate outcome determined in Step 14. Each outcome has a distinct handling path with appropriate state transitions, user interactions, and documentation.
+
+#### 15a: Record Gate History
+
+Before handling the outcome, record the gate evaluation in state.yml using the backup-before-write pattern:
+
+1. Read `.expedite/state.yml`
+2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Append to the `gate_history` array in state.yml:
+   ```yaml
+   - gate: "G2"
+     timestamp: "{ISO 8601 UTC}"
+     outcome: "{go|go_advisory|recycle|override}"
+     must_passed: {count}
+     must_failed: {count}
+     should_passed: {count}
+     should_failed: {count}
+     notes: "{brief summary of gate result}"
+     overridden: false
+   ```
+4. Set `last_modified` to current timestamp (ISO 8601 UTC)
+5. Write the entire file back to `.expedite/state.yml`
+
+#### 15b: Recycle Escalation Logic (GATE-04)
+
+Before handling Recycle or Override outcomes, determine the recycle escalation level. Count previous G2 recycle outcomes in gate_history (entries where `gate` = `"G2"` AND `outcome` = `"recycle"`).
+
+Escalation messaging by recycle count:
+
+- **1st recycle (recycle_count == 0 before this recycle):** Informational tone. Display:
+  ```
+  Some questions need additional evidence. Here's what's missing:
+  {For each PARTIAL/NOT COVERED question: question_id, question_text, status, gap_details}
+  ```
+  Then ask the user via freeform prompt:
+  ```
+  Approve gap-fill research? Options:
+  - yes -- dispatch gap-fill agents for the questions above
+  - adjust questions -- reprioritize or accept gaps for specific questions
+  - override -- proceed to synthesis with documented gaps
+  ```
+
+- **2nd recycle (recycle_count == 1 before this recycle):** Suggest adjustment. Display:
+  ```
+  This is the second recycle. Consider adjusting expectations:
+
+  Persistently weak questions:
+  {For each question that was PARTIAL/NOT COVERED in BOTH this and previous evaluation:
+    question_id, question_text, status history}
+
+  Suggestions:
+  - Lower priority of stubborn questions (P0 -> P1 or P1 -> P2)
+  - Accept weak areas as advisory (they'll be documented in SYNTHESIS.md)
+  - Try different sources for specific questions
+  ```
+  Then ask the user via freeform prompt:
+  ```
+  Options:
+  - approve gap-fill -- one more round targeting remaining gaps
+  - adjust -- reprioritize or accept gaps (describe changes)
+  - override -- proceed to synthesis with documented gaps (recommended if same questions keep failing)
+  ```
+
+- **3rd+ recycle (recycle_count >= 2 before this recycle):** Recommend override. Display:
+  ```
+  This is recycle #{recycle_count + 1}. Recommend overriding the gate.
+
+  Remaining gaps may not be resolvable through additional research. The same questions
+  have been recycled {recycle_count} times without reaching COVERED status.
+
+  Recommendation: Override with documented gaps flowing to design as advisory.
+  The design phase will flag decisions in affected areas as lower confidence.
+  ```
+  Then ask the user via freeform prompt:
+  ```
+  Options:
+  - override (recommended) -- proceed to synthesis with gaps documented as advisory
+  - one more attempt -- dispatch gap-fill agents again (not recommended)
+  ```
+
+#### 15c: Handle Go Outcome
+
+If the gate outcome is **Go** (all MUST pass, all SHOULD pass):
+
+Display:
+```
+G2 gate passed. Research is sufficient for design.
+All questions have adequate evidence coverage.
+```
+
+Proceed to Step 17 (synthesis generation).
+
+#### 15d: Handle Go-with-Advisory Outcome
+
+If the gate outcome is **Go-with-advisory** (all MUST pass, one or more SHOULD fail):
+
+Pause and show the user which SHOULD criteria failed and which questions have weak areas:
+
+```
+G2 gate passed with advisory. Research meets minimum thresholds but has weak areas:
+
+SHOULD failures:
+{For each failed SHOULD criterion: criterion ID, description, evidence}
+
+Weak areas:
+{For each PARTIAL question: question_id, question_text, DA, gap_details}
+{For each question with PARTIALLY MET evidence requirements: question_id, requirement, current status}
+```
+
+Present via freeform prompt:
+```
+Some areas are weak but not blocking. You can:
+1. Proceed with advisory -- weak areas documented in SYNTHESIS.md for design phase awareness
+2. Run gap-fill to strengthen these areas before synthesis
+```
+
+**Handling responses:**
+
+- **If user chooses to proceed (option 1):** Record advisory data for the synthesizer -- a list of SHOULD failures and PARTIAL question details that will be included in SYNTHESIS.md's advisory section. Proceed to Step 17.
+- **If user chooses gap-fill (option 2):** Treat as Recycle -- proceed to Step 16.
+
+#### 15e: Handle Recycle Outcome
+
+If the gate outcome is **Recycle** (any MUST criterion failed):
+
+Apply escalation messaging from 15b based on the current recycle count.
+
+Show gap details for each deficient question:
+```
+Gap Details:
+{For each PARTIAL/NOT COVERED question:}
+  {question_id}: "{question_text}"
+    Status: {status}
+    DA: {decision_area}
+    Priority: {priority}
+    Gap: {gap_details from evaluator -- what evidence is still missing}
+```
+
+Wait for user decision based on the escalation prompt from 15b:
+
+- **Approve gap-fill:** Proceed to Step 16.
+- **Adjust:** User can reprioritize questions (lower priority, e.g., P0 to P1) or mark specific questions as "accept gap" (status set to `"covered"` with a note in gap_details that the gap was user-accepted). Update state.yml accordingly using the backup-before-write pattern, then re-run Step 14 with updated statuses.
+- **Override:** Proceed to 15f.
+
+#### 15f: Handle Override Outcome
+
+If the user explicitly chooses to override (from any escalation level or from Go-with-advisory gap-fill choice):
+
+1. Update the gate_history entry for this evaluation: set `overridden: true` and update the `outcome` to `"override"`.
+
+2. Determine severity based on how many MUST criteria failed:
+   - **low**: 0 MUST failures (override from Go-with-advisory or user-initiated)
+   - **medium**: 1 MUST failure
+   - **high**: 2+ MUST failures
+
+3. Write override context to `.expedite/research/override-context.md`:
+   ```
+   # G2 Override Context
+
+   Timestamp: {ISO 8601 UTC}
+   Severity: {low|medium|high}
+   Recycle count: {N}
+
+   ## Overridden Gaps
+
+   {For each NOT COVERED/PARTIAL question:}
+   - {question_id}: {question_text}
+     Status: {status}
+     Missing: {gap_details}
+     Impact: {which DA is affected}
+
+   ## Design Phase Advisory
+
+   The following decision areas have insufficient evidence. Design decisions
+   for these areas should be flagged as lower confidence.
+   {List affected DAs with their deficient question counts}
+   ```
+
+4. Transition phase: The phase stays at `"research_in_progress"` -- synthesis (Step 17) will transition to `"research_complete"` upon completion.
+
+5. Proceed to Step 17.
+
+### Step 16: Gap-Fill Dispatch
+
+Dispatch targeted research agents for only the deficient questions identified by the G2 gate. Gap-fill agents receive the evaluator's gap_details so they know exactly what evidence is still missing. Results are written as additive supplement files -- originals are never overwritten.
+
+#### 16a: Filter to Deficient Questions
+
+From state.yml, collect questions that need additional evidence:
+
+- Include questions where `status` is `"partial"` or `"not_covered"`
+- Include any newly approved discovered questions (from Step 13) that have `status` = `"pending"`
+- Exclude UNAVAILABLE-SOURCE questions (user already decided how to handle these in Step 12c)
+- Exclude questions where the user chose "accept gap" in Step 15e (these have been marked as `"covered"` with user-accepted gap notes)
+
+Display:
+```
+Gap-fill targets: {count} questions
+  Partial: {partial_count}
+  Not covered: {not_covered_count}
+  Pending (discovered): {pending_count}
+```
+
+#### 16b: Re-Batch by Decision Area
+
+Group deficient questions by `decision_area` -- this is a USER DECISION that differs from first-round source-affinity batching. DA-based batching ensures gap-fill agents have full context for all gaps within a single decision area, enabling more targeted evidence gathering.
+
+Each DA becomes one batch. Within each batch, include:
+- `batch_id`: sequential identifier continuing from prior batches (e.g., "batch-gap-01", "batch-gap-02")
+- `decision_area`: the DA name
+- `questions`: array of question objects, each containing:
+  - `id`: question ID
+  - `text`: question text
+  - `priority`: P0, P1, or P2
+  - `decision_area`: DA name
+  - `evidence_requirements`: full evidence requirements string from SCOPE.md
+  - `gap_details`: the evaluator's gap description from state.yml (what evidence is still missing, what type of evidence would satisfy the requirements, which sources might have this evidence)
+  - `existing_evidence_files`: list of evidence file paths already collected for this question (so agents can read what was already found and avoid duplication)
+
+Display the gap-fill batch plan:
+```
+--- Gap-Fill Batch Plan ---
+
+Batch gap-01 (DA: {decision_area}) - {N} questions:
+  [{priority}] {id}: {text}
+    Gap: {gap_details summary}
+  ...
+
+--- {total_questions} questions across {total_batches} DA batches ---
+```
+
+#### 16c: Increment Research Round
+
+Update state.yml to reflect the new research round using the backup-before-write pattern:
+
+1. Read `.expedite/state.yml`
+2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Increment `research_round` by 1 (e.g., 1 -> 2)
+4. Set `phase` to `"research_in_progress"` (from `"research_recycled"` if it was set)
+5. Set `last_modified` to current timestamp (ISO 8601 UTC)
+6. Write the entire file back to `.expedite/state.yml`
+
+Create the output directory for supplement files:
+```bash
+mkdir -p .expedite/research/round-{research_round}/
+```
+
+Display: "Research round {research_round} -- gap-fill dispatch"
+
+#### 16d: Dispatch Gap-Fill Agents
+
+Use the SAME dispatch pipeline as Phase 5 (Steps 7-11), but with the following modifications:
+
+1. **Narrowed question set:** Only deficient questions (from 16a), not the full question plan.
+
+2. **DA-based batches:** Use the batches from 16b instead of source-affinity batches.
+
+3. **Gap context injection:** Add a `<gap_context>` block to the template's input_data section. For each question in the batch, inject:
+   ```
+   <gap_context>
+   The following questions have been previously researched but evidence gaps remain.
+   Focus on finding the SPECIFIC missing evidence described in each gap_details field.
+   Do NOT duplicate existing findings -- read the existing evidence files first.
+
+   {For each question:}
+   Question: {question_id} - {question_text}
+   Current status: {status}
+   Gap details: {gap_details}
+   Existing evidence: {existing_evidence_files}
+   </gap_context>
+   ```
+
+4. **Output path:** Evidence files are written to `.expedite/research/round-{research_round}/supplement-{DA-slug}.md` where `{DA-slug}` is the Decision Area name converted to lowercase with spaces replaced by hyphens (e.g., "Authentication Strategy" -> "authentication-strategy"). These are **additive** -- original evidence files in `.expedite/research/` are never overwritten.
+
+5. **Parallel dispatch:** Same 3-agent max concurrency as first-round dispatch.
+
+6. **Template assembly:** Use the same per-source templates (web-researcher, codebase-analyst, mcp-researcher). Fill the same placeholders as Step 8. Add the gap_context injection after the questions_yaml_block.
+
+7. **Source selection for gap-fill:** For each DA batch, determine the source based on the gap_details recommendations. If gap_details suggests specific sources, use those. Otherwise, default to web search. The source determines which template to use.
+
+Gap-fill agents produce ONLY supplement evidence targeting the specific gaps -- not duplicate existing findings. The gap_context block instructs agents to read existing evidence files first to avoid redundancy.
+
+#### 16e: After Gap-Fill Completes
+
+After all gap-fill agents have completed (following the same completion handling as Step 10):
+
+1. **Dynamic question discovery:** Gap-fill agents may also propose new questions. Collect any `PROPOSED_QUESTIONS` from gap-fill agent summaries and append to `.expedite/research/proposed-questions.yml`. These will be surfaced in the next Step 13 pass.
+
+2. **Update evidence_files in state.yml:** For each question that received gap-fill evidence, append the new supplement file paths to the question's `evidence_files` array using the backup-before-write pattern (read, backup, modify, write).
+
+3. **Display gap-fill summary:**
+   ```
+   --- Gap-Fill Complete (Round {research_round}) ---
+
+   Supplement files produced: {count}
+   Decision Areas covered: {count}
+   Files:
+     {list each supplement file path}
+   ```
+
+4. **Return to Step 12** to re-assess sufficiency with the new evidence. The sufficiency evaluator will now evaluate ALL evidence files (originals + supplements) for each question.
+
+**Loop structure:** The recycling loop is Step 12 -> Step 13 -> Step 14 -> Step 15 -> Step 16 -> back to Step 12. This continues until the G2 gate passes (Go or Go-with-advisory where user chooses to proceed) or the user overrides.
