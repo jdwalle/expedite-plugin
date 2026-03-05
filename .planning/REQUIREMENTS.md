@@ -70,7 +70,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **DSGN-03**: Revision cycle: user can request up to 2 rounds of changes before gate evaluation
 - [x] **DSGN-04**: Freeform feedback accepted during revision (not AskUserQuestion)
 - [x] **DSGN-05**: Product-intent design generates HANDOFF.md with 9-section format for engineer consumption
-- [ ] **DSGN-06**: G3 gate evaluates design quality with MUST/SHOULD criteria — MUST include "every DA has a decision" and "decisions reference evidence"
+- [x] **DSGN-06**: G3 gate evaluates design quality with MUST/SHOULD criteria — MUST include "every DA has a decision" and "decisions reference evidence"
 - [x] **DSGN-07**: DESIGN.md artifact written to `.expedite/design/DESIGN.md`
 - [x] **DSGN-08**: Every DA from scope has a corresponding design decision — no DA is left without a decision
 - [x] **DSGN-09**: Each design decision references the supporting evidence from research (which evidence files, which findings justify the decision)
@@ -246,7 +246,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DSGN-03 | Phase 7 | Complete |
 | DSGN-04 | Phase 7 | Complete |
 | DSGN-05 | Phase 7 | Complete |
-| DSGN-06 | Phase 7 | Pending |
+| DSGN-06 | Phase 7 | Complete |
 | DSGN-07 | Phase 7 | Complete |
 | DSGN-08 | Phase 7 | Complete |
 | DSGN-09 | Phase 7 | Complete |
