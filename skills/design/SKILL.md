@@ -199,3 +199,58 @@ If the count of DAs in DESIGN.md does not match the count from SCOPE.md, display
 4. Verify each DA section contains the required subsections (Decision, Evidence, Trade-offs, Confidence)
 
 If post-write verification fails on any check, display the specific failure and attempt to fix the content before re-writing. Do not proceed to the next step with a malformed DESIGN.md.
+
+### Step 6: Generate HANDOFF.md (Product Intent Only)
+
+Check the `intent` value from state.yml (loaded in Step 2).
+
+**If intent is "engineering":** Skip this step entirely. Display: "Engineering intent — no HANDOFF.md needed. Proceeding to revision cycle." Then proceed to Step 7.
+
+**If intent is "product":** Generate HANDOFF.md as a distillation of DESIGN.md. HANDOFF.md references DESIGN.md for deeper rationale — it is NOT a standalone document. Engineers reading HANDOFF.md can follow cross-references to DESIGN.md for full context and evidence.
+
+**Audience:** Individual engineers who will implement the design decisions.
+
+**HANDOFF.md has 9 sections (100-200 words each, ~1500 words total):**
+
+1. **Problem Statement** — Compressed from DESIGN.md Problem Statement section. 100-150 words. End with: "See DESIGN.md § Problem Statement for full evidence basis."
+
+2. **Key Decisions** — List each DA's decision as a one-liner with confidence level. These are LOCKED constraints from the design. Format: `DA-N: {decision summary} (Confidence: {High/Medium/Low})`. End with: "See DESIGN.md § Design Decisions for rationale and evidence."
+
+3. **Scope Boundaries** — In/out of scope, compressed from DESIGN.md. 50-100 words.
+
+4. **Success Metrics** — Observable, measurable metrics from DESIGN.md. Bulleted list.
+
+5. **User Flows** — Compressed from DESIGN.md User Flows. Key flows only, not exhaustive.
+
+6. **Acceptance Criteria** — Testable Given/When/Then format derived from design decisions. Each criterion traces to a DA.
+
+7. **Assumptions and Constraints** — Technical implications of product decisions. Include any implementation suggestions where research evidence supports them.
+
+8. **Suggested Engineering Questions** — Seed questions for an engineering lifecycle if one follows. Derived from Open Questions in DESIGN.md plus any gaps flagged during design.
+
+9. **Priority Ranking for Trade-offs** — Guidance on what to prioritize when trade-offs arise during implementation. Ordered list.
+
+Each section should include explicit cross-references to DESIGN.md sections (e.g., "See DESIGN.md § Design Decisions by DA for full rationale").
+
+**Document header:**
+```markdown
+# Product Handoff: {project_name}
+Generated: {ISO 8601 UTC timestamp}
+Intent: Product → Engineering Handoff
+Source: DESIGN.md
+Full design: .expedite/design/DESIGN.md
+```
+
+Write to `.expedite/design/HANDOFF.md`.
+
+**Post-generation display:**
+```
+HANDOFF.md written to .expedite/design/HANDOFF.md ({word_count} words, 9 sections)
+```
+
+**Length validation:** If HANDOFF.md is longer than DESIGN.md, display warning:
+```
+WARNING: HANDOFF.md ({handoff_words} words) is longer than DESIGN.md ({design_words} words). HANDOFF.md should be a concise distillation. Consider trimming.
+```
+
+Proceed to Step 7.
