@@ -15,9 +15,6 @@ Research round: {{research_round}}
 Evidence directory: {{evidence_dir}}
 Scope file: {{scope_file}}
 
-Decision areas from scope:
-{{decision_areas_yaml}}
-
 <intent_lens>
 <if_intent_product>
 You are in product mode. Organize synthesis around user outcomes and market findings. Weight evidence that informs user-facing decisions, market positioning, and business viability. When evidence conflicts, favor user-validated data over technical speculation.
@@ -27,6 +24,21 @@ You are in engineering mode. Organize synthesis around technical feasibility and
 </if_intent_engineering>
 </intent_lens>
 </context>
+
+<self_contained_reads>
+You are a self-contained subagent. Read all input files yourself — nothing is pre-assembled for you.
+
+**Step 1: Read scope**
+- Read `.expedite/scope/SCOPE.md` — extract decision areas (id, name, depth, readiness criterion), questions, evidence requirements.
+
+**Step 2: Read ALL evidence files**
+- First-round evidence: Glob `.expedite/research/evidence-batch-*.md` and read each file.
+- Gap-fill supplements (if any): Glob `.expedite/research/round-*/supplement-*.md` and read each file.
+- Note each file's agent type, batch ID, and round number from its content.
+
+**Step 3: Read state for context**
+- Read `.expedite/state.yml` — extract question statuses (COVERED/PARTIAL/NOT COVERED) from the sufficiency evaluator. Your synthesis should reflect these ratings.
+</self_contained_reads>
 
 <downstream_consumer>
 Your output is consumed by:
@@ -162,7 +174,4 @@ Before completing, verify -- evaluate as if this output was produced by someone 
 If any check fails, revise before completing.
 </quality_gate>
 
-<input_data>
-{{evidence_files_list}}
-{{scope_content}}
-</input_data>
+<!-- No input_data block — this subagent reads all files itself via <self_contained_reads> -->

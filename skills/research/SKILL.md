@@ -570,7 +570,7 @@ After gap-fill completes: collect proposed questions, update evidence_files in s
 
 Read the synthesizer template from `skills/research/references/prompt-research-synthesizer.md` (use Glob with `**/prompt-research-synthesizer.md` if the direct path fails). This template HAS frontmatter (`model: opus`, `subagent_type: general-purpose`) — it runs as a Task() subagent.
 
-Fill template placeholders: `{{project_name}}`, `{{intent}}`, `{{research_round}}` from state.yml. `{{evidence_dir}}` = ".expedite/research". `{{scope_file}}` = ".expedite/scope/SCOPE.md". `{{output_file}}` = ".expedite/research/SYNTHESIS.md". `{{timestamp}}` = current ISO 8601 UTC. `{{decision_areas_yaml}}` = DA block from SCOPE.md. `{{evidence_files_list}}` = ALL evidence files (Glob `evidence-batch-*.md` + `round-*/supplement-*.md`) with contents. `{{scope_content}}` = full SCOPE.md.
+Fill template placeholders: `{{project_name}}`, `{{intent}}`, `{{research_round}}` from state.yml. `{{evidence_dir}}` = ".expedite/research". `{{scope_file}}` = ".expedite/scope/SCOPE.md". `{{output_file}}` = ".expedite/research/SYNTHESIS.md". `{{timestamp}}` = current ISO 8601 UTC. The subagent reads evidence files and scope itself (per its `<self_contained_reads>` instructions) — do NOT read or assemble evidence content into the prompt.
 
 Apply intent lens (keep matching `<if_intent_*>` blocks, remove other).
 
