@@ -43,6 +43,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **SCOPE-09**: Each question/DA defines evidence requirements — what specific evidence would constitute a sufficient answer
 - [x] **SCOPE-10**: Each DA defines a readiness criterion — how to know when enough evidence exists to make a design decision
 - [x] **SCOPE-11**: Each DA has a depth calibration (Deep/Standard/Light) that sets evidence count expectations for research
+- [ ] **SCOPE-12**: Scope Step 7 generates additive codebase-routed questions per DA — not counted against question budget, as many as needed to understand existing codebase patterns relevant to each decision area
 
 ### Research Skill
 
@@ -78,21 +79,28 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Plan Skill
 
 - [ ] **PLAN-01**: Plan generated in main session from design artifacts
-- [ ] **PLAN-02**: Engineering intent produces wave-ordered task structure; product intent produces epics/stories structure
-- [ ] **PLAN-03**: G4 gate validates plan completeness: every design decision has at least one corresponding task, acceptance criteria trace back to design decisions (not invented independently)
-- [ ] **PLAN-04**: PLAN.md artifact written to `.expedite/plan/PLAN.md`
-- [ ] **PLAN-05**: Every Decision Area (DA-1 through DA-N) from scope maps to at least one plan phase/task
-- [ ] **PLAN-06**: Acceptance criteria in each task cite the specific design decision(s) they verify (contract chain traceability)
+- [ ] **PLAN-02**: Design broken into uniform-sized implementation phases (2-5 tactical decisions, 3-8 tasks per phase); engineering intent uses waves, product intent uses epics/stories — same structure, intent-adaptive presentation
+- [ ] **PLAN-03**: G4 gate validates: every DA covered by a phase, phase sizing within bounds, tactical decisions listed per phase, acceptance criteria trace to design decisions
+- [ ] **PLAN-04**: PLAN.md artifact written to `.expedite/plan/PLAN.md` with phase structure including tactical decision tables
+- [ ] **PLAN-05**: Every Decision Area (DA-1 through DA-N) from scope maps to at least one implementation phase
+- [ ] **PLAN-06**: Each phase identifies tactical decisions classified as "resolved" (informed by strategic design) or "needs-spike" (requires investigation)
+
+### Spike Skill
+
+- [ ] **SPIKE-01**: Spike reads phase definition from PLAN.md and plans detailed implementation steps with traceability (step → tactical decision → strategic DA)
+- [ ] **SPIKE-02**: For unresolved tactical decisions, spike optionally spawns focused research in a separate context to resolve them before step planning
+- [ ] **SPIKE-03**: SPIKE.md artifact written to `.expedite/plan/phases/{phase}/SPIKE.md` with tactical decisions resolved and implementation steps planned
+- [ ] **SPIKE-04**: Spike is not gated — no revision cycles or quality gates; user reviews output before execution
+- [ ] **SPIKE-05**: Spike is optional — execute can proceed without it but nudges if unresolved tactical decisions detected
 
 ### Execute Skill
 
-- [ ] **EXEC-01**: Tasks execute sequentially in wave order from PLAN.md
-- [ ] **EXEC-02**: Single checkpoint.yml tracks execution position for pause/resume
-- [ ] **EXEC-03**: PROGRESS.md uses append-only `cat >>` pattern (never rewrite)
-- [ ] **EXEC-04**: Micro-interaction between tasks: freeform "yes / pause / review" prompt
-- [ ] **EXEC-05**: Pause writes checkpoint; `/expedite:execute` resumes from checkpoint
-- [ ] **EXEC-06**: Between-wave prompts for wave transitions
-- [ ] **EXEC-07**: Per-task verification confirms code change addresses the design decision it traces to (not just passing a disconnected acceptance check)
+- [ ] **EXEC-01**: Execute reads SPIKE.md (if exists) and follows planned implementation steps; if no SPIKE.md, execute plans and implements in one pass
+- [ ] **EXEC-02**: If no SPIKE.md and phase has unresolved tactical decisions, nudge user to run `/expedite:spike` first (non-blocking suggestion)
+- [ ] **EXEC-03**: Single checkpoint.yml tracks execution position for pause/resume
+- [ ] **EXEC-04**: PROGRESS.md uses append-only `cat >>` pattern (never rewrite)
+- [ ] **EXEC-05**: Micro-interaction between tasks: freeform "yes / pause / review" prompt
+- [ ] **EXEC-06**: Per-task verification confirms code change addresses the design decision it traces to (contract chain validated end-to-end)
 
 ### Quality Gates
 
@@ -256,13 +264,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLAN-04 | Phase 8 | Pending |
 | PLAN-05 | Phase 8 | Pending |
 | PLAN-06 | Phase 8 | Pending |
+| SPIKE-01 | Phase 9 | Pending |
+| SPIKE-02 | Phase 9 | Pending |
+| SPIKE-03 | Phase 9 | Pending |
+| SPIKE-04 | Phase 9 | Pending |
+| SPIKE-05 | Phase 9 | Pending |
 | EXEC-01 | Phase 9 | Pending |
 | EXEC-02 | Phase 9 | Pending |
 | EXEC-03 | Phase 9 | Pending |
 | EXEC-04 | Phase 9 | Pending |
 | EXEC-05 | Phase 9 | Pending |
 | EXEC-06 | Phase 9 | Pending |
-| EXEC-07 | Phase 9 | Pending |
+| SCOPE-12 | Phase 10 | Pending |
 | INTNT-01 | Phase 10 | Pending |
 | INTNT-02 | Phase 10 | Pending |
 | INTNT-03 | Phase 10 | Pending |
@@ -273,8 +286,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TELE-05 | Phase 10 | Pending |
 
 **Coverage:**
-- v1 requirements: 87 total
-- Mapped to phases: 87
+- v1 requirements: 87 total (+ 6 new: SPIKE-01 through SPIKE-05, SCOPE-12 = 93; EXEC-07 removed = 92)
+- Mapped to phases: 92
 - Unmapped: 0
 
 ---

@@ -18,10 +18,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Scope Skill** - Interactive scoping, intent detection, question plan generation, G1 gate
 - [x] **Phase 5: Research Orchestration Core** - Subagent dispatch, source-affinity batching, parallel evidence collection
 - [ ] **Phase 6: Research Quality and Synthesis** - Sufficiency assessment, G2 gate, gap-fill rounds, dynamic question discovery, SYNTHESIS.md
-- [ ] **Phase 7: Design Skill** - Main-session design generation, RFC/PRD format, revision cycle, G3 gate
-- [ ] **Phase 8: Plan Skill** - Plan generation from design artifacts, wave/epic structure, G4 gate
-- [ ] **Phase 9: Execute Skill** - Wave-based task execution, checkpoint/resume, progress tracking
-- [ ] **Phase 10: Cross-Cutting Integration** - Dual intent end-to-end, telemetry, archival flow, gate escalation polish
+- [x] **Phase 7: Design Skill** - Main-session design generation, RFC/PRD format, revision cycle, G3 gate
+- [ ] **Phase 8: Plan Skill** - Break design into uniform-sized phases, tactical decision identification, intent-adaptive format (waves/epics), G4 gate
+- [ ] **Phase 9: Spike and Execute Skills** - Spike: tactical decision resolution + step planning; Execute: follow spike plan, nudge for missing spike, checkpoint/resume
+- [ ] **Phase 10: Cross-Cutting Integration** - Dual intent end-to-end, telemetry, archival flow, gate escalation polish, scope codebase questions
 
 ## Phase Details
 
@@ -150,60 +150,65 @@ Plans:
   1. Design is generated in the main session (not a subagent) from research artifacts, producing RFC-style output for engineering intent and PRD-style output for product intent
   2. Every Decision Area (DA-1 through DA-N) from scope has a corresponding design decision — no DA is left without a decision
   3. Each design decision references the supporting evidence from research (which evidence files, which findings justify the decision)
-  4. User can request up to 2 rounds of revision via freeform feedback before gate evaluation
+  4. User can revise via freeform feedback with no hard round limit before gate evaluation
   5. Product-intent lifecycles also produce a HANDOFF.md with 9-section format for engineer consumption
   6. G3 gate evaluates design quality with MUST/SHOULD criteria and anti-bias instructions — MUST include "every DA has a decision" and "decisions reference evidence"
   7. DESIGN.md artifact is written to `.expedite/design/DESIGN.md`
+  8. `--override` entry path handles `research_recycled` phase with gap context injection
 **Plans**: 3 plans
 
 Plans:
-- [ ] 07-01-PLAN.md -- Replace design SKILL.md stub with Steps 1-5: prerequisite check, artifact loading, state initialization, inline design generation (RFC/PRD), DESIGN.md writing
-- [ ] 07-02-PLAN.md -- Append Steps 6-7: HANDOFF.md generation (product intent only, 9 sections), freeform revision cycle with change summaries
-- [ ] 07-03-PLAN.md -- Append Steps 8-10: G3 gate evaluation (MUST/SHOULD criteria), gate outcome handling (Go/Go-advisory/Recycle/Override), design completion + human verification
+- [x] 07-01-PLAN.md -- Replace design SKILL.md stub with Steps 1-5: prerequisite check, artifact loading, state initialization, inline design generation (RFC/PRD), DESIGN.md writing
+- [x] 07-02-PLAN.md -- Append Steps 6-7: HANDOFF.md generation (product intent only, 9 sections), freeform revision cycle with change summaries
+- [x] 07-03-PLAN.md -- Append Steps 8-10: G3 gate evaluation (MUST/SHOULD criteria), gate outcome handling (Go/Go-advisory/Recycle/Override), design completion + human verification + --override fix
 
 ### Phase 8: Plan Skill
-**Goal**: A structured, executable plan is generated from the design where every design decision maps to tasks with acceptance criteria that trace back to those decisions
+**Goal**: Design is broken into uniform-sized implementation phases where every design decision maps to a phase, tactical decisions are identified and classified, and the output adapts to intent (waves for engineering, epics/stories for product)
 **Depends on**: Phase 7
 **Requirements**: PLAN-01, PLAN-02, PLAN-03, PLAN-04, PLAN-05, PLAN-06
 **Success Criteria** (what must be TRUE):
-  1. Plan is generated in the main session from design artifacts, producing wave-ordered tasks for engineering intent and epics/stories for product intent
-  2. Every Decision Area (DA-1 through DA-N) from scope maps to at least one plan task
-  3. Every design decision has at least one corresponding task — no decision is left unimplemented
-  4. Each task's acceptance criteria trace back to the design decision(s) they verify — criteria are derived from design, not invented independently
-  5. G4 gate validates: plan exists, every design decision has a task, acceptance criteria cite design decisions, wave ordering/priority present (structural cross-reference)
-  6. PLAN.md artifact is written to `.expedite/plan/PLAN.md`
+  1. Plan is generated in the main session from design artifacts, breaking the design into uniform-sized implementation phases (2-5 tactical decisions, 3-8 tasks per phase)
+  2. Engineering intent produces wave-ordered phases; product intent produces epics/stories — same underlying structure, intent-adaptive naming and presentation
+  3. Every Decision Area (DA-1 through DA-N) from scope maps to at least one implementation phase
+  4. Each phase identifies tactical decisions and classifies them as "resolved" (informed by strategic design) or "needs-spike" (requires investigation)
+  5. G4 gate validates: every DA covered by a phase, phase sizing within bounds, tactical decisions listed per phase, acceptance criteria trace to design decisions
+  6. PLAN.md artifact is written to `.expedite/plan/PLAN.md` with phase structure including tactical decision tables
 **Plans**: TBD
 
 Plans:
 - [ ] 08-01: TBD
 - [ ] 08-02: TBD
 
-### Phase 9: Execute Skill
-**Goal**: Users can execute a plan task-by-task with per-task verification that code changes actually address the design decisions they trace to
+### Phase 9: Spike and Execute Skills
+**Goal**: Users can optionally investigate tactical decisions and plan implementation steps (spike), then execute the plan with per-task verification tracing back to design decisions (execute)
 **Depends on**: Phase 8
-**Requirements**: EXEC-01, EXEC-02, EXEC-03, EXEC-04, EXEC-05, EXEC-06, EXEC-07
+**Requirements**: SPIKE-01, SPIKE-02, SPIKE-03, SPIKE-04, SPIKE-05, EXEC-01, EXEC-02, EXEC-03, EXEC-04, EXEC-05, EXEC-06
 **Success Criteria** (what must be TRUE):
-  1. Tasks execute sequentially in wave order from PLAN.md with between-wave prompts at wave transitions
-  2. Per-task verification confirms the code change addresses the design decision it traces to — not just that it passes a disconnected acceptance check. The contract chain (scope question → evidence → design decision → plan task → code change) is validated
-  3. A checkpoint.yml file tracks execution position so that pausing and later invoking `/expedite:execute` resumes from the correct task
-  4. PROGRESS.md uses append-only `cat >>` pattern (never full rewrite) to log completed task outcomes including which design decision each task satisfied
-  5. Between tasks, a freeform micro-interaction prompt offers the user "yes / pause / review" options
+  1. `/expedite:spike <phase>` reads the phase definition from PLAN.md and plans detailed implementation steps
+  2. For phases with unresolved tactical decisions, spike optionally spawns focused research in a separate context to resolve them before step planning
+  3. Spike output (SPIKE.md) provides full traceability: implementation step → tactical decision → strategic DA
+  4. `/expedite:execute <phase>` follows the spike plan if SPIKE.md exists; nudges user to run spike if unresolved tactical decisions detected and no SPIKE.md present (non-blocking)
+  5. checkpoint.yml tracks execution position for pause/resume across sessions
+  6. Per-task verification confirms code changes address the design decisions they trace to — contract chain validated end-to-end
+  7. PROGRESS.md uses append-only logging of completed task outcomes including which design decisions were satisfied
 **Plans**: TBD
 
 Plans:
 - [ ] 09-01: TBD
 - [ ] 09-02: TBD
+- [ ] 09-03: TBD
 
 ### Phase 10: Cross-Cutting Integration
-**Goal**: The complete lifecycle works end-to-end with consistent intent adaptation, operational telemetry, lifecycle archival, and polished gate escalation behavior
+**Goal**: The complete lifecycle works end-to-end with consistent intent adaptation, operational telemetry, lifecycle archival, polished gate escalation, and scope codebase analysis
 **Depends on**: Phase 9
-**Requirements**: INTNT-01, INTNT-02, INTNT-03, TELE-01, TELE-02, TELE-03, TELE-04, TELE-05, ARTF-03, GATE-05, SCOPE-06
+**Requirements**: INTNT-01, INTNT-02, INTNT-03, TELE-01, TELE-02, TELE-03, TELE-04, TELE-05, ARTF-03, GATE-05, SCOPE-06, SCOPE-12
 **Success Criteria** (what must be TRUE):
   1. Intent (product/engineering) declared during scope flows through every downstream skill, producing the correct format at each phase (PRD vs RFC design, epics vs waves plan)
   2. log.yml records phase transitions, gate outcomes, agent completions, source failures, and overrides using append-only multi-document YAML format (gitignored)
   3. Completed lifecycles can be archived to `.expedite/archive/{slug}/`, preserving all artifacts
   4. Gate escalation works across the full lifecycle: 1st Recycle is informational, 2nd suggests adjustment, 3rd recommends override; Override records severity and injects gap context into downstream prompts
   5. Source configuration step in scope confirms default sources or allows editing sources.yml
+  6. Scope Step 7 generates additive codebase-routed questions per DA — not counted against question budget, as many as needed to understand existing patterns relevant to each decision area
 **Plans**: TBD
 
 Plans:
@@ -225,8 +230,8 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 4. Scope Skill | 3/3 | Complete | 2026-03-03 |
 | 5. Research Orchestration Core | 3/3 | Complete | 2026-03-04 |
 | 11. Integration Fixes (Gap Closure) | 1/1 | Complete    | 2026-03-04 |
-| 6. Research Quality and Synthesis | 1/3 | In Progress|  |
-| 7. Design Skill | 0/2 | Not started | - |
+| 6. Research Quality and Synthesis | 3/3 | Complete | 2026-03-05 |
+| 7. Design Skill | 3/3 | Complete | 2026-03-05 |
 | 8. Plan Skill | 0/2 | Not started | - |
-| 9. Execute Skill | 0/2 | Not started | - |
+| 9. Spike and Execute Skills | 0/3 | Not started | - |
 | 10. Cross-Cutting Integration | 0/3 | Not started | - |
