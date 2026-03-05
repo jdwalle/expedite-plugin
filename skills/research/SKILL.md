@@ -665,3 +665,88 @@ No new questions added to the question plan.
 ```
 
 Proceed to Step 14.
+
+### Step 14: G2 Gate Evaluation
+
+Evaluate whether the collected evidence meets the quality threshold required to proceed to synthesis. The G2 gate uses count-based MUST criteria (structural checks) and SHOULD criteria (quality aspirations), following the same pattern as the G1 gate in scope SKILL.md Step 9.
+
+#### 14a: Compute Gate Criteria from Evaluator Output
+
+Count from state.yml question statuses (set in Step 12):
+
+- `total_questions`: count of all questions in the `questions` array
+- `covered_count`: count where `status` = `"covered"`
+- `partial_count`: count where `status` = `"partial"`
+- `not_covered_count`: count where `status` = `"not_covered"`
+- `unavailable_count`: count where `status` = `"unavailable_source"`
+- `p0_questions`: subset of questions where `priority` = `"P0"`
+- `p0_not_covered`: P0 questions where `status` = `"not_covered"`
+- `unresolved_unavailable`: UNAVAILABLE-SOURCE questions where the user has NOT yet decided (should be 0 after Step 12c)
+
+All counts are derived from the current state.yml -- no LLM judgment involved in counting.
+
+#### 14b: Evaluate MUST Criteria
+
+Following the G1 gate pattern from scope SKILL.md Step 9, evaluate each MUST criterion. All must pass for a Go outcome:
+
+```
+MUST criteria (all must pass for Go):
+M1: Every question has been assessed (covered + partial + not_covered + unavailable = total)
+M2: Majority of questions rated COVERED (covered_count > total / 2)
+M3: All P0 questions rated COVERED or PARTIAL (p0_not_covered == 0)
+M4: No UNAVAILABLE-SOURCE questions remain unresolved (unresolved_unavailable == 0)
+```
+
+For each MUST criterion, record pass/fail with evidence. Example format:
+- "M1: PASS -- 10/10 questions assessed (7 covered + 2 partial + 1 not_covered = 10)"
+- "M2: PASS -- 7/10 covered (70% > 50%)"
+- "M3: PASS -- 3/3 P0 questions are COVERED or PARTIAL (0 P0 not_covered)"
+- "M4: PASS -- 0 unresolved UNAVAILABLE-SOURCE questions"
+
+#### 14c: Evaluate SHOULD Criteria
+
+Evaluate each SHOULD criterion. Failures produce advisory notes but do not block the gate:
+
+```
+SHOULD criteria (failures produce advisory, not block):
+S1: All questions rated COVERED (covered_count == total)
+S2: No PARTIAL ratings remain (partial_count == 0)
+S3: All evidence requirements MET (no PARTIALLY MET in evaluator output)
+```
+
+For each SHOULD criterion, record pass/fail with evidence. Example format:
+- "S1: FAIL -- 7/10 covered (3 not fully covered)"
+- "S2: FAIL -- 2 questions still PARTIAL"
+- "S3: PASS -- all evidence requirements fully MET"
+
+#### 14d: Determine Gate Outcome
+
+Based on the MUST and SHOULD evaluations, determine the gate outcome:
+
+- **Go**: All MUST criteria pass AND all SHOULD criteria pass. Research quality is fully sufficient.
+- **Go-with-advisory**: All MUST criteria pass, but one or more SHOULD criteria fail. Research is sufficient but has known weak areas that will be documented as advisory in SYNTHESIS.md.
+- **Recycle**: Any MUST criterion fails (except M4, which was handled in Step 12c via the UNAVAILABLE-SOURCE short-circuit). Gap-fill research is needed.
+- **Override**: Only available when the user explicitly requests it. This is NOT auto-determined by the gate -- only the user can choose to override a failing gate. Override allows proceeding despite MUST failures, with all gaps documented.
+
+#### 14e: Display Gate Result
+
+Show gate evaluation results in the same format as G1:
+
+```
+## G2 Gate Evaluation
+
+MUST Criteria:
+  M1: {PASS|FAIL} -- {evidence}
+  M2: {PASS|FAIL} -- {evidence}
+  M3: {PASS|FAIL} -- {evidence}
+  M4: {PASS|FAIL} -- {evidence}
+
+SHOULD Criteria:
+  S1: {PASS|FAIL} -- {evidence}
+  S2: {PASS|FAIL} -- {evidence}
+  S3: {PASS|FAIL} -- {evidence}
+
+Outcome: {Go | Go-with-advisory | Recycle}
+```
+
+Proceed to Step 15 for outcome handling.
