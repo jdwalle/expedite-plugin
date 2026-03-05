@@ -398,15 +398,14 @@ proposed_questions:
 **Display next step guidance:**
 
 ```
-Research evidence collected. Next steps:
+Research evidence collected.
 - Review evidence files in .expedite/research/ if desired
-- Run `/expedite:research` again when Phase 6 is implemented for sufficiency assessment and synthesis
-- Current status: research_in_progress (Phase 6 will transition to research_complete after G2 gate)
+- Proceeding to sufficiency assessment...
 ```
 
-**Phase transition:** Do NOT transition phase to `"research_complete"`. That is Phase 6's responsibility after the G2 gate passes. The phase stays at `"research_in_progress"` -- this correctly reflects that evidence has been collected but not yet assessed for sufficiency.
+**Phase transition:** Do NOT transition phase to `"research_complete"`. That is Step 18's responsibility after the G2 gate passes and synthesis is generated. The phase stays at `"research_in_progress"` -- this correctly reflects that evidence has been collected but not yet assessed for sufficiency.
 
-Display "Proceed to Step 12" and continue automatically.
+Proceed to Step 12.
 
 ### Step 12: Sufficiency Assessment
 
@@ -1056,3 +1055,179 @@ After all gap-fill agents have completed (following the same completion handling
 4. **Return to Step 12** to re-assess sufficiency with the new evidence. The sufficiency evaluator will now evaluate ALL evidence files (originals + supplements) for each question.
 
 **Loop structure:** The recycling loop is Step 12 -> Step 13 -> Step 14 -> Step 15 -> Step 16 -> back to Step 12. This continues until the G2 gate passes (Go or Go-with-advisory where user chooses to proceed) or the user overrides.
+
+### Step 17: Synthesis Generation
+
+After the G2 gate passes (Go or Go-with-advisory), generate a SYNTHESIS.md artifact that organizes all evidence by Decision Area with full traceability. This step dispatches the synthesizer as a Task() subagent using the opus model for highest-capability cross-referencing and contradiction detection.
+
+#### 17a: Assemble Synthesizer Input
+
+Read the synthesizer template from `skills/research/references/prompt-research-synthesizer.md` (use Glob with `**/prompt-research-synthesizer.md` if the direct path fails).
+
+This template HAS frontmatter (`model: opus`, `subagent_type: general-purpose`) -- it runs as a Task() subagent, not an inline reference.
+
+Read the following files to assemble the synthesizer input:
+
+1. **`.expedite/scope/SCOPE.md`** -- Extract:
+   - Full scope content for `{{scope_content}}`
+   - Decision areas block (id, name, depth, readiness criterion) for `{{decision_areas_yaml}}`
+
+2. **`.expedite/state.yml`** -- Extract:
+   - `project_name` for `{{project_name}}`
+   - `intent` for `{{intent}}`
+   - `research_round` for `{{research_round}}`
+
+3. **ALL evidence files** -- Collect comprehensively:
+   - First-round evidence files: Glob `.expedite/research/evidence-batch-*.md`
+   - Gap-fill supplement files: Glob `.expedite/research/round-*/supplement-*.md`
+   - Use both explicit file list AND directory path to ensure completeness
+   - Build `{{evidence_files_list}}` as a formatted list of all evidence file paths with their contents
+
+Fill template placeholders:
+- `{{project_name}}`: from state.yml
+- `{{intent}}`: from state.yml
+- `{{research_round}}`: from state.yml
+- `{{evidence_dir}}`: ".expedite/research"
+- `{{scope_file}}`: ".expedite/scope/SCOPE.md"
+- `{{output_file}}`: ".expedite/research/SYNTHESIS.md"
+- `{{timestamp}}`: current ISO 8601 UTC timestamp
+- `{{decision_areas_yaml}}`: YAML block of all DAs from SCOPE.md (id, name, depth, readiness criterion)
+- `{{evidence_files_list}}`: list of ALL evidence files including round-N supplements, with their full contents
+- `{{scope_content}}`: full SCOPE.md content
+
+Apply the intent lens: keep the `<if_intent_product>` blocks if intent is "product", or keep the `<if_intent_engineering>` blocks if intent is "engineering". Remove the blocks for the other intent type.
+
+#### 17b: Inject Advisory Context (if applicable)
+
+**If gate outcome was Go-with-advisory:** Inject additional context into the synthesizer prompt before the `<input_data>` section:
+
+```
+<advisory_context>
+The G2 sufficiency gate passed with advisory notes. The following issues were accepted by the user:
+
+SHOULD criteria that failed:
+{list each failed SHOULD criterion with description}
+
+Per-question details for PARTIAL ratings:
+{for each PARTIAL question: question ID, text, gap_details from evaluator}
+
+The user chose to proceed despite these gaps. Include a ## Advisory section at the end of SYNTHESIS.md
+(before the Overall Assessment) documenting these known weaknesses and their potential impact on
+design decisions. For PARTIAL questions, note what evidence is available vs what is missing.
+</advisory_context>
+```
+
+**If override-context.md exists** (gate was overridden): Read `.expedite/research/override-context.md` and inject its content as an `<override_context>` block:
+
+```
+<override_context>
+The G2 sufficiency gate was OVERRIDDEN by the user. The following context was recorded at override time:
+
+{contents of override-context.md}
+
+IMPORTANT: Prominently flag overridden gaps in BOTH the relevant DA sections AND a separate
+## Override Advisory section. Design decisions in affected DAs carry higher risk due to
+insufficient evidence. Each affected DA section should include a warning callout.
+</override_context>
+```
+
+**If gate outcome was Go (clean pass):** No additional context injection needed. Proceed without advisory or override blocks.
+
+#### 17c: Dispatch Synthesizer Subagent
+
+Dispatch the synthesizer via Task() API:
+
+```
+Task(
+  prompt: {assembled_prompt_with_all_placeholders_filled},
+  description: "Research synthesis: produce SYNTHESIS.md organized by decision area",
+  subagent_type: "general-purpose"
+)
+```
+
+Wait for the subagent to complete. The synthesizer will:
+- Read all evidence files
+- Map findings to decision areas
+- Cross-reference across sources
+- Write `.expedite/research/SYNTHESIS.md`
+- Return a condensed summary
+
+#### 17d: Verify Synthesis Output
+
+After the synthesizer subagent completes:
+
+1. **Check file exists:** Verify `.expedite/research/SYNTHESIS.md` was written by the subagent.
+
+2. **If file missing:** Display error and offer recovery:
+   ```
+   Error: SYNTHESIS.md was not written by the synthesizer subagent.
+   Expected file: .expedite/research/SYNTHESIS.md
+
+   Options:
+   1. Re-dispatch synthesizer
+   2. Skip synthesis and proceed to completion (not recommended)
+   ```
+   Use AskUserQuestion with options "Re-dispatch" and "Skip synthesis". If re-dispatch, return to 17c. If skip, proceed to Step 18 with a warning.
+
+3. **If file exists:** Display confirmation:
+   ```
+   Synthesis complete.
+   File: .expedite/research/SYNTHESIS.md
+   Size: {file_size_in_bytes} bytes
+   ```
+
+Proceed to Step 18.
+
+### Step 18: Research Completion
+
+The research phase is complete. Transition the lifecycle phase and display a comprehensive summary.
+
+#### 18a: Final State Update
+
+Update state.yml to mark research as complete using the backup-before-write pattern:
+
+1. Read `.expedite/state.yml`
+2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Update the in-memory representation:
+   - Set `phase` to `"research_complete"`
+   - Set `last_modified` to current timestamp (ISO 8601 UTC)
+4. Write the entire file back to `.expedite/state.yml`
+
+#### 18b: Display Research Summary
+
+Display a comprehensive research completion summary:
+
+```
+## Research Complete
+
+Project: {project_name}
+Intent: {intent}
+Research rounds: {research_round}
+
+### Evidence Summary
+Total questions: {count}
+  COVERED: {count}
+  PARTIAL: {count} (advisory)
+  NOT COVERED: {count} (advisory/overridden)
+  UNAVAILABLE-SOURCE: {count} (accepted)
+
+### Artifacts Produced
+- Scope: .expedite/scope/SCOPE.md
+- Evidence: .expedite/research/evidence-batch-*.md
+{If gap-fill rounds:}
+- Supplements: .expedite/research/round-{N}/supplement-*.md
+- Synthesis: .expedite/research/SYNTHESIS.md
+{If override:}
+- Override context: .expedite/research/override-context.md
+
+### Next Step
+Run `/expedite:design` to generate a design document from the research synthesis.
+```
+
+#### 18c: Completion
+
+This completes the research skill. The full 18-step sequence covers:
+- **Prerequisite and setup** (Steps 1-3): prerequisite check, scope loading, state initialization
+- **First-round dispatch** (Steps 4-11): batch formation, DA coverage validation, batch approval, source pre-validation, template assembly, parallel dispatch, result collection, completion summary
+- **Quality loop** (Steps 12-16): sufficiency assessment, dynamic question discovery, G2 gate evaluation, gate outcome handling, gap-fill dispatch (loops back to Step 12)
+- **Synthesis and completion** (Steps 17-18): synthesis generation, research completion
