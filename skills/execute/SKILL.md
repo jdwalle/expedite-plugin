@@ -20,10 +20,302 @@ Current lifecycle state:
 
 # Execute Skill
 
-> Under development. Full orchestration in Phase 9.
+You are the Expedite execute orchestrator. Your job is to implement plan tasks sequentially, verify each task against design decisions, and maintain the contract chain from scope through execution. You operate on ONE PHASE (wave/epic) at a time. Each invocation of `/expedite:execute <phase>` executes that specific phase's tasks only. Execution artifacts (checkpoint, progress log) are stored per-phase.
 
-**Purpose:** Execute plan tasks sequentially with checkpoint/resume support.
+**Interaction model:** Use freeform prompts for micro-interactions (yes / pause / review) and error recovery (retry / skip / pause). Do NOT use AskUserQuestion (60-second timeout constraint).
 
-**Requires:** Completed plan (`/expedite:plan`).
+**After completing each step, proceed to the next step automatically.** Do not wait for explicit "next step" instructions unless the step specifically calls for user input.
 
-**Next:** Lifecycle complete after execution.
+## Instructions
+
+### Step 1: Prerequisite Check
+
+Look at the injected lifecycle state above.
+
+**Case A: Phase is "plan_complete"**
+
+This is a fresh execution start.
+
+Display: "Starting execution..."
+
+Proceed to Step 2.
+
+**Case B: Phase is "execute_in_progress"**
+
+This is a resume scenario.
+
+1. Parse the phase argument first (same logic as Step 2).
+2. Determine the slug for the requested phase.
+3. Check for `.expedite/plan/phases/{slug}/checkpoint.yml` (use Read, handle missing file gracefully).
+4. If checkpoint exists AND status is "paused" or "in_progress": display "Resuming execution of {Wave/Epic} {N} from checkpoint..." Skip to Step 4 (resume logic).
+5. If no checkpoint for this phase: display "Starting execution of {Wave/Epic} {N}..." Proceed to Step 2.
+
+**Case C: Phase is anything else**
+
+Display:
+```
+Error: Plan is not complete. Run `/expedite:plan` to generate a plan before starting execution.
+
+Current phase: {phase}
+```
+If phase is "plan_recycled", additionally display: "Plan was recycled. Use `/expedite:plan` to revise and pass the G4 gate before executing."
+
+Then STOP. Do not proceed to any other step.
+
+### Step 2: Read Plan + Spike Artifacts
+
+Parse the phase argument. Accept flexible formats:
+- Bare number: "1", "2", "3"
+- "wave N" / "Wave N" (engineering intent)
+- "epic N" / "Epic N" (product intent)
+- If no argument and only one phase exists in PLAN.md: auto-select that phase
+- If no argument and multiple phases exist: display available phases and ask the user to choose (do NOT auto-chain to the "next" phase -- the user explicitly chooses which phase to execute)
+
+Determine the slug for the phase directory:
+- Engineering intent: `wave-{N}` (e.g., `wave-1`, `wave-2`)
+- Product intent: `epic-{N}` (e.g., `epic-1`, `epic-2`)
+
+Read the following files:
+
+1. **`.expedite/plan/PLAN.md`** -- Extract the target phase definition: heading, tasks, tactical decisions, design decision references, acceptance criteria. If PLAN.md cannot be read, display error: "Error: PLAN.md not found. Run `/expedite:plan` to generate a plan." Then STOP.
+
+2. **`.expedite/plan/phases/{slug}/SPIKE.md`** -- If this file exists, this is **spiked mode**. Extract resolved tactical decisions and implementation steps. If this file does not exist, this is **unspiked mode**.
+
+3. **`.expedite/design/DESIGN.md`** -- Extract design decisions for verification reference.
+
+4. **`.expedite/scope/SCOPE.md`** -- Extract DA definitions for contract chain tracing.
+
+5. **`.expedite/state.yml`** -- Extract `project_name`, `intent`, `lifecycle_id`.
+
+6. **If `.expedite/plan/override-context.md` exists** -- Read it, note affected DAs.
+
+7. **Prior phase context:** If executing Phase N where N > 1, check for prior phase's PROGRESS.md (e.g., `.expedite/plan/phases/wave-{N-1}/PROGRESS.md`) to understand what was already implemented.
+
+**Determine execution mode:**
+- If SPIKE.md exists for this phase: **Spiked mode** -- follow SPIKE.md implementation steps
+- If no SPIKE.md: **Unspiked mode** -- follow PLAN.md tasks directly
+
+**Spike nudge (EXEC-02):**
+
+If unspiked mode AND the phase's tactical decision table in PLAN.md contains any "needs-spike" entries:
+
+Display non-blocking nudge:
+```
+Note: This phase has {N} unresolved tactical decision(s). Consider running
+`/expedite:spike {phase_number}` first to investigate them.
+
+Proceeding with unspiked execution...
+```
+
+This is informational only -- do NOT block execution.
+
+Display artifact loading summary:
+```
+--- Execute Context Loaded ---
+
+Project: {project_name}
+Intent: {intent}
+Phase: {Wave/Epic} {N} - {description}
+Mode: {Spiked (SPIKE.md found) | Unspiked (direct from PLAN.md)}
+Tasks: {count}
+{If override context:} Override advisory: {severity} severity
+```
+
+### Step 3: Initialize Execute State
+
+Update state.yml using the backup-before-write pattern:
+
+1. Read `.expedite/state.yml`
+2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Update the in-memory representation:
+   - Set `phase` to `"execute_in_progress"` (only if currently `plan_complete`; skip if already `execute_in_progress` from prior phase execution)
+   - Set `current_wave` to the phase number being executed
+   - Set `current_task` to the first task ID in THIS phase
+   - Populate `tasks` array: enumerate tasks/stories from THIS PHASE ONLY (not all phases), each with:
+     - `id`: task ID (e.g., "t01")
+     - `title`: task title
+     - `wave`: wave/epic number
+     - `status`: "pending"
+   - Set `last_modified` to current ISO 8601 UTC timestamp
+4. Write the entire file back to `.expedite/state.yml`
+
+Create the per-phase execute output directory:
+```bash
+mkdir -p .expedite/plan/phases/{slug}/
+```
+
+Create initial checkpoint.yml at `.expedite/plan/phases/{slug}/checkpoint.yml`:
+```yaml
+current_task: "{first_task_id}"
+current_wave: {wave_number}
+last_completed_task: null
+last_completed_at: null
+tasks_completed: 0
+tasks_total: {total_task_count_for_this_phase}
+status: "in_progress"
+continuation_notes: "Execution started for {Wave/Epic} {N}."
+```
+
+Write initial PROGRESS.md header via Bash (append-only from here on):
+```bash
+cat > .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
+# Execution Progress: {project_name}
+Started: {ISO 8601 UTC timestamp}
+Phase: {Wave/Epic} {N}
+Mode: {Spiked | Unspiked}
+
+PROGRESS_EOF
+```
+
+**IMPORTANT:** This initial header uses `cat >` (create). ALL subsequent writes to PROGRESS.md MUST use `cat >>` (append). NEVER use the Write tool for PROGRESS.md after this point -- Write overwrites the entire file, destroying prior entries.
+
+Display: "Execute state initialized for {Wave/Epic} {N}. Beginning task execution..."
+
+### Step 4: Determine Starting Point
+
+**4a: Fresh start (came from Step 3):**
+
+Start from the first task in the current phase. Set current_task to the first task ID.
+
+Proceed to Step 5 with the first task.
+
+**4b: Resume from checkpoint (came from Step 1 Case B):**
+
+1. Read `.expedite/plan/phases/{slug}/checkpoint.yml`
+2. Extract `last_completed_task` and `current_wave`
+3. Verify the checkpoint's `current_wave` matches the requested phase number
+4. Find the next task after `last_completed_task` in the task order
+5. Display: "Resuming from task {next_task_id}: {task_title}. ({completed}/{total} tasks completed)"
+6. Read `.expedite/plan/phases/{slug}/PROGRESS.md` to load context of what was already done
+
+Proceed to Step 5 with the determined next task.
+
+**4c: Checkpoint reconstruction fallback:**
+
+If checkpoint.yml is missing or corrupted but PROGRESS.md exists in the phase directory:
+
+1. Parse PROGRESS.md to find the last completed task ID (look for `## t{NN}:` or `## {task_id}:` headings)
+2. Find the next task in sequence
+3. Display: "Checkpoint missing. Reconstructed from PROGRESS.md. Resuming from task {next_task_id}."
+4. Create a new checkpoint.yml in `.expedite/plan/phases/{slug}/` reflecting the reconstructed state
+
+Proceed to Step 5 with the determined starting task.
+
+### Step 5: Task Execution Loop
+
+This is the core loop. For each task starting from the determined starting point:
+
+**5a: Display current task.**
+
+For **spiked mode** (from SPIKE.md):
+```
+--- Task {task_id}: {task_title} ({current}/{total}) ---
+Traces to: {TD -> DA chain from SPIKE.md}
+Files: {file list}
+
+Implementation steps:
+{numbered steps from SPIKE.md}
+```
+
+For **unspiked mode** (from PLAN.md):
+```
+--- Task {task_id}: {task_title} ({current}/{total}) ---
+Design decision: {DA-X: brief}
+Files: {file list}
+Acceptance criteria:
+{criteria list from PLAN.md}
+```
+
+**5b: Implement the task.**
+
+This is where actual code changes happen. The execute skill is running in the main session with full tool access (Read, Write, Edit, Glob, Grep, Bash, WebSearch, WebFetch).
+
+In spiked mode: follow the implementation steps from SPIKE.md. Each step has specific sub-steps and file targets.
+
+In unspiked mode: read the task definition from PLAN.md, understand the acceptance criteria, and implement directly. Use the design decision from DESIGN.md as guidance.
+
+**5c: Per-task verification (EXEC-06).**
+
+After implementing, run verification using the prompt-task-verifier.md reference:
+
+1. Read `skills/execute/references/prompt-task-verifier.md` (use Glob with `**/prompt-task-verifier.md` if direct path fails).
+2. This is an INLINE reference (not a subagent dispatch). Apply its verification process in the current session:
+   a. Read the task definition (acceptance criteria, DA reference)
+   b. Read the referenced design decision from DESIGN.md
+   c. For each acceptance criterion: check pass/fail AND design decision alignment (YES/PARTIAL/NO)
+   d. Check for disconnected criteria
+   e. Produce verification status: VERIFIED | PARTIAL | FAILED | NEEDS REVIEW
+3. Display the verification summary.
+
+**5d: Update checkpoint.**
+
+Update `.expedite/plan/phases/{slug}/checkpoint.yml` (full rewrite, not append):
+```yaml
+current_task: "{next_task_id or null if last task}"
+current_wave: {wave_number}
+last_completed_task: "{completed_task_id}"
+last_completed_at: "{ISO 8601 UTC}"
+tasks_completed: {count}
+tasks_total: {total}
+status: "in_progress"
+continuation_notes: "{brief: what was done, what's next}"
+```
+
+Update state.yml (backup-before-write): set `current_task` to next task ID, update the completed task's status to "complete" (or "failed"/"partial" per verification result), set `last_modified`.
+
+**5e: Append to PROGRESS.md via Bash.**
+
+NEVER use the Write tool for PROGRESS.md. Use `cat >>` via Bash:
+
+```bash
+cat >> .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
+
+## {task_id}: {task_title}
+- Status: {complete|partial|failed|needs_review}
+- Wave: {wave_number}
+- Design decision: {DA-X}: {brief}
+- Files modified: {list}
+- Verification: {VERIFIED|PARTIAL|FAILED|NEEDS REVIEW}
+- Contract chain: {DA-X} -> {evidence citation} -> {design decision} -> {task ID} -> {files}
+- Completed: {ISO 8601 UTC timestamp}
+PROGRESS_EOF
+```
+
+**5f: Micro-interaction (EXEC-05).**
+
+Display task completion and verification status, then prompt:
+
+```
+Task {task_id} complete ({completed}/{total}).
+Verification: {VERIFIED|PARTIAL|FAILED|NEEDS REVIEW}
+{If FAILED: "Contract chain broken at: {stage}. Review recommended."}
+
+Continue?
+> yes / pause / review
+```
+
+Handle responses:
+- **yes**, **continue**, **next**, **go**, **keep going**: proceed to next task (loop back to 5a)
+- **pause**, **stop**, **wait**, **hold**: update checkpoint.yml status to "paused", display "Execution paused at task {task_id}. Resume with `/expedite:execute {phase_number}`.", STOP.
+- **review**: display PROGRESS.md contents (read the file and display), then re-prompt
+
+**5g: Error handling during implementation.**
+
+If a task fails (build error, test failure, code error):
+
+Display the error and prompt:
+```
+Task {task_id} encountered an error:
+{error details}
+
+> retry / skip / pause
+```
+
+Handle responses:
+- **retry**: re-attempt the implementation (loop back to 5b)
+- **skip**: mark task status as "skipped" in state.yml and checkpoint, append "Status: skipped" to PROGRESS.md, proceed to next task
+- **pause**: save checkpoint with error context in continuation_notes, STOP
+
+After the last task in the phase: proceed to Step 6 (implemented in Plan 09-03).
+
+Display: "All tasks in {Wave/Epic} {N} complete. Proceeding to phase completion..."
