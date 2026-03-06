@@ -122,3 +122,151 @@ mkdir -p .expedite/plan/
 ```
 
 Display: "Plan phase initialized. Generating implementation plan..."
+
+### Step 4: Generate Implementation Plan
+
+This is inline generation in the main session — the plan is generated here, not dispatched to a subagent. Read `skills/plan/references/prompt-plan-guide.md` as a quality reference (use Glob with `**/prompt-plan-guide.md` if the direct path fails). The plan guide defines the required sections, quality criteria, and contract chain enforcement — but is NOT dispatched as a subagent. Its instructions guide the inline generation.
+
+Generate the implementation plan following the correct format for the declared intent. The format is determined by the `intent` field from state.yml.
+
+**If intent is "engineering"** — Wave-ordered format:
+
+For each wave:
+- Wave heading: `## Wave {N}: {description}`
+- Design decisions covered: list DA IDs
+- Tactical Decisions table:
+
+```markdown
+### Tactical Decisions
+| ID | Decision | Classification | Source |
+|----|----------|----------------|--------|
+| TD-1 | {specific tactical decision} | resolved/needs-spike | DA-X: {brief source} |
+```
+
+- Tasks (t01, t02, etc.) with:
+  - **Design decision:** DA reference
+  - **Files:** specific files to create or modify
+  - **Acceptance criteria:** with parenthetical DA traceability `*(traces to DA-X decision: {brief})*`
+  - **Estimated effort:** hours (2-8 hours per task; larger tasks should be split)
+  - **Dependencies:** task IDs, or "none"
+
+Key rules from prompt-plan-guide.md:
+- Tasks within a wave can execute independently (no intra-wave dependencies)
+- Cross-wave dependencies explicitly listed (task IDs)
+- Wave 1 has zero external dependencies
+- Every design decision must appear in at least one task's "Design decision" field
+- Every acceptance criterion must cite the design decision it traces to (in parenthetical)
+
+**If intent is "product"** — Epic/Story format:
+
+For each epic:
+- Epic heading: `## Epic {N}: {user-facing capability}`
+- Design decisions covered: list DA IDs
+- Tactical Decisions table (same format as engineering):
+
+```markdown
+### Tactical Decisions
+| ID | Decision | Classification | Source |
+|----|----------|----------------|--------|
+| TD-1 | {specific tactical decision} | resolved/needs-spike | DA-X: {brief source} |
+```
+
+- Stories (1.1, 1.2, etc.) with:
+  - **As a** [persona] **I want** [capability] **so that** [outcome]
+  - **Design decision:** DA reference
+  - **Acceptance criteria:** in Given/When/Then format with parenthetical DA traceability `*(traces to DA-X decision: {brief})*`
+  - **Priority:** P0 | P1 | P2
+  - **Sizing:** S | M | L | XL
+
+**Tactical Decision Classification:**
+
+A tactical decision is something that: (a) is not fully resolved by the DESIGN.md decision text, (b) affects the implementation approach of at least one task, and (c) has at least two reasonable alternatives. Apply these criteria to classify each tactical decision:
+
+- **Resolved:** The DESIGN.md decision provides enough specificity to implement directly. The design explicitly chose an approach, library, API, or pattern. No further investigation needed. Examples: "Use PostgreSQL for storage" (DA decided this), "RFC format uses wave-ordered tasks" (design specified format).
+- **Needs-spike:** The DESIGN.md decision sets direction but leaves implementation details unresolved. There are at least two reasonable alternative approaches not fully resolved by the design. The spike skill will investigate these before execution. Examples: "Use caching (but which strategy — LRU vs TTL?)", "Support backward compatibility (but which migration path?)", "Handle concurrent writes (but which locking mechanism?)".
+
+TD IDs are phase-scoped: each wave/epic starts at TD-1. For cross-reference, use "Wave 2 TD-1" or "Epic 2 TD-1" format. This avoids renumbering headaches when phases are reordered.
+
+**Phase Sizing Enforcement:**
+
+Each phase MUST contain 2-5 tactical decisions and 3-8 tasks/stories. This ensures uniform sizing across phases:
+- If a design decision requires 10+ tasks, split across 2 phases with logical grouping (e.g., "Wave 3a: core implementation", "Wave 3b: edge cases and testing")
+- If a design decision requires only 1 task, group it with related DAs in the same phase
+- Self-check sizing before proceeding to Step 5
+
+**Cross-cutting concerns:** Open questions from DESIGN.md's "Open Questions" section should become tactical decisions classified as "needs-spike" in the relevant phase. Cross-cutting concerns from DESIGN.md (error handling, logging, security, performance, testing strategy) should be addressed as tasks within relevant phases or as a dedicated cross-cutting wave/epic.
+
+**Override-affected DAs:** If design override-context.md exists (loaded in Step 2), tasks tracing to overridden DAs must include an advisory note: "Advisory: This DA was affected by a G3 override. Evidence gaps noted in override-context.md."
+
+**Contract chain enforcement (both intents):**
+- Every DA from SCOPE.md MUST map to at least one phase's "Design decisions covered" list
+- Every task/story MUST cite a specific design decision (not generic)
+- Every acceptance criterion MUST include parenthetical DA traceability
+- If evidence is insufficient for a DA (from override context), annotate tasks with advisory note
+
+**Self-check before writing:** Before proceeding to Step 5, verify the generated content against these criteria:
+- [ ] Every DA from SCOPE.md has at least one phase covering it (count DAs in scope vs unique DAs in plan)
+- [ ] Every phase has 2-5 tactical decisions and 3-8 tasks
+- [ ] Every tactical decision is classified as resolved or needs-spike
+- [ ] Every task/story cites a specific design decision
+- [ ] Every acceptance criterion includes parenthetical DA reference
+- [ ] Wave/epic ordering is logical (Wave 1/Epic 1 has no external dependencies)
+- [ ] Override-affected DAs (if any) are annotated
+
+If any check fails, revise the content before writing to disk. Do NOT write a plan that fails self-check.
+
+### Step 5: Write PLAN.md
+
+Write the generated plan to `.expedite/plan/PLAN.md`.
+
+Document header (both formats):
+```markdown
+# {Implementation Plan | Product Plan}: {project_name}
+Generated: {ISO 8601 UTC timestamp}
+Intent: {Engineering | Product}
+Source: DESIGN.md + SCOPE.md
+Phases: {N} | Tasks: {M} | Tactical Decisions: {K} ({resolved}/{needs-spike})
+```
+
+Summary footer (engineering):
+```
+--- {N} tasks across {M} waves ---
+Design decisions covered: {count}/{total}
+Total estimated effort: {hours}
+Acceptance criteria: {count} total, all traced to design decisions
+Tactical decisions: {resolved} resolved, {needs-spike} needs-spike
+```
+
+Summary footer (product):
+```
+--- {N} stories across {M} epics ---
+Design decisions covered: {count}/{total}
+Acceptance criteria: {count} total, all traced to design decisions
+Tactical decisions: {resolved} resolved, {needs-spike} needs-spike
+```
+
+After writing, display plan summary:
+```
+--- Plan Summary ---
+
+Project: {project_name}
+Intent: {intent}
+{Waves | Epics}: {count}
+{Tasks | Stories}: {count}
+DA coverage: {covered}/{total}
+Tactical decisions: {resolved} resolved, {needs-spike} needs-spike
+{If engineering:} Estimated effort: {hours} hours
+```
+
+If DA coverage is not complete (covered < total), display WARNING with the list of missing DAs.
+
+**Post-write verification:** After writing PLAN.md, read it back and verify:
+1. File exists and is non-empty
+2. Header contains correct project_name, intent, timestamp
+3. Count wave/epic sections and compare to expected
+4. Count tasks/stories
+5. Verify each phase has a Tactical Decisions table
+6. Verify phase sizing (2-5 TDs, 3-8 tasks per phase)
+7. Count DA coverage (unique DAs in all "Design decisions covered" lists vs SCOPE.md DA count)
+
+If verification fails on any check, display the specific failure and fix the content before re-writing. Do NOT proceed to Step 6 with a malformed PLAN.md.
