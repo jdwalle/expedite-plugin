@@ -270,3 +270,212 @@ If DA coverage is not complete (covered < total), display WARNING with the list 
 7. Count DA coverage (unique DAs in all "Design decisions covered" lists vs SCOPE.md DA count)
 
 If verification fails on any check, display the specific failure and fix the content before re-writing. Do NOT proceed to Step 6 with a malformed PLAN.md.
+
+### Step 6: Revision Cycle
+
+Present the plan to the user for review. This is a freeform revision loop with no hard round limit -- the user keeps revising until satisfied, then proceeds to gate evaluation.
+
+**6a: Present plan for review.** Display:
+
+```
+--- Plan Review ---
+
+The implementation plan has been written to .expedite/plan/PLAN.md
+
+Review the plan above. You can:
+- **revise** -- describe changes (e.g., "move task t04 to Wave 1", "split Wave 3 into two", "reclassify TD-5 as resolved")
+- **proceed** -- run G4 gate evaluation on the current plan
+
+What would you like to do?
+```
+
+Wait for user input.
+
+**6b: On "revise" (user provides feedback):**
+
+1. Parse freeform feedback. Identify which phases, tasks, or tactical decisions they want changed.
+2. Apply changes to the in-memory plan.
+3. Summarize changes before rewriting:
+
+```
+Changes applied:
+- Wave/Epic {N}: {brief description of change}
+- {additional changes}
+```
+
+4. Rewrite `.expedite/plan/PLAN.md` with updated content.
+5. Re-validate: verify DA coverage still complete (every DA from SCOPE.md in at least one phase). If any DA accidentally removed, display warning and restore.
+6. Re-validate: verify phase sizing still within bounds (2-5 TDs, 3-8 tasks). If any phase out of bounds, display warning.
+7. Return to 6a.
+
+**6c: On "proceed":**
+
+Display: "Proceeding to G4 gate evaluation..."
+
+Proceed to Step 7.
+
+**Key behaviors** (identical to design skill):
+- No round counter. No "you have N revisions remaining" messaging.
+- Every iteration presents both "revise" and "proceed" options.
+- "looks good", "done", "approved", "no changes", "yes", "lgtm" = proceed
+- "skip" or "skip to gate" = proceed
+- Ambiguous feedback: ask for clarification rather than guessing.
+
+Plan-specific revision types:
+- Reorder tasks between waves/epics
+- Split or merge phases
+- Reclassify tactical decisions (resolved <-> needs-spike)
+- Adjust phase boundaries (which DAs in which phase)
+- Add/remove tasks or stories
+- Modify acceptance criteria
+
+### Step 7: G4 Gate Evaluation
+
+Read `.expedite/plan/PLAN.md` and `.expedite/scope/SCOPE.md` (for DA reference).
+
+This is a **structural gate** -- all checks are deterministic (counts, field existence, string matching). Do NOT apply LLM judgment. For each criterion, state the specific evidence from the artifacts.
+
+**MUST criteria (all must pass for Go):**
+
+| # | Criterion | How to Check | Result |
+|---|-----------|-------------|--------|
+| M1 | Every DA covered by at least one phase | Count DAs in SCOPE.md, count unique DAs in all "Design decisions covered" lists in PLAN.md. State: "Found {N}/{M} DAs covered" | PASS/FAIL |
+| M2 | Phase sizing within bounds | For each phase: count tactical decisions (expect 2-5) and tasks/stories (expect 3-8). State: "Phase {X}: {N} tactical decisions, {M} tasks" for any out-of-bounds phase | PASS/FAIL |
+| M3 | Tactical decisions listed per phase | Each phase has a "Tactical Decisions" table with at least one entry, each classified as resolved or needs-spike. State: "{N}/{M} phases have tactical decision tables" | PASS/FAIL |
+| M4 | Acceptance criteria trace to design decisions | Each acceptance criterion includes parenthetical DA reference matching `*(traces to DA-*`. State: "{N}/{M} criteria have traceability" | PASS/FAIL |
+| M5 | PLAN.md exists and is non-empty | File exists with substantive content (not just headers). State: "PLAN.md: {line_count} lines" | PASS/FAIL |
+
+**SHOULD criteria (failures produce advisory, do not block):**
+
+| # | Criterion | How to Check | Result |
+|---|-----------|-------------|--------|
+| S1 | Wave/epic ordering is logical | Check that Wave 1 / Epic 1 has no external dependencies, subsequent phases build on prior ones. State reasoning. | PASS/ADVISORY |
+| S2 | Effort estimates present (engineering) or sizing present (product) | Check each task/story has effort/sizing field. State: "{N}/{M} tasks have estimates" | PASS/ADVISORY |
+| S3 | No orphan tasks | Every task/story traces to at least one DA via "Design decision" field. State: "{N} tasks without DA reference" | PASS/ADVISORY |
+| S4 | Override-affected DAs flagged | If `.expedite/design/override-context.md` exists, check affected DAs are annotated in plan. Auto-PASS if no override context file exists. | PASS/ADVISORY |
+
+Display gate results:
+
+```
+--- G4 Gate Evaluation ---
+(Structural evaluation -- deterministic criteria)
+
+MUST Criteria:
+  M1: {PASS|FAIL} -- {evidence}
+  M2: {PASS|FAIL} -- {evidence}
+  M3: {PASS|FAIL} -- {evidence}
+  M4: {PASS|FAIL} -- {evidence}
+  M5: {PASS|FAIL} -- {evidence}
+
+SHOULD Criteria:
+  S1: {PASS|ADVISORY} -- {evidence}
+  S2: {PASS|ADVISORY} -- {evidence}
+  S3: {PASS|ADVISORY} -- {evidence}
+  S4: {PASS|ADVISORY} -- {evidence}
+
+Gate Outcome: {Go | Go-with-advisory | Recycle}
+```
+
+**Gate outcomes:**
+- **Go**: All MUST pass AND all SHOULD pass
+- **Go-with-advisory**: All MUST pass, one or more SHOULD failures
+- **Recycle**: Any MUST criterion fails
+- **Override**: Only when user explicitly requests (not auto-determined)
+
+Proceed to Step 8.
+
+### Step 8: Gate Outcome Handling
+
+**8a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write):
+
+```yaml
+- gate: "G4"
+  timestamp: "{ISO 8601 UTC}"
+  outcome: "{go|go_advisory|recycle|override}"
+  must_passed: {count}
+  must_failed: {count}
+  should_passed: {count}
+  should_failed: {count}
+  notes: "{brief summary}"
+  overridden: false
+```
+
+**8b: Route by outcome:**
+
+**Go** -- Display "G4 gate passed. Plan is ready for execution." Proceed to Step 9.
+
+**Go-with-advisory** -- Show which SHOULD criteria failed. Present via freeform prompt: "1. Proceed with advisory | 2. Revise to address advisories". If proceed, proceed to Step 9. If revise, return to Step 6 (revision cycle).
+
+**Recycle** -- Count previous G4 recycle outcomes in gate_history (entries where `gate` = `"G4"` AND `outcome` = `"recycle"`).
+
+- **1st Recycle (recycle_count == 0):** Informational tone. Display which MUST criteria failed with specific evidence. Offer via freeform prompt: "1. Revise (fix the issues above) | 2. Override (proceed with documented gaps)". If revise, return to Step 6 with gate feedback visible. If override, proceed to 8c.
+
+- **2nd Recycle (recycle_count == 1):** Suggest adjustment. Display: "This is the second G4 recycle. Consider whether the plan structure needs adjustment." Show persistently failing criteria. Offer: "1. Revise | 2. Override (recommended if same criteria keep failing)". If revise, return to Step 6. If override, proceed to 8c.
+
+- **3rd+ Recycle (recycle_count >= 2):** Recommend override. Display: "This is recycle #{recycle_count + 1}. Recommend overriding the gate. Remaining issues may require scope adjustment rather than plan revision." Offer: "1. Override (recommended) | 2. One more attempt (not recommended)". If override, proceed to 8c. If attempt, return to Step 6.
+
+**8c: Override handling.**
+
+1. Update gate_history entry: set `overridden` to `true`, update `outcome` to `"override"`.
+2. Determine severity: low (0 MUST failures -- user-initiated), medium (1 MUST failure), high (2+ MUST failures).
+3. Write `.expedite/plan/override-context.md`:
+
+```markdown
+# G4 Override Context
+
+Timestamp: {ISO 8601 UTC}
+Severity: {low|medium|high}
+Recycle count: {N}
+
+## Overridden Issues
+
+{For each failed MUST criterion:}
+- {criterion_id}: {criterion description}
+  Evidence: {what the gate found}
+  Impact: {which phases/DAs are affected}
+
+## Spike/Execute Phase Advisory
+
+The following plan quality issues were overridden. The spike and execute
+phases should account for these gaps.
+{List affected criteria and recommendations}
+```
+
+4. Proceed to Step 9.
+
+### Step 9: Plan Completion
+
+Update state.yml (backup-before-write): set `phase` to `"plan_complete"`, update `last_modified`.
+
+NOTE: Do NOT populate the `tasks` array or `current_wave` field in state.yml. These fields exist in the schema but are populated by the execute skill, not the plan skill. The plan skill produces PLAN.md as its artifact; the execute skill reads PLAN.md and creates task-tracking state.
+
+Display plan completion summary:
+
+```
+## Plan Complete
+
+Project: {project_name}
+Intent: {intent}
+
+### Artifacts Produced
+- Plan: .expedite/plan/PLAN.md
+{If override:} - Override context: .expedite/plan/override-context.md
+
+### Gate Results
+G4 outcome: {outcome}
+MUST: {passed}/{total} | SHOULD: {passed}/{total}
+{If advisory:} Advisories: {list SHOULD failures}
+{If override:} Override severity: {severity}
+
+### Plan Summary
+{intent == engineering: Waves | intent == product: Epics}: {count}
+Tasks: {count}
+Tactical decisions: {resolved} resolved, {needs-spike} needs-spike
+
+### Contract Chain
+Scope -> Research -> Design -> Plan (complete)
+Decision Areas: {N} planned | Design decisions traced: {count}
+
+### Next Step
+Run `/expedite:spike <phase>` to investigate tactical decisions, or `/expedite:execute <phase>` to begin implementation.
+```
