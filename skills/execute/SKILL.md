@@ -316,6 +316,157 @@ Handle responses:
 - **skip**: mark task status as "skipped" in state.yml and checkpoint, append "Status: skipped" to PROGRESS.md, proceed to next task
 - **pause**: save checkpoint with error context in continuation_notes, STOP
 
-After the last task in the phase: proceed to Step 6 (implemented in Plan 09-03).
+After the last task in the phase: proceed to Step 6.
 
 Display: "All tasks in {Wave/Epic} {N} complete. Proceeding to phase completion..."
+
+### Step 6: Phase Completion
+
+After all tasks in the current phase are complete (Step 5 loop exhausted):
+
+**6a: Update per-phase checkpoint to complete.**
+
+Update `.expedite/plan/phases/{slug}/checkpoint.yml` (full rewrite):
+```yaml
+current_task: null
+current_wave: {wave_number}
+last_completed_task: "{final_task_id}"
+last_completed_at: "{ISO 8601 UTC}"
+tasks_completed: {total}
+tasks_total: {total}
+status: "complete"
+continuation_notes: "{Wave/Epic} {N} execution complete."
+```
+
+**6b: Append phase completion entry to PROGRESS.md via Bash.**
+
+Use `cat >>` (append) -- NEVER the Write tool:
+
+```bash
+cat >> .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
+
+---
+
+## Phase Complete: {Wave/Epic} {N}
+- Total tasks: {total}
+- Verified: {count}
+- Partial: {count}
+- Failed: {count}
+- Skipped: {count}
+- Completed: {ISO 8601 UTC timestamp}
+PROGRESS_EOF
+```
+
+**6c: Display phase completion summary.**
+
+```
+--- {Wave/Epic} {N} Complete ---
+
+Project: {project_name}
+Phase: {Wave/Epic} {N} - {description}
+
+Tasks completed: {count}/{total}
+  - Verified: {count}
+  - Partial: {count}
+  - Failed: {count}
+  - Skipped: {count}
+
+Artifacts:
+  - Progress log: .expedite/plan/phases/{slug}/PROGRESS.md
+  - Checkpoint: .expedite/plan/phases/{slug}/checkpoint.yml (status: complete)
+
+Contract Chain for this phase:
+  Scope DA -> Design Decision -> Plan Task -> {Spike Step (if spiked) ->} Code Change -> Verified
+```
+
+**6d: Check if this was the final phase.**
+
+Read PLAN.md and determine if there are any phases AFTER the current one.
+
+If **more phases remain** (NOT the last phase):
+
+Display:
+```
+### Next Steps
+Remaining phases: {list remaining phase numbers and descriptions}
+{If next phase has needs-spike TDs and no SPIKE.md:}
+Recommended: Run `/expedite:spike {next_N}` to investigate tactical decisions before execution.
+{Else:}
+Run `/expedite:spike {next_N}` (optional) or `/expedite:execute {next_N}` to continue.
+```
+
+Update state.yml (backup-before-write): keep `phase` as `"execute_in_progress"`, set `current_wave` to null, set `current_task` to null, set `last_modified`. Do NOT set phase to "complete" -- there are more phases.
+
+STOP. (User explicitly invokes the next phase.)
+
+If **no more phases** (this was the last phase):
+
+Proceed to Step 7.
+
+### Step 7: Lifecycle Completion
+
+This step only runs when the FINAL phase has been executed.
+
+**7a: Update state.yml (backup-before-write):**
+
+1. Read `.expedite/state.yml`
+2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Update the in-memory representation:
+   - Set `phase` to `"complete"`
+   - Set `current_task` to null
+   - Set `current_wave` to null
+   - Clear `tasks` array (phase-level tracking complete)
+   - Set `last_modified` to current ISO 8601 UTC timestamp
+4. Write the entire file back to `.expedite/state.yml`
+
+**7b: Append final phase summary to PROGRESS.md via Bash.**
+
+Use `cat >>` (append) -- NEVER the Write tool:
+
+```bash
+cat >> .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
+
+---
+
+## Lifecycle Complete
+- Phase: complete
+- All phases executed successfully
+- Completed: {ISO 8601 UTC timestamp}
+PROGRESS_EOF
+```
+
+**7c: Display lifecycle completion summary.**
+
+```
+## Lifecycle Complete
+
+Project: {project_name}
+Intent: {intent}
+
+### Execution Summary
+Total phases executed: {count}
+{For each phase:}
+  - {Wave/Epic} {N}: {tasks_completed}/{tasks_total} tasks ({verified_count} verified)
+
+### Per-Phase Artifacts
+{For each phase:}
+  - .expedite/plan/phases/{slug}/PROGRESS.md
+  - .expedite/plan/phases/{slug}/checkpoint.yml (status: complete)
+{If any phases were spiked:}
+  - .expedite/plan/phases/{slug}/SPIKE.md
+
+### Contract Chain Summary
+Scope -> Research -> Design -> Plan -> {Spike (where used) ->} Execute (complete)
+Decision Areas: {N} | Design Decisions: {count} | Phases: {count} | Tasks: {total across all phases}
+
+### Lifecycle Status
+Phase: complete
+{If any FAILED tasks across any phase:} WARNING: {count} tasks had FAILED verification. Review per-phase PROGRESS.md files for details.
+
+### Next Steps
+- Review per-phase PROGRESS.md files for detailed task outcomes
+- Run `/expedite:scope` to start a new lifecycle
+{If product intent:} - Review .expedite/design/HANDOFF.md for engineer handoff documentation
+```
+
+Note: Do NOT archive the lifecycle. Archival is Phase 10 functionality (ARTF-03).
