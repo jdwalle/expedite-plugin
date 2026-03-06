@@ -182,19 +182,21 @@ Plans:
 ### Phase 9: Spike and Execute Skills
 **Goal**: Users can optionally investigate tactical decisions and plan implementation steps (spike), then execute the plan with per-task verification tracing back to design decisions (execute)
 **Depends on**: Phase 8
-**Requirements**: SPIKE-01, SPIKE-02, SPIKE-03, SPIKE-04, SPIKE-05, EXEC-01, EXEC-02, EXEC-03, EXEC-04, EXEC-05, EXEC-06
+**Requirements**: SPIKE-01, SPIKE-02, SPIKE-03, SPIKE-04, SPIKE-05, SPIKE-06, EXEC-01, EXEC-02, EXEC-03, EXEC-04, EXEC-05, EXEC-06
 **Success Criteria** (what must be TRUE):
-  1. `/expedite:spike <phase>` reads the phase definition from PLAN.md and plans detailed implementation steps
-  2. For phases with unresolved tactical decisions, spike optionally spawns focused research in a separate context to resolve them before step planning
-  3. Spike output (SPIKE.md) provides full traceability: implementation step → tactical decision → strategic DA
-  4. `/expedite:execute <phase>` follows the spike plan if SPIKE.md exists; nudges user to run spike if unresolved tactical decisions detected and no SPIKE.md present (non-blocking)
-  5. checkpoint.yml tracks execution position for pause/resume across sessions
-  6. Per-task verification confirms code changes address the design decisions they trace to — contract chain validated end-to-end
-  7. PROGRESS.md uses append-only logging of completed task outcomes including which design decisions were satisfied
+  1. `/expedite:spike <phase>` reads a single phase definition from PLAN.md and plans detailed implementation steps (spike runs per planned phase, not once for the whole plan)
+  2. For unresolved tactical decisions, spike optionally spawns focused research in a separate context to resolve them before step planning
+  3. Spike is interactive — asks user via freeform prompt when tactical decisions are genuinely ambiguous; records decisions with rationale
+  4. Spike output (SPIKE.md) provides full traceability: implementation step → tactical decision → strategic DA
+  5. G5 structural gate validates spike output: every needs-spike TD resolved, every step traces to a TD or DA, no orphan steps, step count within phase sizing bounds
+  6. `/expedite:execute <phase>` follows the spike plan if SPIKE.md exists; nudges user to run spike if unresolved tactical decisions detected and no SPIKE.md present (non-blocking)
+  7. checkpoint.yml tracks execution position for pause/resume across sessions
+  8. Per-task verification confirms code changes address the design decisions they trace to — contract chain validated end-to-end
+  9. PROGRESS.md uses append-only logging of completed task outcomes including which design decisions were satisfied
 **Plans**: 3 plans
 
 Plans:
-- [ ] 09-01-PLAN.md -- Create spike skill (new directory + SKILL.md with 8 steps + prompt-spike-researcher.md reference template)
+- [ ] 09-01-PLAN.md -- Create spike skill (new directory + SKILL.md with 9 steps including G5 gate + prompt-spike-researcher.md reference template)
 - [ ] 09-02-PLAN.md -- Replace execute SKILL.md stub with Steps 1-5: prerequisite check, artifact loading with spiked/unspiked mode, state init with task tracking, resume logic, task execution loop with per-task verification
 - [ ] 09-03-PLAN.md -- Append Steps 6-7: wave/epic transition with spike-first option, execution completion with lifecycle summary + human verification of both skills
 
