@@ -176,7 +176,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md -- Replace plan SKILL.md stub with Steps 1-5: prerequisite check, artifact loading, state initialization, inline plan generation with tactical decisions, PLAN.md writing
+- [x] 08-01-PLAN.md -- Replace plan SKILL.md stub with Steps 1-5: prerequisite check, artifact loading, state initialization, inline plan generation with tactical decisions, PLAN.md writing
 - [ ] 08-02-PLAN.md -- Append Steps 6-9: freeform revision cycle, G4 structural gate (5 MUST + 4 SHOULD), gate outcome handling with recycle escalation, plan completion + human verification
 
 ### Phase 9: Spike and Execute Skills
@@ -232,6 +232,6 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 11. Integration Fixes (Gap Closure) | 1/1 | Complete    | 2026-03-04 |
 | 6. Research Quality and Synthesis | 3/3 | Complete | 2026-03-05 |
 | 7. Design Skill | 3/3 | Complete | 2026-03-05 |
-| 8. Plan Skill | 0/2 | Not started | - |
+| 8. Plan Skill | 1/2 | In Progress | - |
 | 9. Spike and Execute Skills | 0/3 | Not started | - |
 | 10. Cross-Cutting Integration | 0/3 | Not started | - |
