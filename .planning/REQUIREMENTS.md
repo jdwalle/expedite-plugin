@@ -87,11 +87,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Spike Skill
 
-- [ ] **SPIKE-01**: Spike reads phase definition from PLAN.md and plans detailed implementation steps with traceability (step → tactical decision → strategic DA)
+- [ ] **SPIKE-01**: Spike runs once per planned phase (not once for whole plan) — reads single phase definition from PLAN.md and plans detailed implementation steps with traceability (step → tactical decision → strategic DA)
 - [ ] **SPIKE-02**: For unresolved tactical decisions, spike optionally spawns focused research in a separate context to resolve them before step planning
 - [ ] **SPIKE-03**: SPIKE.md artifact written to `.expedite/plan/phases/{phase}/SPIKE.md` with tactical decisions resolved and implementation steps planned
-- [ ] **SPIKE-04**: Spike is not gated — no revision cycles or quality gates; user reviews output before execution
+- [ ] **SPIKE-04**: Spike is interactive — asks user via freeform prompt when tactical decisions are genuinely ambiguous; records decisions with rationale
 - [ ] **SPIKE-05**: Spike is optional — execute can proceed without it but nudges if unresolved tactical decisions detected
+- [ ] **SPIKE-06**: G5 structural gate validates spike output: every "needs-spike" tactical decision from PLAN.md has a resolution, every step traces to a tactical decision or strategic DA, no orphan steps, step count within phase sizing bounds
 
 ### Execute Skill
 
@@ -109,7 +110,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **GATE-03**: Four gate outcomes: Go, Go-with-advisory, Recycle, Override
 - [x] **GATE-04**: Recycle escalation: 1st informational, 2nd suggest adjustment, 3rd recommend override
 - [ ] **GATE-05**: Override records severity and injects gap context into downstream phase prompts
-- [x] **GATE-06**: G1 is structural (deterministic); G2 and G3 require LLM judgment; G4 is structural
+- [x] **GATE-06**: G1 is structural (deterministic); G2 and G3 require LLM judgment; G4 is structural; G5 is structural
 - [x] **GATE-07**: Anti-bias instructions in G2/G3 prompts ("evaluate as if someone else produced this")
 
 ### Prompt Templates
@@ -269,6 +270,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SPIKE-03 | Phase 9 | Pending |
 | SPIKE-04 | Phase 9 | Pending |
 | SPIKE-05 | Phase 9 | Pending |
+| SPIKE-06 | Phase 9 | Pending |
 | EXEC-01 | Phase 9 | Pending |
 | EXEC-02 | Phase 9 | Pending |
 | EXEC-03 | Phase 9 | Pending |
