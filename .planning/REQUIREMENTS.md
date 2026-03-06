@@ -96,12 +96,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Execute Skill
 
-- [ ] **EXEC-01**: Execute reads SPIKE.md (if exists) and follows planned implementation steps; if no SPIKE.md, execute plans and implements in one pass
-- [ ] **EXEC-02**: If no SPIKE.md and phase has unresolved tactical decisions, nudge user to run `/expedite:spike` first (non-blocking suggestion)
+- [x] **EXEC-01**: Execute reads SPIKE.md (if exists) and follows planned implementation steps; if no SPIKE.md, execute plans and implements in one pass
+- [x] **EXEC-02**: If no SPIKE.md and phase has unresolved tactical decisions, nudge user to run `/expedite:spike` first (non-blocking suggestion)
 - [ ] **EXEC-03**: Single checkpoint.yml tracks execution position for pause/resume
 - [ ] **EXEC-04**: PROGRESS.md uses append-only `cat >>` pattern (never rewrite)
 - [ ] **EXEC-05**: Micro-interaction between tasks: freeform "yes / pause / review" prompt
-- [ ] **EXEC-06**: Per-task verification confirms code change addresses the design decision it traces to (contract chain validated end-to-end)
+- [x] **EXEC-06**: Per-task verification confirms code change addresses the design decision it traces to (contract chain validated end-to-end)
 
 ### Quality Gates
 
@@ -271,12 +271,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SPIKE-04 | Phase 9 | Pending |
 | SPIKE-05 | Phase 9 | Pending |
 | SPIKE-06 | Phase 9 | Pending |
-| EXEC-01 | Phase 9 | Pending |
-| EXEC-02 | Phase 9 | Pending |
+| EXEC-01 | Phase 9 | Complete |
+| EXEC-02 | Phase 9 | Complete |
 | EXEC-03 | Phase 9 | Pending |
 | EXEC-04 | Phase 9 | Pending |
 | EXEC-05 | Phase 9 | Pending |
-| EXEC-06 | Phase 9 | Pending |
+| EXEC-06 | Phase 9 | Complete |
 | SCOPE-12 | Phase 10 | Pending |
 | INTNT-01 | Phase 10 | Pending |
 | INTNT-02 | Phase 10 | Pending |
