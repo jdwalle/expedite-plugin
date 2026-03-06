@@ -80,7 +80,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **PLAN-01**: Plan generated in main session from design artifacts
 - [x] **PLAN-02**: Design broken into uniform-sized implementation phases (2-5 tactical decisions, 3-8 tasks per phase); engineering intent uses waves, product intent uses epics/stories — same structure, intent-adaptive presentation
-- [ ] **PLAN-03**: G4 gate validates: every DA covered by a phase, phase sizing within bounds, tactical decisions listed per phase, acceptance criteria trace to design decisions
+- [x] **PLAN-03**: G4 gate validates: every DA covered by a phase, phase sizing within bounds, tactical decisions listed per phase, acceptance criteria trace to design decisions
 - [x] **PLAN-04**: PLAN.md artifact written to `.expedite/plan/PLAN.md` with phase structure including tactical decision tables
 - [x] **PLAN-05**: Every Decision Area (DA-1 through DA-N) from scope maps to at least one implementation phase
 - [x] **PLAN-06**: Each phase identifies tactical decisions classified as "resolved" (informed by strategic design) or "needs-spike" (requires investigation)
@@ -260,7 +260,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DSGN-09 | Phase 7 | Complete |
 | PLAN-01 | Phase 8 | Complete |
 | PLAN-02 | Phase 8 | Complete |
-| PLAN-03 | Phase 8 | Pending |
+| PLAN-03 | Phase 8 | Complete |
 | PLAN-04 | Phase 8 | Complete |
 | PLAN-05 | Phase 8 | Complete |
 | PLAN-06 | Phase 8 | Complete |

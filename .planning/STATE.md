@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-06T00:40:33Z"
+last_updated: "2026-03-06T00:52:14Z"
 progress:
   total_phases: 8
   completed_phases: 8
-  total_plans: 21
-  completed_plans: 21
+  total_plans: 22
+  completed_plans: 22
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 08 -- Plan Skill (IN PROGRESS -- 1 of 2 plans done)
+**Current focus:** Phase 08 -- Plan Skill (COMPLETE -- 2 of 2 plans done)
 
 ## Current Position
 
-Phase: 08 (Plan Skill)
-Plan: 1 of 2 in current phase (08-01 complete)
-Status: In Progress
-Last activity: 2026-03-06 -- Completed 08-01-PLAN.md (plan SKILL.md Steps 1-5)
+Phase: 08 (Plan Skill) -- COMPLETE
+Plan: 2 of 2 in current phase (all complete)
+Status: Complete
+Last activity: 2026-03-06 -- Completed 08-02-PLAN.md (plan SKILL.md Steps 6-9: revision cycle, G4 gate, completion)
 
 Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
+- Total plans completed: 23
 - Average duration: 2.2min
-- Total execution time: 0.88 hours
+- Total execution time: 0.92 hours
 
 **By Phase:**
 
@@ -47,11 +47,11 @@ Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
 | 5. Research Orchestration Core | 3 | 7min | 2.3min |
 | 6. Research Quality and Synthesis | 2 | 6min | 3min |
 | 7. Design Skill | 3 | 8min | 2.7min |
-| 8. Plan Skill | 1 | 3min | 3min |
+| 8. Plan Skill | 2 | 6min | 3min |
 | 11. Integration Fixes | 1 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 06-02 (3min), 07-01 (4min), 07-02 (1min), 07-03 (3min), 08-01 (3min)
+- Last 5 plans: 07-01 (4min), 07-02 (1min), 07-03 (3min), 08-01 (3min), 08-02 (3min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -126,6 +126,11 @@ Recent decisions affecting current work:
 - 08-01: Phase sizing enforced at 2-5 TDs and 3-8 tasks -- self-check before write plus G4 gate validation
 - 08-01: Open questions from DESIGN.md become needs-spike tactical decisions in the relevant phase
 - 08-01: Override-affected DAs annotated with advisory notes on all tracing tasks
+- 08-02: G4 gate is structural (deterministic, no LLM judgment) -- mirrors G1, not G3
+- 08-02: Revision cycle follows design skill freeform pattern with no round limit
+- 08-02: Recycle escalation uses 3-tier messaging (1st informational, 2nd suggest, 3rd recommend override)
+- 08-02: Override writes .expedite/plan/override-context.md for spike/execute consumption
+- 08-02: Plan completion does NOT populate tasks or current_wave (reserved for execute skill)
 
 ### Pending Todos
 
@@ -139,5 +144,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 08-01-PLAN.md -- plan SKILL.md Steps 1-5 (prerequisite, artifact loading, state init, generation, writing)
+Stopped at: Completed 08-02-PLAN.md -- plan SKILL.md Steps 6-9 (revision cycle, G4 gate, outcome handling, completion)
 Resume file: None
