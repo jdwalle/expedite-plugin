@@ -48,11 +48,11 @@ Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
 | 6. Research Quality and Synthesis | 2 | 6min | 3min |
 | 7. Design Skill | 3 | 8min | 2.7min |
 | 8. Plan Skill | 2 | 6min | 3min |
-| 9. Spike and Execute Skills | 2 | 6min | 3min |
+| 9. Spike and Execute Skills | 3 | 10min | 3.3min |
 | 11. Integration Fixes | 1 | 1min | 1min |
 
 **Recent Trend:**
-- Last 5 plans: 07-03 (3min), 08-01 (3min), 08-02 (3min), 09-01 (3min), 09-02 (3min)
+- Last 5 plans: 08-01 (3min), 08-02 (3min), 09-01 (4min), 09-02 (3min), 09-03 (3min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -132,6 +132,11 @@ Recent decisions affecting current work:
 - 08-02: Recycle escalation uses 3-tier messaging (1st informational, 2nd suggest, 3rd recommend override)
 - 08-02: Override writes .expedite/plan/override-context.md for spike/execute consumption
 - 08-02: Plan completion does NOT populate tasks or current_wave (reserved for execute skill)
+- 09-01: G5 gate added to spike with 4 MUST criteria (all TDs resolved, all steps trace, all have rationale, step count 3-8) and 3 SHOULD criteria
+- 09-01: Spike exercises judgment: clear-cut TDs resolved directly, genuinely ambiguous TDs prompt user via freeform interaction
+- 09-01: Spike research dispatched via Task() with focused prompt-spike-researcher.md (narrow scope: one TD, specific recommendation)
+- 09-01: No state.yml phase transition -- spike operates within plan_complete or execute_in_progress
+- 09-01: Prior-phase context loaded when spiking Phase N > 1 (SPIKE.md and PROGRESS.md from prior phase)
 - 09-02: All 5 execute steps written atomically (Steps 1-3 and 4-5 combined) since SKILL.md is a single coherent document
 - 09-02: Per-phase execution artifacts stored at .expedite/plan/phases/{slug}/ per USER DECISION -- not .expedite/execute/
 - 09-02: Verification is informational not blocking -- FAILED status surfaced in micro-interaction but user decides whether to proceed
@@ -148,5 +153,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 09-02-PLAN.md -- execute SKILL.md Steps 1-5 (core pipeline with per-phase checkpoint and task verification)
+Stopped at: Completed 09-01-PLAN.md -- spike SKILL.md 9-step orchestration with G5 structural gate
 Resume file: None

@@ -87,12 +87,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Spike Skill
 
-- [ ] **SPIKE-01**: Spike runs once per planned phase (not once for whole plan) — reads single phase definition from PLAN.md and plans detailed implementation steps with traceability (step → tactical decision → strategic DA)
-- [ ] **SPIKE-02**: For unresolved tactical decisions, spike optionally spawns focused research in a separate context to resolve them before step planning
-- [ ] **SPIKE-03**: SPIKE.md artifact written to `.expedite/plan/phases/{phase}/SPIKE.md` with tactical decisions resolved and implementation steps planned
-- [ ] **SPIKE-04**: Spike is interactive — asks user via freeform prompt when tactical decisions are genuinely ambiguous; records decisions with rationale
-- [ ] **SPIKE-05**: Spike is optional — execute can proceed without it but nudges if unresolved tactical decisions detected
-- [ ] **SPIKE-06**: G5 structural gate validates spike output: every "needs-spike" tactical decision from PLAN.md has a resolution, every step traces to a tactical decision or strategic DA, no orphan steps, step count within phase sizing bounds
+- [x] **SPIKE-01**: Spike runs once per planned phase (not once for whole plan) — reads single phase definition from PLAN.md and plans detailed implementation steps with traceability (step → tactical decision → strategic DA)
+- [x] **SPIKE-02**: For unresolved tactical decisions, spike optionally spawns focused research in a separate context to resolve them before step planning
+- [x] **SPIKE-03**: SPIKE.md artifact written to `.expedite/plan/phases/{phase}/SPIKE.md` with tactical decisions resolved and implementation steps planned
+- [x] **SPIKE-04**: Spike is interactive — asks user via freeform prompt when tactical decisions are genuinely ambiguous; records decisions with rationale
+- [x] **SPIKE-05**: Spike is optional — execute can proceed without it but nudges if unresolved tactical decisions detected
+- [x] **SPIKE-06**: G5 structural gate validates spike output: every "needs-spike" tactical decision from PLAN.md has a resolution, every step traces to a tactical decision or strategic DA, no orphan steps, step count within phase sizing bounds
 
 ### Execute Skill
 
@@ -265,12 +265,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLAN-04 | Phase 8 | Complete |
 | PLAN-05 | Phase 8 | Complete |
 | PLAN-06 | Phase 8 | Complete |
-| SPIKE-01 | Phase 9 | Pending |
-| SPIKE-02 | Phase 9 | Pending |
-| SPIKE-03 | Phase 9 | Pending |
-| SPIKE-04 | Phase 9 | Pending |
-| SPIKE-05 | Phase 9 | Pending |
-| SPIKE-06 | Phase 9 | Pending |
+| SPIKE-01 | Phase 9 | Complete |
+| SPIKE-02 | Phase 9 | Complete |
+| SPIKE-03 | Phase 9 | Complete |
+| SPIKE-04 | Phase 9 | Complete |
+| SPIKE-05 | Phase 9 | Complete |
+| SPIKE-06 | Phase 9 | Complete |
 | EXEC-01 | Phase 9 | Complete |
 | EXEC-02 | Phase 9 | Complete |
 | EXEC-03 | Phase 9 | Pending |

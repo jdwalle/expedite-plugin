@@ -196,7 +196,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 09-01-PLAN.md -- Create spike skill (new directory + SKILL.md with 9 steps including G5 gate + prompt-spike-researcher.md reference template)
+- [x] 09-01-PLAN.md -- Create spike skill (new directory + SKILL.md with 9 steps including G5 gate + prompt-spike-researcher.md reference template)
 - [x] 09-02-PLAN.md -- Replace execute SKILL.md stub with Steps 1-5: prerequisite check, artifact loading with spiked/unspiked mode, state init with task tracking, resume logic, task execution loop with per-task verification
 - [ ] 09-03-PLAN.md -- Append Steps 6-7: wave/epic transition with spike-first option, execution completion with lifecycle summary + human verification of both skills
 
