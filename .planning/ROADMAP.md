@@ -191,12 +191,12 @@ Plans:
   5. checkpoint.yml tracks execution position for pause/resume across sessions
   6. Per-task verification confirms code changes address the design decisions they trace to — contract chain validated end-to-end
   7. PROGRESS.md uses append-only logging of completed task outcomes including which design decisions were satisfied
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 09-01: TBD
-- [ ] 09-02: TBD
-- [ ] 09-03: TBD
+- [ ] 09-01-PLAN.md -- Create spike skill (new directory + SKILL.md with 8 steps + prompt-spike-researcher.md reference template)
+- [ ] 09-02-PLAN.md -- Replace execute SKILL.md stub with Steps 1-5: prerequisite check, artifact loading with spiked/unspiked mode, state init with task tracking, resume logic, task execution loop with per-task verification
+- [ ] 09-03-PLAN.md -- Append Steps 6-7: wave/epic transition with spike-first option, execution completion with lifecycle summary + human verification of both skills
 
 ### Phase 10: Cross-Cutting Integration
 **Goal**: The complete lifecycle works end-to-end with consistent intent adaptation, operational telemetry, lifecycle archival, polished gate escalation, and scope codebase analysis
