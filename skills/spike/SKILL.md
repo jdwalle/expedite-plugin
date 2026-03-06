@@ -227,3 +227,166 @@ All {X} tactical decisions resolved. Generating implementation steps...
 ```
 
 Proceed to Step 6.
+
+### Step 6: Generate Implementation Steps
+
+Generate ordered implementation steps based on:
+- The resolved tactical decisions (from Step 5)
+- The tasks/stories from the phase definition (from Step 4)
+- The design decisions from DESIGN.md
+- If prior phase context was loaded (Step 3): account for what was already built
+
+For each implementation step:
+- **Step number and title**
+- **Traces to:** TD-{N} -> DA-{X} ({DA description})
+- **Files:** specific files to create or modify (derived from task definitions in PLAN.md)
+- **What to do:** numbered sub-steps with specific implementation guidance, informed by the resolved tactical decisions
+
+Implementation steps should follow the task order from PLAN.md but may be reordered if a resolved tactical decision changes the optimal sequence. Each step must have at least one traceability link (TD -> DA).
+
+If a task in the phase traces to multiple tactical decisions, create one implementation step per task (consolidating the TD references), not one step per TD. The goal is that implementation steps correspond to concrete units of work.
+
+**Self-check before proceeding:**
+- [ ] Every resolved tactical decision maps to at least one implementation step
+- [ ] Every task from the phase definition is covered by at least one implementation step
+- [ ] Every step has a Traces-to link (TD -> DA)
+- [ ] File lists are specific (not generic descriptions like "relevant files")
+
+If any check fails, revise the implementation steps before proceeding. Do NOT proceed to the G5 gate with incomplete steps.
+
+### Step 7: G5 Structural Gate
+
+Validate the spike output structurally before writing SPIKE.md. G5 is a structural gate (like G1 and G4) -- deterministic checks, not LLM judgment.
+
+**MUST criteria (all must pass for Go):**
+
+| # | Criterion | How to Check |
+|---|-----------|-------------|
+| M1 | Every "needs-spike" TD resolved | Count needs-spike TDs from Step 4. Count resolved TDs from Step 5. All needs-spike TDs must have a resolution. State: "Resolved {N}/{M} needs-spike TDs" |
+| M2 | Every implementation step traces to a TD or DA | Check each step's "Traces to" field. No step should lack a traceability link. State: "{N}/{M} steps have traceability" |
+| M3 | Every resolved TD has a recorded rationale | Check each TD resolution from Step 5. Every resolution must include both a decision and a rationale (not just a decision). State: "{N}/{M} resolutions have rationale" |
+| M4 | Step count within phase sizing bounds | Count implementation steps. Expect 3-8 steps (matching PLAN-02 task sizing for uniform phases). State: "{N} implementation steps (bounds: 3-8)" |
+
+**SHOULD criteria (failures produce advisory, not blockers):**
+
+| # | Criterion | How to Check |
+|---|-----------|-------------|
+| S1 | Implementation steps add spike-specific guidance | Check that steps tracing to already-resolved TDs (from design) include implementation guidance beyond what was in PLAN.md. State reasoning. |
+| S2 | Full task coverage | Every task/story from the phase definition is covered by at least one implementation step. State: "{N}/{M} tasks covered" |
+| S3 | File lists are specific paths | Each implementation step's Files field contains specific file paths (not generic descriptions like "relevant files" or "various config files"). State: "{N}/{M} steps have specific file paths" |
+
+**Gate evaluation:**
+
+Run through each MUST criterion. If ALL pass:
+- If all SHOULD also pass: **Go** -- display:
+  ```
+  G5: Go. Spike output validated.
+  ```
+  Proceed to Step 8.
+- If any SHOULD fails: **Go-with-advisory** -- display:
+  ```
+  G5: Go with advisory.
+  ```
+  List the SHOULD failures as advisories. Proceed to Step 8.
+
+If ANY MUST fails: **Recycle** -- display:
+```
+G5: Recycle. Structural issues found:
+```
+List the failing MUST criteria with specific details (which TD is unresolved, which step is orphaned, which resolution lacks rationale, or step count out of bounds).
+
+**On Recycle:**
+- Display the issues clearly
+- Go back to the relevant step to fix:
+  - Missing TD resolution -> return to Step 5 for the specific TD
+  - Orphan step (no traceability) -> return to Step 6 to add traceability or remove orphan
+  - Missing rationale -> return to Step 5 to add rationale
+  - Step count out of bounds -> return to Step 6 to merge or split steps
+- After fixes, re-run G5 gate (loop back to Step 7)
+
+### Step 8: Write SPIKE.md
+
+Create the output directory and write the SPIKE.md artifact:
+
+```bash
+mkdir -p .expedite/plan/phases/{slug}/
+```
+
+Write to `.expedite/plan/phases/{slug}/SPIKE.md` with this format:
+
+```markdown
+# Spike: {Wave/Epic} {N} - {description}
+Generated: {ISO 8601 UTC timestamp}
+Source: PLAN.md {Wave/Epic} {N}
+Tactical Decisions: {count} ({resolved_from_design} resolved from design, {resolved_via_spike} resolved via spike)
+G5 Gate: {Go | Go-with-advisory}
+
+## Tactical Decisions Resolved
+
+### TD-{N}: {description}
+**Classification:** {resolved (from PLAN.md) | was needs-spike, now resolved}
+{If was needs-spike:}
+**Resolution method:** {Spike judgment (clear-cut) | User decision (ambiguous) | Focused research}
+**Resolution:** {the resolution}
+**Rationale:** {rationale}
+{If researched:} **Evidence:** {path to spike-research-td-N.md}
+
+{... repeat for each TD}
+
+## Implementation Steps
+
+### Step {N}: {title}
+**Traces to:** TD-{N} -> DA-{X} ({description})
+**Files:** {file list}
+**What to do:**
+1. {specific sub-step}
+2. {specific sub-step}
+...
+
+{... repeat for each step}
+```
+
+After writing, verify the file exists and has substantive content:
+1. Read the file back
+2. Check it is non-empty (not just headers)
+3. Count sections: should have at least one TD section and at least one implementation step section
+
+If verification fails, display the issue and re-write.
+
+### Step 9: Display Summary
+
+Display the spike completion summary:
+
+```
+## Spike Complete
+
+Phase: {Wave/Epic} {N} - {description}
+Project: {project_name}
+
+### G5 Gate
+- Status: {Go | Go-with-advisory}
+{If Go-with-advisory:}
+- Advisories:
+  {list each advisory}
+
+### Artifacts Produced
+- Spike: .expedite/plan/phases/{slug}/SPIKE.md
+{If any research dispatched:}
+- Research evidence:
+  {list each spike-research-td-N.md file path}
+
+### Tactical Decisions
+- {count} total: {resolved_from_design} resolved from design, {resolved_via_spike} resolved via spike
+  - {count_clear_cut} resolved by spike judgment (clear-cut)
+  - {count_user} resolved by user input (ambiguous)
+  - {count_researched} resolved via focused research
+
+### Implementation Steps
+- {count} steps planned
+- Contract chain: Scope DA -> Design Decision -> Plan Task -> Spike Step (complete)
+
+### Next Step
+Run `/expedite:execute {phase_number}` to begin implementation of this phase.
+```
+
+NOTE: Do NOT update state.yml. Spike does not have a lifecycle phase -- it operates within plan_complete or execute_in_progress. The output file (SPIKE.md) is the only indicator of spike completion. This is deliberate: spike is optional and phase-scoped, so lifecycle-level state tracking would add unnecessary complexity.
