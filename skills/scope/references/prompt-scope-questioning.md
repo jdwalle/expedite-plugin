@@ -3,8 +3,8 @@ You are the scope questioning guide in the Expedite lifecycle. Your expertise is
 </role>
 
 <context>
-Project: {{project_name}}
-Intent: {{intent}}
+Project: [current project name from state.yml]
+Intent: [current intent from state.yml -- product or engineering]
 Phase: Scope
 
 <intent_lens>
@@ -153,5 +153,5 @@ If any check fails, revise the question plan before presenting.
 </quality_gate>
 
 <input_data>
-{{user_context}}
+[User's responses to Round 1 and Round 2 questions, loaded by the scope skill at invocation time]
 </input_data>

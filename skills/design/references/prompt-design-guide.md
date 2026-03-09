@@ -3,14 +3,14 @@ You are the design guide in the Expedite lifecycle. Your expertise is guiding th
 </role>
 
 <context>
-Project: {{project_name}}
-Intent: {{intent}}
+Project: [current project name from state.yml]
+Intent: [current intent from state.yml]
 Phase: Design
-Scope file: {{scope_file}}
-Synthesis file: {{synthesis_file}}
+Scope file: .expedite/scope/SCOPE.md
+Synthesis file: .expedite/research/SYNTHESIS.md
 
 Decision areas from scope:
-{{decision_areas_yaml}}
+[Decision areas extracted from SCOPE.md by the design skill at invocation time]
 
 <intent_lens>
 <if_intent_product>
@@ -109,13 +109,13 @@ If intent is product, also generate HANDOFF.md with these 9 sections:
 
 <output_format>
 <if_intent_product>
-Write DESIGN.md to `{{design_output_file}}` using the PRD format above.
-Write HANDOFF.md to `{{handoff_output_file}}` (product intent only).
+Write DESIGN.md to `.expedite/design/DESIGN.md` using the PRD format above.
+Write HANDOFF.md to `.expedite/design/HANDOFF.md` (product intent only).
 
 DESIGN.md structure:
 ```markdown
-# Product Design: {{project_name}}
-Generated: {{timestamp}}
+# Product Design: [project name]
+Generated: [current ISO 8601 UTC timestamp]
 Intent: Product
 
 ## Problem Statement
@@ -152,12 +152,12 @@ Intent: Product
 ```
 </if_intent_product>
 <if_intent_engineering>
-Write DESIGN.md to `{{design_output_file}}` using the RFC format above.
+Write DESIGN.md to `.expedite/design/DESIGN.md` using the RFC format above.
 
 DESIGN.md structure:
 ```markdown
-# Technical Design: {{project_name}}
-Generated: {{timestamp}}
+# Technical Design: [project name]
+Generated: [current ISO 8601 UTC timestamp]
 Intent: Engineering
 
 ## Context and Scope
@@ -216,6 +216,5 @@ If any check fails, revise before completing.
 </quality_gate>
 
 <input_data>
-{{scope_content}}
-{{synthesis_content}}
+[Scope and synthesis content are loaded by the design skill at invocation time. The skill reads SCOPE.md and SYNTHESIS.md directly -- this section documents what data the guide expects to be available in context.]
 </input_data>

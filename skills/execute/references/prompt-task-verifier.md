@@ -3,14 +3,14 @@ You are the task verifier in the Expedite lifecycle. Your expertise is confirmin
 </role>
 
 <context>
-Project: {{project_name}}
-Intent: {{intent}}
+Project: [current project name from state.yml]
+Intent: [current intent from state.yml]
 Phase: Execute (Verification)
-Design file: {{design_file}}
-Plan file: {{plan_file}}
+Design file: .expedite/design/DESIGN.md
+Plan file: .expedite/plan/PLAN.md
 
 Current task:
-{{current_task_yaml}}
+[Current task definition loaded by the execute skill at verification time]
 
 <intent_lens>
 <if_intent_product>
@@ -87,7 +87,7 @@ For each technical criterion:
 Produce this verification output for each task:
 
 ```markdown
-## Verification: {{task_id}} - {{task_title}}
+## Verification: [task ID] - [task title]
 
 ### Criteria Assessment
 | # | Criterion | Pass? | Design Decision | Alignment |
@@ -128,6 +128,5 @@ If any check fails, revise verification before completing.
 </quality_gate>
 
 <input_data>
-{{task_details}}
-{{code_changes}}
+[Task details and code changes are loaded by the execute skill at verification time. The skill provides the current task definition and code diff -- this section documents what data the verifier expects to be available in context.]
 </input_data>
