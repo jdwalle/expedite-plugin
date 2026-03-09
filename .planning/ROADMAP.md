@@ -211,12 +211,12 @@ Plans:
   4. Gate escalation works across the full lifecycle: 1st Recycle is informational, 2nd suggests adjustment, 3rd recommends override; Override records severity and injects gap context into downstream prompts
   5. Source configuration step in scope confirms default sources or allows editing sources.yml
   6. Scope Step 7 generates additive codebase-routed questions per DA — not counted against question budget, as many as needed to understand existing patterns relevant to each decision area
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 10-01: TBD
-- [ ] 10-02: TBD
-- [ ] 10-03: TBD
+- [ ] 10-01-PLAN.md -- Insert codebase-routed question generation step in scope SKILL.md (SCOPE-12) + renumber Steps 7-9 to 8-10
+- [ ] 10-02-PLAN.md -- Fix intent terminology in execute PROGRESS.md entries, add lifecycle archival to execute Step 7, verify gate escalation override consistency (INTNT-01/02/03, GATE-05, ARTF-03)
+- [ ] 10-03-PLAN.md -- Add operational telemetry (log.yml) across all 6 non-status skills + human verification (TELE-01 through TELE-05)
 
 ## Progress
 
