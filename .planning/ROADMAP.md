@@ -248,7 +248,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 13-01-PLAN.md -- Add mid-phase crash resume logic to research/design/plan SKILL.md Step 1
+- [x] 13-01-PLAN.md -- Add mid-phase crash resume logic to research/design/plan SKILL.md Step 1
 - [ ] 13-02-PLAN.md -- Remove dead *_recycled status mappings + add Glob fallback to 3 research inline reference files
 
 ## Progress
@@ -271,4 +271,4 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 9. Spike and Execute Skills | 3/3 | Complete | 2026-03-08 |
 | 10. Cross-Cutting Integration | 3/3 | Complete    | 2026-03-09 |
 | 12. Audit Tech Debt Cleanup | 2/2 | Complete    | 2026-03-09 |
-| 13. Tech Debt Resolution | 0/2 | Pending | - |
+| 13. Tech Debt Resolution | 1/2 | In Progress | - |

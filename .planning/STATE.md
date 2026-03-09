@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-09T03:34:44.803Z"
+last_updated: "2026-03-09T16:21:49Z"
 progress:
-  total_phases: 12
+  total_phases: 13
   completed_phases: 12
-  total_plans: 30
-  completed_plans: 30
+  total_plans: 32
+  completed_plans: 31
 ---
 
 # Project State
@@ -18,21 +18,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 12 -- Audit Tech Debt Cleanup (COMPLETE -- 2 of 2 plans done)
+**Current focus:** Phase 13 -- Tech Debt Resolution (IN PROGRESS -- 1 of 2 plans done)
 
 ## Current Position
 
-Phase: 12 (Audit Tech Debt Cleanup)
-Plan: 2 of 2 in current phase
-Status: Complete
-Last activity: 2026-03-09 -- Completed 12-02-PLAN.md (G5 gate_history + inline template placeholder cleanup)
+Phase: 13 (Tech Debt Resolution)
+Plan: 1 of 2 in current phase
+Status: In Progress
+Last activity: 2026-03-09 -- Completed 13-01-PLAN.md (mid-phase crash resume for research/design/plan)
 
-Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
+Progress: [▓▓▓▓▓▓▓▓▓▓] 97%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 30
+- Total plans completed: 31
 - Average duration: 2.3min
 - Total execution time: 1.2 hours
 
@@ -52,9 +52,10 @@ Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
 | 10. Cross-Cutting Integration | 3 | 16min | 5.3min |
 | 11. Integration Fixes | 1 | 1min | 1min |
 | 12. Audit Tech Debt Cleanup | 2 | 5min | 2.5min |
+| 13. Tech Debt Resolution | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 10-02 (2min), 10-03 (12min), 12-01 (2min), 12-02 (3min)
+- Last 5 plans: 10-03 (12min), 12-01 (2min), 12-02 (3min), 13-01 (2min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -157,6 +158,10 @@ Recent decisions affecting current work:
 - 12-02: G5 gate_history uses same backup-before-write pattern as other gates
 - 12-02: Step 9 NOTE now distinguishes gate_history (events) from phase transitions (state)
 - 12-02: Inline template placeholders replaced with bracketed plain-text descriptions, not removed
+- 13-01: Research resume uses 5-branch decision tree (research_round + artifact checks) due to 18-step complexity
+- 13-01: Design/plan resume uses simpler single-artifact check (DESIGN.md/PLAN.md existence)
+- 13-01: Design/plan Case B2 checks gate_history for recycle evidence and offers dual options when found
+- 13-01: Research resume uses AskUserQuestion (matching scope pattern); design/plan just proceed (matching execute pattern)
 
 ### Pending Todos
 
@@ -170,5 +175,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: Completed 12-02-PLAN.md -- G5 gate_history recording + inline template placeholder cleanup
+Stopped at: Completed 13-01-PLAN.md -- mid-phase crash resume for research/design/plan SKILL.md
 Resume file: None
