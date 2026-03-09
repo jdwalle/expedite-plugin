@@ -61,7 +61,42 @@ The user's research gate recycled, they exited the session, and are now re-enter
 
 Proceed to Step 2. (Step 2 already reads override-context.md if it exists and flags affected DAs.)
 
-**Case C: Phase is anything else (not "research_complete", not matching Case B conditions)**
+**Case B2: Phase is "design_in_progress" AND `--override` flag is NOT present**
+
+This is a resume scenario. The design skill was running when the session ended.
+
+1. First, check gate_history for G2 recycle entries (entries where `gate: "G2"` and `outcome: "recycle"`).
+
+   **If G2 recycle evidence IS found:** The design was in progress after an override entry, and the user may want either crash resume or override re-entry. Display:
+   ```
+   Found in-progress design for "{project_name}".
+
+   It appears your research gate (G2) was recycled in a prior session.
+   You can resume the design revision, or use --override to proceed with known gaps.
+
+   Options:
+   1. Resume design from where you left off
+   2. Re-enter with --override: `/expedite:design --override`
+   ```
+   Wait for user response. If they choose resume, continue with the artifact check below. If they indicate --override, display: "Please re-invoke with the --override flag: `/expedite:design --override`" then STOP.
+
+   **If NO G2 recycle evidence:** This is a pure crash resume. Continue with the artifact check below.
+
+2. Check for `.expedite/design/DESIGN.md`:
+   - If DESIGN.md exists: Step 5 completed. Resume at Step 7 (revision cycle). Display: "Found in-progress design with DESIGN.md already generated. Resuming at revision cycle..."
+   - If DESIGN.md does not exist: Resume at Step 2 (read artifacts, then generate). Display: "Found in-progress design, but no DESIGN.md yet. Resuming from artifact loading..."
+
+3. Display:
+```
+Found in-progress design for "{project_name}".
+
+Design document: {exists/not yet generated}
+Resume point: Step {2 or 7}
+```
+
+4. Proceed directly to the resume step. Do NOT re-run Step 3 (state transition) since state is already design_in_progress.
+
+**Case C: Phase is anything else (not "research_complete", not matching Case B or B2 conditions)**
 
 Display:
 ```
@@ -69,8 +104,6 @@ Error: Research is not complete. Run `/expedite:research` to gather evidence bef
 
 Current phase: {phase}
 ```
-If phase is "research_in_progress" and `--override` flag is NOT present, additionally check gate_history for G2 recycle entries. If found, display: "Research was recycled in a prior session. Use `--override` flag to proceed with known gaps: `/expedite:design --override`"
-
 Then STOP. Do not proceed to any other step.
 
 ### Step 2: Read Scope + Research Artifacts

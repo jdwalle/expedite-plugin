@@ -61,7 +61,42 @@ The user's design gate recycled, they exited the session, and are now re-enterin
 
 Proceed to Step 2. (Step 2 already reads override-context.md if it exists and flags affected DAs.)
 
-**Case C: Phase is anything else (not "design_complete", not matching Case B conditions)**
+**Case B2: Phase is "plan_in_progress" AND `--override` flag is NOT present**
+
+This is a resume scenario. The plan skill was running when the session ended.
+
+1. First, check gate_history for G3 recycle entries (entries where `gate: "G3"` and `outcome: "recycle"`).
+
+   **If G3 recycle evidence IS found:** The plan was in progress after an override entry, and the user may want either crash resume or override re-entry. Display:
+   ```
+   Found in-progress plan for "{project_name}".
+
+   It appears your design gate (G3) was recycled in a prior session.
+   You can resume the plan revision, or use --override to proceed with known gaps.
+
+   Options:
+   1. Resume plan from where you left off
+   2. Re-enter with --override: `/expedite:plan --override`
+   ```
+   Wait for user response. If they choose resume, continue with the artifact check below. If they indicate --override, display: "Please re-invoke with the --override flag: `/expedite:plan --override`" then STOP.
+
+   **If NO G3 recycle evidence:** This is a pure crash resume. Continue with the artifact check below.
+
+2. Check for `.expedite/plan/PLAN.md`:
+   - If PLAN.md exists: Step 5 completed. Resume at Step 6 (revision cycle). Display: "Found in-progress plan with PLAN.md already generated. Resuming at revision cycle..."
+   - If PLAN.md does not exist: Resume at Step 2 (read artifacts, then generate). Display: "Found in-progress plan, but no PLAN.md yet. Resuming from artifact loading..."
+
+3. Display:
+```
+Found in-progress plan for "{project_name}".
+
+Plan document: {exists/not yet generated}
+Resume point: Step {2 or 6}
+```
+
+4. Proceed directly to the resume step. Do NOT re-run Step 3 (state transition) since state is already plan_in_progress.
+
+**Case C: Phase is anything else (not "design_complete", not matching Case B or B2 conditions)**
 
 Display:
 ```
@@ -69,8 +104,6 @@ Error: Design is not complete. Run `/expedite:design` to generate a design befor
 
 Current phase: {phase}
 ```
-If phase is "design_in_progress" and `--override` flag is NOT present, additionally check gate_history for G3 recycle entries. If found, display: "Design was recycled in a prior session. Use `--override` flag to proceed with known gaps: `/expedite:plan --override`"
-
 Then STOP. Do not proceed to any other step.
 
 ### Step 2: Read Design + Scope Artifacts
