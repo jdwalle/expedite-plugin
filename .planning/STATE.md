@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-09T02:54:33.638Z"
+status: in_progress
+last_updated: "2026-03-09T03:26:28Z"
 progress:
-  total_phases: 11
+  total_phases: 12
   completed_phases: 11
-  total_plans: 28
-  completed_plans: 28
+  total_plans: 30
+  completed_plans: 29
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 10 -- Cross-Cutting Integration (COMPLETE -- 3 of 3 plans done)
+**Current focus:** Phase 12 -- Audit Tech Debt Cleanup (IN PROGRESS -- 1 of 2 plans done)
 
 ## Current Position
 
-Phase: 10 (Cross-Cutting Integration)
-Plan: 3 of 3 in current phase
-Status: Complete
-Last activity: 2026-03-09 -- Completed 10-03-PLAN.md (operational telemetry across all 6 lifecycle skills)
+Phase: 12 (Audit Tech Debt Cleanup)
+Plan: 1 of 2 in current phase
+Status: In Progress
+Last activity: 2026-03-09 -- Completed 12-01-PLAN.md (dead *_recycled override re-entry fix)
 
-Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
+Progress: [▓▓▓▓▓▓▓▓▓░] 97%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
+- Total plans completed: 29
 - Average duration: 2.3min
-- Total execution time: 1.12 hours
+- Total execution time: 1.15 hours
 
 **By Phase:**
 
@@ -51,10 +51,11 @@ Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
 | 9. Spike and Execute Skills | 3 | 14min | 4.7min |
 | 10. Cross-Cutting Integration | 3 | 16min | 5.3min |
 | 11. Integration Fixes | 1 | 1min | 1min |
+| 12. Audit Tech Debt Cleanup | 1 | 2min | 2min |
 
 **Recent Trend:**
-- Last 5 plans: 09-03 (4min), 10-01 (2min), 10-02 (2min), 10-03 (12min)
-- Trend: Steady (10-03 higher due to 6-file cross-cutting edits)
+- Last 5 plans: 10-01 (2min), 10-02 (2min), 10-03 (12min), 12-01 (2min)
+- Trend: Steady
 
 *Updated after each plan completion*
 
@@ -122,7 +123,7 @@ Recent decisions affecting current work:
 - 07-03: G3 gate uses inline LLM judgment with anti-bias instructions (unlike G1 purely structural)
 - 07-03: Recycle escalation adapted from ref-recycle-escalation.md with design-specific context
 - 07-03: Override writes .expedite/design/override-context.md for plan phase consumption
-- 07-03: --override flag wired to research_recycled entry path in Step 1
+- 07-03: --override flag wired to research_in_progress entry path in Step 1 (fixed in 12-01 from research_recycled)
 - 08-01: Plan generation is inline (not subagent) -- matches scope/design skill pattern, enables revision cycle (PLAN-01)
 - 08-01: Tactical decision IDs are phase-scoped (each wave/epic starts at TD-1) to avoid renumbering on reorder
 - 08-01: Phase sizing enforced at 2-5 TDs and 3-8 tasks -- self-check before write plus G4 gate validation
@@ -150,6 +151,12 @@ Recent decisions affecting current work:
 - 10-02: Archival replicates scope SKILL.md Step 1 pattern exactly -- same slug generation, same exclusion list, same bash for-loop
 - 10-02: GATE-05 verified as already complete -- no code changes needed, G2/G3/G4 write override-context.md, G5 uses SPIKE.md as advisory channel
 - 10-02: INTNT-01/02/03 verified as fully implemented -- only fix needed was hardcoded "Wave" in execute Step 5e PROGRESS.md entries
+- 12-02: G5 gate_history uses same backup-before-write pattern as other gates
+- 12-02: Step 9 NOTE now distinguishes gate_history (events) from phase transitions (state)
+- 12-02: Inline template placeholders replaced with bracketed plain-text descriptions, not removed
+- 12-01: Case B uses *_in_progress + --override + gate_history recycle evidence (not *_recycled phase)
+- 12-01: Status SKILL.md *_recycled mappings retained unchanged for documentation value
+- 12-01: TELE-01..05 confirmed already complete -- no REQUIREMENTS.md changes needed
 
 ### Pending Todos
 
@@ -163,5 +170,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: Completed 10-01-PLAN.md -- codebase analysis step + scope skill renumbering (Steps 7-10)
+Stopped at: Completed 12-01-PLAN.md -- dead *_recycled override re-entry fix
 Resume file: None

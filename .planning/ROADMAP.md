@@ -232,7 +232,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 12-01-PLAN.md -- Fix dead *_recycled override re-entry paths in design/plan/execute skills + state.yml.template annotation + TELE checkbox verification
+- [x] 12-01-PLAN.md -- Fix dead *_recycled override re-entry paths in design/plan/execute skills + state.yml.template annotation + TELE checkbox verification
 - [ ] 12-02-PLAN.md -- Add G5 gate_history recording to spike SKILL.md + remove {{placeholder}} syntax from 4 inline reference templates
 
 ## Progress
@@ -254,4 +254,4 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 8. Plan Skill | 2/2 | Complete | 2026-03-06 |
 | 9. Spike and Execute Skills | 3/3 | Complete | 2026-03-08 |
 | 10. Cross-Cutting Integration | 3/3 | Complete    | 2026-03-09 |
-| 12. Audit Tech Debt Cleanup | 0/2 | Not Started | - |
+| 12. Audit Tech Debt Cleanup | 1/2 | In Progress | - |
