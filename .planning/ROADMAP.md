@@ -22,6 +22,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Plan Skill** - Break design into uniform-sized phases, tactical decision identification, intent-adaptive format (waves/epics), G4 gate
 - [x] **Phase 9: Spike and Execute Skills** - Spike: tactical decision resolution + step planning; Execute: follow spike plan, nudge for missing spike, checkpoint/resume
 - [x] **Phase 10: Cross-Cutting Integration** - Dual intent end-to-end, telemetry, archival flow, gate escalation polish, scope codebase questions (completed 2026-03-09)
+- [ ] **Phase 12: Audit Tech Debt Cleanup** - Fix dead *_recycled re-entry paths, G5 gate_history, inline guide placeholders, TELE checkbox update
 
 ## Phase Details
 
@@ -218,10 +219,25 @@ Plans:
 - [ ] 10-02-PLAN.md -- Fix intent terminology in execute PROGRESS.md entries, add lifecycle archival to execute Step 7, verify gate escalation override consistency (INTNT-01/02/03, GATE-05, ARTF-03)
 - [ ] 10-03-PLAN.md -- Add operational telemetry (log.yml) across all 6 non-status skills + human verification (TELE-01 through TELE-05)
 
+### Phase 12: Audit Tech Debt Cleanup
+**Goal**: Fix 3 integration findings and 1 tech debt item from v1.0 audit — dead *_recycled re-entry paths, G5 gate_history gap, inline guide placeholders, TELE checkbox update
+**Depends on**: Phase 10
+**Requirements**: STATE-01, GATE-04, GATE-01, TMPL-01, TELE-01, TELE-02, TELE-03, TELE-04, TELE-05
+**Gap Closure**: Closes INT-04, INT-05, INT-06, FLOW-03 from v1.0-MILESTONE-AUDIT.md
+**Success Criteria** (what must be TRUE):
+  1. Cross-session override re-entry works: either `*_recycled` is written to state.yml when user exits mid-recycle, or Case B checks accept `*_in_progress` + override flag + gate_history evidence
+  2. Spike Step 7 appends G5 gate outcome to `gate_history` array in state.yml (status skill shows G5)
+  3. 4 inline reference templates (`prompt-scope-questioning.md`, `prompt-design-guide.md`, `prompt-plan-guide.md`, `prompt-task-verifier.md`) have no unfilled `{{placeholder}}` syntax
+  4. REQUIREMENTS.md TELE-01..05 checkboxes updated from `[ ]` to `[x]` with coverage count corrected
+**Plans**: TBD
+
+Plans:
+- TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 11 -> 6 -> 7 -> 8 -> 9 -> 10
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 11 -> 6 -> 7 -> 8 -> 9 -> 10 -> 12
 Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration issues Phase 6+ depends on.
 
 | Phase | Plans Complete | Status | Completed |
@@ -237,3 +253,4 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 8. Plan Skill | 2/2 | Complete | 2026-03-06 |
 | 9. Spike and Execute Skills | 3/3 | Complete | 2026-03-08 |
 | 10. Cross-Cutting Integration | 3/3 | Complete    | 2026-03-09 |
+| 12. Audit Tech Debt Cleanup | 0/0 | Not Started | - |

@@ -130,11 +130,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Telemetry
 
-- [ ] **TELE-01**: log.yml in `.expedite/` directory, gitignored
-- [ ] **TELE-02**: Append-only via `cat >>` Bash command (never Write tool rewrite)
-- [ ] **TELE-03**: Multi-document YAML format (one document per event)
-- [ ] **TELE-04**: Tracks phase transitions, gate outcomes, agent completions, source failures, overrides
-- [ ] **TELE-05**: log.yml persists across lifecycles (not archived)
+- [x] **TELE-01**: log.yml in `.expedite/` directory, gitignored
+- [x] **TELE-02**: Append-only via `cat >>` Bash command (never Write tool rewrite)
+- [x] **TELE-03**: Multi-document YAML format (one document per event)
+- [x] **TELE-04**: Tracks phase transitions, gate outcomes, agent completions, source failures, overrides
+- [x] **TELE-05**: log.yml persists across lifecycles (not archived)
 
 ### Artifact Pipeline
 
@@ -281,15 +281,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INTNT-01 | Phase 10 | Complete |
 | INTNT-02 | Phase 10 | Complete |
 | INTNT-03 | Phase 10 | Complete |
-| TELE-01 | Phase 10 | Pending |
-| TELE-02 | Phase 10 | Pending |
-| TELE-03 | Phase 10 | Pending |
-| TELE-04 | Phase 10 | Pending |
-| TELE-05 | Phase 10 | Pending |
+| TELE-01 | Phase 10 | Complete |
+| TELE-02 | Phase 10 | Complete |
+| TELE-03 | Phase 10 | Complete |
+| TELE-04 | Phase 10 | Complete |
+| TELE-05 | Phase 10 | Complete |
 
 **Coverage:**
-- v1 requirements: 87 total (+ 6 new: SPIKE-01 through SPIKE-05, SCOPE-12 = 93; EXEC-07 removed = 92)
+- v1 requirements: 92 total
 - Mapped to phases: 92
+- Complete: 92
 - Unmapped: 0
 
 ---
