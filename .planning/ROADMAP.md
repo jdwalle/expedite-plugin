@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 6: Research Quality and Synthesis** - Sufficiency assessment, G2 gate, gap-fill rounds, dynamic question discovery, SYNTHESIS.md
 - [x] **Phase 7: Design Skill** - Main-session design generation, RFC/PRD format, revision cycle, G3 gate
 - [x] **Phase 8: Plan Skill** - Break design into uniform-sized phases, tactical decision identification, intent-adaptive format (waves/epics), G4 gate
-- [ ] **Phase 9: Spike and Execute Skills** - Spike: tactical decision resolution + step planning; Execute: follow spike plan, nudge for missing spike, checkpoint/resume
+- [x] **Phase 9: Spike and Execute Skills** - Spike: tactical decision resolution + step planning; Execute: follow spike plan, nudge for missing spike, checkpoint/resume
 - [ ] **Phase 10: Cross-Cutting Integration** - Dual intent end-to-end, telemetry, archival flow, gate escalation polish, scope codebase questions
 
 ## Phase Details
@@ -198,7 +198,7 @@ Plans:
 Plans:
 - [x] 09-01-PLAN.md -- Create spike skill (new directory + SKILL.md with 9 steps including G5 gate + prompt-spike-researcher.md reference template)
 - [x] 09-02-PLAN.md -- Replace execute SKILL.md stub with Steps 1-5: prerequisite check, artifact loading with spiked/unspiked mode, state init with task tracking, resume logic, task execution loop with per-task verification
-- [ ] 09-03-PLAN.md -- Append Steps 6-7: wave/epic transition with spike-first option, execution completion with lifecycle summary + human verification of both skills
+- [x] 09-03-PLAN.md -- Append Steps 6-7: wave/epic transition with spike-first option, execution completion with lifecycle summary + human verification of both skills
 
 ### Phase 10: Cross-Cutting Integration
 **Goal**: The complete lifecycle works end-to-end with consistent intent adaptation, operational telemetry, lifecycle archival, polished gate escalation, and scope codebase analysis
@@ -235,5 +235,5 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 6. Research Quality and Synthesis | 3/3 | Complete | 2026-03-05 |
 | 7. Design Skill | 3/3 | Complete | 2026-03-05 |
 | 8. Plan Skill | 2/2 | Complete | 2026-03-06 |
-| 9. Spike and Execute Skills | 2/3 | In Progress | - |
+| 9. Spike and Execute Skills | 3/3 | Complete | 2026-03-08 |
 | 10. Cross-Cutting Integration | 0/3 | Not started | - |
