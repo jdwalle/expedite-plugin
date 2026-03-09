@@ -308,6 +308,24 @@ should_failed: {N}
 LOG_EOF
 ```
 
+**Record gate history in state.yml** (backup-before-write):
+
+1. Read `.expedite/state.yml`
+2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Append to `gate_history`:
+   ```yaml
+   - gate: "G5"
+     timestamp: "{ISO 8601 UTC}"
+     outcome: "{go|go_advisory|recycle|override}"
+     must_passed: {N}
+     must_failed: {N}
+     should_passed: {N}
+     should_failed: {N}
+     notes: "Spike phase: {slug}"
+     overridden: false
+   ```
+4. Write the entire file back to `.expedite/state.yml`
+
 If the user overrides G5 (recycle with user override), also log:
 ```bash
 cat >> .expedite/log.yml << 'LOG_EOF'
@@ -451,4 +469,4 @@ Project: {project_name}
 Run `/expedite:execute {phase_number}` to begin implementation of this phase.
 ```
 
-NOTE: Do NOT update state.yml. Spike does not have a lifecycle phase -- it operates within plan_complete or execute_in_progress. The output file (SPIKE.md) is the only indicator of spike completion. This is deliberate: spike is optional and phase-scoped, so lifecycle-level state tracking would add unnecessary complexity.
+NOTE: Do NOT write **phase transitions** to state.yml. Spike does not have a lifecycle phase (no `spike_in_progress` or `spike_complete`) -- it operates within `plan_complete` or `execute_in_progress`. The output file (SPIKE.md) is the only indicator of spike completion. This is deliberate: spike is optional and phase-scoped, so lifecycle-level state tracking would add unnecessary complexity. However, G5 gate outcomes ARE recorded in gate_history (Step 7) since gate outcomes are events, not phase transitions, and the status skill needs them for the complete G1-G5 gate chain display.
