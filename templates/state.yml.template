@@ -14,14 +14,17 @@ description: null
 # Valid phases (forward-only transitions):
 #   scope_in_progress -> scope_complete
 #   scope_complete -> research_in_progress
-#   research_in_progress -> research_complete | research_recycled
-#   research_recycled -> research_in_progress
+#   research_in_progress -> research_complete
+#   # Note: research_recycled is conceptual. Cross-session override re-entry
+#   # uses research_in_progress + --override + gate_history G2 recycle evidence.
 #   research_complete -> design_in_progress
-#   design_in_progress -> design_complete | design_recycled
-#   design_recycled -> design_in_progress
+#   design_in_progress -> design_complete
+#   # Note: design_recycled is conceptual. Cross-session override re-entry
+#   # uses design_in_progress + --override + gate_history G3 recycle evidence.
 #   design_complete -> plan_in_progress
-#   plan_in_progress -> plan_complete | plan_recycled
-#   plan_recycled -> plan_in_progress
+#   plan_in_progress -> plan_complete
+#   # Note: plan_recycled is conceptual. Cross-session override re-entry
+#   # uses plan_in_progress + --override + gate_history G4 recycle evidence.
 #   plan_complete -> execute_in_progress
 #   execute_in_progress -> complete
 #   (any) -> archived

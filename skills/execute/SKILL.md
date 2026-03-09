@@ -58,7 +58,7 @@ Error: Plan is not complete. Run `/expedite:plan` to generate a plan before star
 
 Current phase: {phase}
 ```
-If phase is "plan_recycled", additionally display: "Plan was recycled. Use `/expedite:plan` to revise and pass the G4 gate before executing."
+If phase is "plan_in_progress" and `--override` flag is NOT present, check gate_history for G4 recycle entries. If found, display: "Plan was recycled in a prior session. Use `/expedite:plan` to revise and pass the G4 gate, or re-run with `/expedite:plan --override` to proceed with known gaps."
 
 Then STOP. Do not proceed to any other step.
 
