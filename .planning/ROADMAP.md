@@ -215,9 +215,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 10-01-PLAN.md -- Insert codebase-routed question generation step in scope SKILL.md (SCOPE-12) + renumber Steps 7-9 to 8-10
-- [ ] 10-02-PLAN.md -- Fix intent terminology in execute PROGRESS.md entries, add lifecycle archival to execute Step 7, verify gate escalation override consistency (INTNT-01/02/03, GATE-05, ARTF-03)
-- [ ] 10-03-PLAN.md -- Add operational telemetry (log.yml) across all 6 non-status skills + human verification (TELE-01 through TELE-05)
+- [x] 10-01-PLAN.md -- Insert codebase-routed question generation step in scope SKILL.md (SCOPE-12) + renumber Steps 7-9 to 8-10
+- [x] 10-02-PLAN.md -- Fix intent terminology in execute PROGRESS.md entries, add lifecycle archival to execute Step 7, verify gate escalation override consistency (INTNT-01/02/03, GATE-05, ARTF-03)
+- [x] 10-03-PLAN.md -- Add operational telemetry (log.yml) across all 6 non-status skills + human verification (TELE-01 through TELE-05)
 
 ### Phase 12: Audit Tech Debt Cleanup
 **Goal**: Fix 3 integration findings and 1 tech debt item from v1.0 audit — dead *_recycled re-entry paths, G5 gate_history gap, inline guide placeholders, TELE checkbox update
@@ -229,10 +229,11 @@ Plans:
   2. Spike Step 7 appends G5 gate outcome to `gate_history` array in state.yml (status skill shows G5)
   3. 4 inline reference templates (`prompt-scope-questioning.md`, `prompt-design-guide.md`, `prompt-plan-guide.md`, `prompt-task-verifier.md`) have no unfilled `{{placeholder}}` syntax
   4. REQUIREMENTS.md TELE-01..05 checkboxes updated from `[ ]` to `[x]` with coverage count corrected
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- TBD
+- [ ] 12-01-PLAN.md -- Fix dead *_recycled override re-entry paths in design/plan/execute skills + state.yml.template annotation + TELE checkbox verification
+- [ ] 12-02-PLAN.md -- Add G5 gate_history recording to spike SKILL.md + remove {{placeholder}} syntax from 4 inline reference templates
 
 ## Progress
 
@@ -253,4 +254,4 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 8. Plan Skill | 2/2 | Complete | 2026-03-06 |
 | 9. Spike and Execute Skills | 3/3 | Complete | 2026-03-08 |
 | 10. Cross-Cutting Integration | 3/3 | Complete    | 2026-03-09 |
-| 12. Audit Tech Debt Cleanup | 0/0 | Not Started | - |
+| 12. Audit Tech Debt Cleanup | 0/2 | Not Started | - |
