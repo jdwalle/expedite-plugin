@@ -121,6 +121,8 @@ Tasks: {count}
 {If override context:} Override advisory: {severity} severity
 ```
 
+**If resuming (Step 1 Case B):** Step 3 was already completed in the prior session. Skip Step 3 and proceed directly to Step 4 (resume logic).
+
 ### Step 3: Initialize Execute State
 
 Update state.yml using the backup-before-write pattern:
