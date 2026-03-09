@@ -142,7 +142,19 @@ If no `.expedite/state.yml` exists (fresh start or post-archival):
    - Read the template content
    - Write to `.expedite/.gitignore`
 
-5. Display: "Initialized new Expedite lifecycle."
+5. Log phase transition:
+   ```bash
+   cat >> .expedite/log.yml << 'LOG_EOF'
+   ---
+   event: phase_transition
+   timestamp: "{ISO 8601 UTC}"
+   lifecycle_id: "{lifecycle_id}"
+   from_phase: "none"
+   to_phase: "scope_in_progress"
+   LOG_EOF
+   ```
+
+6. Display: "Initialized new Expedite lifecycle."
 
 **Error handling:** If any template file cannot be found via Glob, display: "Error: Could not find Expedite plugin templates. Verify the plugin is installed at ~/.claude/plugins/expedite/." Then STOP.
 
@@ -649,6 +661,34 @@ Using the backup-before-write pattern:
        overridden: false
      ```
 4. Write the entire file back to `.expedite/state.yml`
+
+**Log gate outcome to telemetry** (after state.yml write, regardless of outcome):
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: gate_outcome
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+gate: "G1"
+outcome: "{go|go_advisory|hold}"
+must_passed: {N}
+must_failed: {N}
+should_passed: {N}
+should_failed: {N}
+LOG_EOF
+```
+
+**If gate passed (go or go_advisory), also log phase transition:**
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: phase_transition
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+from_phase: "scope_in_progress"
+to_phase: "scope_complete"
+LOG_EOF
+```
 
 **After successful gate (go or go_advisory):**
 

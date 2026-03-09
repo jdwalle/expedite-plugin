@@ -87,6 +87,18 @@ Transition state.yml phase from "scope_complete" to "research_in_progress" using
    - Set `last_modified` to current timestamp (ISO 8601 UTC)
 4. Write the entire file back to `.expedite/state.yml`
 
+5. Log phase transition:
+   ```bash
+   cat >> .expedite/log.yml << 'LOG_EOF'
+   ---
+   event: phase_transition
+   timestamp: "{ISO 8601 UTC}"
+   lifecycle_id: "{lifecycle_id}"
+   from_phase: "scope_complete"
+   to_phase: "research_in_progress"
+   LOG_EOF
+   ```
+
 Display: "Phase: research_in_progress (round {research_round})"
 
 Proceed to Step 4.
@@ -234,6 +246,21 @@ Options:
 Which would you like to do?
 ```
 
+**Log source failure** (after detecting unavailable source, before presenting options):
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: source_failure
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+source: "{source name}"
+error: "{error description}"
+action: "{rerouted_to_web|skipped|circuit_breaker}"
+affected_questions: ["{affected question IDs}"]
+LOG_EOF
+```
+Note: Log the event when the failure is detected. Update the `action` field after the user chooses how to handle it (reroute/skip/fix). If the user fixes and the source becomes available, the source_failure event already logged is still valid (it records the initial failure).
+
 **Handling user responses:**
 
 - **If user chooses "fix":** Re-validate the source. Loop until available or user picks another option.
@@ -327,6 +354,20 @@ Options:
 2. Skip -- Mark questions {question_ids} as failed and continue
 ```
 
+**Log source failure** on agent dispatch failure:
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: source_failure
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+source: "{source name}"
+error: "{error description}"
+action: "{rerouted_to_web|skipped|circuit_breaker}"
+affected_questions: ["{affected question IDs}"]
+LOG_EOF
+```
+
 - **If user retries:** Re-dispatch the same Task() with the same assembled prompt. Maximum 1 retry per batch -- if the retry also fails, only the "Skip" option remains.
 - **If user skips:** Mark those questions as `"not_covered"` in state.yml using the backup-before-write pattern (read, backup, modify, write).
 
@@ -354,7 +395,21 @@ For each completed batch:
      - If source was unavailable -> `"unavailable_source"`
    - **Note:** These are PRELIMINARY statuses. The Phase 6 sufficiency evaluator will make the final assessment using the full evidence files and the typed rubric. Do not treat these statuses as final.
 
-4. **Collect all PROPOSED_QUESTIONS** from all agents into a single queue. Do NOT present these to the user yet -- per user decision, dynamic question proposals are queued until all agents finish and are surfaced during Phase 6 sufficiency assessment.
+4. **Log agent completion** for each completed batch:
+   ```bash
+   cat >> .expedite/log.yml << 'LOG_EOF'
+   ---
+   event: agent_completion
+   timestamp: "{ISO 8601 UTC}"
+   lifecycle_id: "{lifecycle_id}"
+   agent_type: "{web-researcher|codebase-analyst|mcp-researcher}"
+   batch_id: "{batch_id}"
+   questions: ["{question IDs in this batch}"]
+   status: "{complete|failed}"
+   LOG_EOF
+   ```
+
+5. **Collect all PROPOSED_QUESTIONS** from all agents into a single queue. Do NOT present these to the user yet -- per user decision, dynamic question proposals are queued until all agents finish and are surfaced during Phase 6 sufficiency assessment.
 
 Proceed to Step 11.
 
@@ -521,7 +576,25 @@ Compute counts: `total_questions`, `covered_count`, `partial_count`, `not_covere
 - **Recycle**: Any MUST criterion fails
 - **Override**: Only when user explicitly requests it (not auto-determined)
 
-Display gate results (MUST and SHOULD with pass/fail + evidence for each), then outcome. Proceed to Step 15.
+Display gate results (MUST and SHOULD with pass/fail + evidence for each), then outcome.
+
+**Log gate outcome to telemetry** (after evaluation, before outcome routing):
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: gate_outcome
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+gate: "G2"
+outcome: "{go|go_advisory|recycle|override}"
+must_passed: {N}
+must_failed: {N}
+should_passed: {N}
+should_failed: {N}
+LOG_EOF
+```
+
+Proceed to Step 15.
 
 ### Step 15: Gate Outcome Handling
 
@@ -550,7 +623,23 @@ Display gate results (MUST and SHOULD with pass/fail + evidence for each), then 
 - **Adjust** → User reprioritizes or accepts gaps. Update state.yml (backup-before-write), then re-run Step 14.
 - **Override** → Proceed to 15c.
 
-**15c: Override handling.** Read `skills/research/references/ref-override-handling.md` and follow its instructions: record override in gate_history, determine severity, write `.expedite/research/override-context.md`. Then proceed to Step 17.
+**15c: Override handling.** Read `skills/research/references/ref-override-handling.md` and follow its instructions: record override in gate_history, determine severity, write `.expedite/research/override-context.md`.
+
+**Log override event:**
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: override
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+gate: "G2"
+severity: "{low|medium|high}"
+must_failed: {N}
+affected_das: ["{affected DA names}"]
+LOG_EOF
+```
+
+Then proceed to Step 17.
 
 ### Step 16: Gap-Fill Dispatch
 
@@ -585,6 +674,18 @@ Proceed to Step 18.
 ### Step 18: Research Completion
 
 Update state.yml to mark research complete (backup-before-write): set `phase` to `"research_complete"`, update `last_modified`.
+
+**Log phase transition:**
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: phase_transition
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+from_phase: "research_in_progress"
+to_phase: "research_complete"
+LOG_EOF
+```
 
 Display research completion summary:
 
