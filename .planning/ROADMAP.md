@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 9: Spike and Execute Skills** - Spike: tactical decision resolution + step planning; Execute: follow spike plan, nudge for missing spike, checkpoint/resume
 - [x] **Phase 10: Cross-Cutting Integration** - Dual intent end-to-end, telemetry, archival flow, gate escalation polish, scope codebase questions (completed 2026-03-09)
 - [x] **Phase 12: Audit Tech Debt Cleanup** - Fix dead *_recycled re-entry paths, G5 gate_history, inline guide placeholders, TELE checkbox update (completed 2026-03-09)
-- [ ] **Phase 13: Tech Debt Resolution** - Mid-phase crash resume, dead *_recycled status mappings, Glob fallback for research inline references
+- [x] **Phase 13: Tech Debt Resolution** - Mid-phase crash resume, dead *_recycled status mappings, Glob fallback for research inline references (completed 2026-03-09)
 
 ## Phase Details
 
@@ -271,4 +271,4 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 9. Spike and Execute Skills | 3/3 | Complete | 2026-03-08 |
 | 10. Cross-Cutting Integration | 3/3 | Complete    | 2026-03-09 |
 | 12. Audit Tech Debt Cleanup | 2/2 | Complete    | 2026-03-09 |
-| 13. Tech Debt Resolution | 1/2 | In Progress | - |
+| 13. Tech Debt Resolution | 2/2 | Complete   | 2026-03-09 |
