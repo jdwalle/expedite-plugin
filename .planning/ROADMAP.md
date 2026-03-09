@@ -23,6 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 9: Spike and Execute Skills** - Spike: tactical decision resolution + step planning; Execute: follow spike plan, nudge for missing spike, checkpoint/resume
 - [x] **Phase 10: Cross-Cutting Integration** - Dual intent end-to-end, telemetry, archival flow, gate escalation polish, scope codebase questions (completed 2026-03-09)
 - [x] **Phase 12: Audit Tech Debt Cleanup** - Fix dead *_recycled re-entry paths, G5 gate_history, inline guide placeholders, TELE checkbox update (completed 2026-03-09)
+- [ ] **Phase 13: Tech Debt Resolution** - Mid-phase crash resume, dead *_recycled status mappings, Glob fallback for research inline references
 
 ## Phase Details
 
@@ -235,10 +236,24 @@ Plans:
 - [x] 12-01-PLAN.md -- Fix dead *_recycled override re-entry paths in design/plan/execute skills + state.yml.template annotation + TELE checkbox verification
 - [ ] 12-02-PLAN.md -- Add G5 gate_history recording to spike SKILL.md + remove {{placeholder}} syntax from 4 inline reference templates
 
+### Phase 13: Tech Debt Resolution
+**Goal**: Fix 3 tech debt items from v1.0 audit — mid-phase crash resume for research/design/plan, dead *_recycled status mappings, Glob fallback consistency for research inline references
+**Depends on**: Phase 12
+**Requirements**: STATE-06
+**Gap Closure**: Closes TD-1, TD-2, TD-3 from v1.0-MILESTONE-AUDIT.md tech_debt
+**Success Criteria** (what must be TRUE):
+  1. Research/design/plan SKILL.md files handle `*_in_progress` re-invocation by resuming at the correct step instead of rejecting with a misleading error (matching scope/execute behavior)
+  2. Status SKILL.md no longer maps `*_recycled` phases that are never written to state.yml
+  3. 3 research inline reference files (`ref-recycle-escalation.md`, `ref-gapfill-dispatch.md`, `ref-override-handling.md`) include Glob fallback parenthetical for path resolution, consistent with the 10 prompt templates
+**Plans**: TBD
+
+Plans:
+- [ ] 13-01-PLAN.md -- Fix mid-phase crash resume in research/design/plan SKILL.md + remove dead *_recycled status mappings + add Glob fallback to 3 research inline reference files
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 11 -> 6 -> 7 -> 8 -> 9 -> 10 -> 12
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 11 -> 6 -> 7 -> 8 -> 9 -> 10 -> 12 -> 13
 Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration issues Phase 6+ depends on.
 
 | Phase | Plans Complete | Status | Completed |
@@ -255,3 +270,4 @@ Note: Phase 11 (gap closure) executes before Phase 6 since it fixes integration 
 | 9. Spike and Execute Skills | 3/3 | Complete | 2026-03-08 |
 | 10. Cross-Cutting Integration | 3/3 | Complete    | 2026-03-09 |
 | 12. Audit Tech Debt Cleanup | 2/2 | Complete    | 2026-03-09 |
+| 13. Tech Debt Resolution | 0/1 | Pending | - |
