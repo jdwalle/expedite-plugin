@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in_progress
-last_updated: "2026-03-09T03:26:28Z"
+status: complete
+last_updated: "2026-03-09T03:27:11Z"
 progress:
   total_phases: 12
-  completed_phases: 11
+  completed_phases: 12
   total_plans: 30
-  completed_plans: 29
+  completed_plans: 30
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 12 -- Audit Tech Debt Cleanup (IN PROGRESS -- 1 of 2 plans done)
+**Current focus:** Phase 12 -- Audit Tech Debt Cleanup (COMPLETE -- 2 of 2 plans done)
 
 ## Current Position
 
 Phase: 12 (Audit Tech Debt Cleanup)
-Plan: 1 of 2 in current phase
-Status: In Progress
-Last activity: 2026-03-09 -- Completed 12-01-PLAN.md (dead *_recycled override re-entry fix)
+Plan: 2 of 2 in current phase
+Status: Complete
+Last activity: 2026-03-09 -- Completed 12-02-PLAN.md (G5 gate_history + inline template placeholder cleanup)
 
-Progress: [▓▓▓▓▓▓▓▓▓░] 97%
+Progress: [▓▓▓▓▓▓▓▓▓▓] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
+- Total plans completed: 30
 - Average duration: 2.3min
-- Total execution time: 1.15 hours
+- Total execution time: 1.2 hours
 
 **By Phase:**
 
@@ -51,10 +51,10 @@ Progress: [▓▓▓▓▓▓▓▓▓░] 97%
 | 9. Spike and Execute Skills | 3 | 14min | 4.7min |
 | 10. Cross-Cutting Integration | 3 | 16min | 5.3min |
 | 11. Integration Fixes | 1 | 1min | 1min |
-| 12. Audit Tech Debt Cleanup | 1 | 2min | 2min |
+| 12. Audit Tech Debt Cleanup | 2 | 5min | 2.5min |
 
 **Recent Trend:**
-- Last 5 plans: 10-01 (2min), 10-02 (2min), 10-03 (12min), 12-01 (2min)
+- Last 5 plans: 10-02 (2min), 10-03 (12min), 12-01 (2min), 12-02 (3min)
 - Trend: Steady
 
 *Updated after each plan completion*
@@ -109,7 +109,7 @@ Recent decisions affecting current work:
 - 11-01: Glob fallback uses parenthetical style matching scope SKILL.md's established pattern
 - 06-01: Followed plan exactly -- all Step 12 and Step 13 content matched the specification verbatim
 - 06-02: Followed plan exactly -- all Steps 14-16 content matched the specification verbatim
-- 06-03: SKILL.md refactored 1233→611 lines at human checkpoint -- embedded prompts moved to references/ files; SKILL.md is now a lean orchestration script
+- 06-03: SKILL.md refactored 1233->611 lines at human checkpoint -- embedded prompts moved to references/ files; SKILL.md is now a lean orchestration script
 - 06-03: Human approved refactor as checkpoint resolution -- SKILL.md-as-orchestrator is the preferred pattern going forward
 - 07-01: Design generation is inline (not subagent) -- matches scope skill pattern, enables revision cycle (DSGN-01)
 - 07-01: Both RFC and PRD formats include Design Overview section before per-DA decisions
@@ -151,12 +151,12 @@ Recent decisions affecting current work:
 - 10-02: Archival replicates scope SKILL.md Step 1 pattern exactly -- same slug generation, same exclusion list, same bash for-loop
 - 10-02: GATE-05 verified as already complete -- no code changes needed, G2/G3/G4 write override-context.md, G5 uses SPIKE.md as advisory channel
 - 10-02: INTNT-01/02/03 verified as fully implemented -- only fix needed was hardcoded "Wave" in execute Step 5e PROGRESS.md entries
-- 12-02: G5 gate_history uses same backup-before-write pattern as other gates
-- 12-02: Step 9 NOTE now distinguishes gate_history (events) from phase transitions (state)
-- 12-02: Inline template placeholders replaced with bracketed plain-text descriptions, not removed
 - 12-01: Case B uses *_in_progress + --override + gate_history recycle evidence (not *_recycled phase)
 - 12-01: Status SKILL.md *_recycled mappings retained unchanged for documentation value
 - 12-01: TELE-01..05 confirmed already complete -- no REQUIREMENTS.md changes needed
+- 12-02: G5 gate_history uses same backup-before-write pattern as other gates
+- 12-02: Step 9 NOTE now distinguishes gate_history (events) from phase transitions (state)
+- 12-02: Inline template placeholders replaced with bracketed plain-text descriptions, not removed
 
 ### Pending Todos
 
@@ -170,5 +170,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: Completed 12-01-PLAN.md -- dead *_recycled override re-entry fix
+Stopped at: Completed 12-02-PLAN.md -- G5 gate_history recording + inline template placeholder cleanup
 Resume file: None
