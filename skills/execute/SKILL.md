@@ -44,10 +44,10 @@ Proceed to Step 2.
 
 This is a resume scenario.
 
-1. Parse the phase argument first (same logic as Step 2).
+1. Parse the phase argument first (same logic as Step 2's argument parsing).
 2. Determine the slug for the requested phase.
 3. Check for `.expedite/plan/phases/{slug}/checkpoint.yml` (use Read, handle missing file gracefully).
-4. If checkpoint exists AND status is "paused" or "in_progress": display "Resuming execution of {Wave/Epic} {N} from checkpoint..." Skip to Step 4 (resume logic).
+4. If checkpoint exists AND status is "paused" or "in_progress": display "Resuming execution of {Wave/Epic} {N} from checkpoint..." Proceed to Step 2 (to load all artifacts), then skip Step 3 (state already initialized) and go to Step 4 (resume logic).
 5. If no checkpoint for this phase: display "Starting execution of {Wave/Epic} {N}..." Proceed to Step 2.
 
 **Case C: Phase is anything else**
@@ -89,7 +89,7 @@ Read the following files:
 
 6. **If `.expedite/plan/override-context.md` exists** -- Read it, note affected DAs.
 
-7. **Prior phase context:** If executing Phase N where N > 1, check for prior phase's PROGRESS.md (e.g., `.expedite/plan/phases/wave-{N-1}/PROGRESS.md`) to understand what was already implemented.
+7. **Prior phase context:** If executing Phase N where N > 1, derive the prior-phase slug from intent (`wave-{N-1}` for engineering, `epic-{N-1}` for product) and check for `.expedite/plan/phases/{prior-slug}/PROGRESS.md` to understand what was already implemented.
 
 **Determine execution mode:**
 - If SPIKE.md exists for this phase: **Spiked mode** -- follow SPIKE.md implementation steps
@@ -182,22 +182,32 @@ Proceed to Step 5 with the first task.
 **4b: Resume from checkpoint (came from Step 1 Case B):**
 
 1. Read `.expedite/plan/phases/{slug}/checkpoint.yml`
-2. Extract `last_completed_task` and `current_wave`
+2. Extract `current_task`, `current_wave`, `tasks_completed`, and `tasks_total`
 3. Verify the checkpoint's `current_wave` matches the requested phase number
-4. Find the next task after `last_completed_task` in the task order
-5. Display: "Resuming from task {next_task_id}: {task_title}. ({completed}/{total} tasks completed)"
+4. Use `current_task` directly as the resume point (the checkpoint already stores the next task to execute)
+5. Display: "Resuming from task {current_task}: {task_title}. ({tasks_completed}/{tasks_total} tasks completed)"
 6. Read `.expedite/plan/phases/{slug}/PROGRESS.md` to load context of what was already done
 
-Proceed to Step 5 with the determined next task.
+Proceed to Step 5 with `current_task`.
 
 **4c: Checkpoint reconstruction fallback:**
 
 If checkpoint.yml is missing or corrupted but PROGRESS.md exists in the phase directory:
 
-1. Parse PROGRESS.md to find the last completed task ID (look for `## t{NN}:` or `## {task_id}:` headings)
-2. Find the next task in sequence
+1. Parse PROGRESS.md to find the last completed task ID (look for `## t{NN}:` or `## {task_id}:` headings) and count completed tasks
+2. Find the next task in sequence from the phase definition
 3. Display: "Checkpoint missing. Reconstructed from PROGRESS.md. Resuming from task {next_task_id}."
-4. Create a new checkpoint.yml in `.expedite/plan/phases/{slug}/` reflecting the reconstructed state
+4. Create a new checkpoint.yml in `.expedite/plan/phases/{slug}/` with this template:
+   ```yaml
+   current_task: "{next_task_id}"
+   current_wave: {wave_number}
+   last_completed_task: "{last_completed_task_id}"
+   last_completed_at: "{ISO 8601 UTC}"
+   tasks_completed: {count_from_progress}
+   tasks_total: {total_from_phase_definition}
+   status: "in_progress"
+   continuation_notes: "Reconstructed from PROGRESS.md. Resuming execution."
+   ```
 
 Proceed to Step 5 with the determined starting task.
 
@@ -267,6 +277,23 @@ Update state.yml (backup-before-write): set `current_task` to next task ID, upda
 
 NEVER use the Write tool for PROGRESS.md. Use `cat >>` via Bash:
 
+For **spiked mode**:
+```bash
+cat >> .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
+
+## {task_id}: {task_title}
+- Status: {complete|partial|failed|needs_review}
+- Wave: {wave_number}
+- Tactical decision: {TD-N}: {brief} (resolved via {method})
+- Design decision: {DA-X}: {brief}
+- Files modified: {list}
+- Verification: {VERIFIED|PARTIAL|FAILED|NEEDS REVIEW}
+- Contract chain: {DA-X} -> {TD-N} -> {spike step} -> {task ID} -> {files}
+- Completed: {ISO 8601 UTC timestamp}
+PROGRESS_EOF
+```
+
+For **unspiked mode**:
 ```bash
 cat >> .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
 
@@ -276,14 +303,16 @@ cat >> .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
 - Design decision: {DA-X}: {brief}
 - Files modified: {list}
 - Verification: {VERIFIED|PARTIAL|FAILED|NEEDS REVIEW}
-- Contract chain: {DA-X} -> {evidence citation} -> {design decision} -> {task ID} -> {files}
+- Contract chain: {DA-X} -> {design decision} -> {task ID} -> {files}
 - Completed: {ISO 8601 UTC timestamp}
 PROGRESS_EOF
 ```
 
 **5f: Micro-interaction (EXEC-05).**
 
-Display task completion and verification status, then prompt:
+**If this is the LAST task in the phase:** Skip the micro-interaction prompt entirely. Display verification status and proceed directly to Step 6. ("pause" on the last task would create a dead-end: current_task null + status paused.)
+
+**If there are more tasks remaining:** Display task completion and verification status, then prompt:
 
 ```
 Task {task_id} complete ({completed}/{total}).
@@ -437,6 +466,8 @@ PROGRESS_EOF
 
 **7c: Display lifecycle completion summary.**
 
+To populate per-phase task counts: read each phase's PROGRESS.md (`.expedite/plan/phases/{slug}/PROGRESS.md`) and parse the "## Phase Complete" section for task tallies. State.yml only holds the current phase's data — prior phase data is only available from PROGRESS.md files.
+
 ```
 ## Lifecycle Complete
 
@@ -445,7 +476,7 @@ Intent: {intent}
 
 ### Execution Summary
 Total phases executed: {count}
-{For each phase:}
+{For each phase — read from that phase's PROGRESS.md "Phase Complete" section:}
   - {Wave/Epic} {N}: {tasks_completed}/{tasks_total} tasks ({verified_count} verified)
 
 ### Per-Phase Artifacts

@@ -94,7 +94,7 @@ Read the following files:
 3. **`.expedite/design/DESIGN.md`** -- design decisions for traceability
 4. **If `.expedite/plan/override-context.md` exists** -- read it, note affected DAs
 
-5. **CRITICAL (per-phase context):** If spiking Phase N where N > 1, check for prior phase artifacts:
+5. **CRITICAL (per-phase context):** If spiking Phase N where N > 1, check for prior phase artifacts. Derive the prior-phase slug from intent: `wave-{N-1}` for engineering intent, `epic-{N-1}` for product intent (using the same intent-based slug rule as Step 2).
    - Read `.expedite/plan/phases/{prior-slug}/SPIKE.md` if it exists -- understand what was resolved in the previous phase
    - Read `.expedite/plan/phases/{prior-slug}/PROGRESS.md` if it exists -- understand what was already implemented
    - This enables Phase 2's spike to build on Phase 1's completed work as context
@@ -212,12 +212,16 @@ If user says **research**:
      subagent_type: "general-purpose"
    )
    ```
-5. Read the returned summary and present to user:
+5. Read the returned summary and present to user for confirmation:
    ```
    Research complete for TD-{N}:
    {condensed summary from Task() return}
+
+   Accept this recommendation? (yes / override with your own decision)
    ```
-6. Record: resolution is the recommendation from research, rationale is the rationale from research, evidence is the output file path.
+6. Wait for user input:
+   - If **yes** / **accept**: Record: resolution is the recommendation from research, rationale is the rationale from research, evidence is the output file path.
+   - If user provides an **override**: Record user's decision as the resolution, rationale is "User override after reviewing research (see {output_file_path})", evidence is the output file path.
 
 **CRITICAL: Every resolution (resolved from design, clear-cut spike resolution, user preference, or research) MUST include both the decision AND the rationale.** The rationale is required for SPIKE.md traceability and for G5 gate validation.
 
@@ -265,7 +269,7 @@ Validate the spike output structurally before writing SPIKE.md. G5 is a structur
 | M1 | Every "needs-spike" TD resolved | Count needs-spike TDs from Step 4. Count resolved TDs from Step 5. All needs-spike TDs must have a resolution. State: "Resolved {N}/{M} needs-spike TDs" |
 | M2 | Every implementation step traces to a TD or DA | Check each step's "Traces to" field. No step should lack a traceability link. State: "{N}/{M} steps have traceability" |
 | M3 | Every resolved TD has a recorded rationale | Check each TD resolution from Step 5. Every resolution must include both a decision and a rationale (not just a decision). State: "{N}/{M} resolutions have rationale" |
-| M4 | Step count within phase sizing bounds | Count implementation steps. Expect 3-8 steps (matching PLAN-02 task sizing for uniform phases). State: "{N} implementation steps (bounds: 3-8)" |
+| M4 | Step count within phase sizing bounds | Count implementation steps. Expect 3-8 steps (matching plan skill phase sizing bounds for uniform phases). State: "{N} implementation steps (bounds: 3-8)" |
 
 **SHOULD criteria (failures produce advisory, not blockers):**
 
@@ -297,6 +301,14 @@ List the failing MUST criteria with specific details (which TD is unresolved, wh
 
 **On Recycle:**
 - Display the issues clearly
+- Track the recycle count (increment each time G5 recycles)
+- **If this is the 2nd or later recycle:** Display an override option:
+  ```
+  G5 has recycled {N} times. Override options:
+  - "fix" -- attempt fixes again (loop back to relevant step)
+  - "override" -- accept current state with advisory and proceed to write SPIKE.md
+  ```
+  If user says "override": treat as **Go-with-advisory**, noting the unresolved MUST failures as advisories. Proceed to Step 8.
 - Go back to the relevant step to fix:
   - Missing TD resolution -> return to Step 5 for the specific TD
   - Orphan step (no traceability) -> return to Step 6 to add traceability or remove orphan
@@ -306,11 +318,18 @@ List the failing MUST criteria with specific details (which TD is unresolved, wh
 
 ### Step 8: Write SPIKE.md
 
-Create the output directory and write the SPIKE.md artifact:
+Create the output directory:
 
 ```bash
 mkdir -p .expedite/plan/phases/{slug}/
 ```
+
+**Check for existing SPIKE.md:** If `.expedite/plan/phases/{slug}/SPIKE.md` already exists, prompt the user:
+```
+Existing SPIKE.md found for this phase. Overwrite? (yes / no)
+```
+If **no**: STOP. Display "Spike cancelled. Existing SPIKE.md preserved."
+If **yes**: Proceed with overwrite.
 
 Write to `.expedite/plan/phases/{slug}/SPIKE.md` with this format:
 
@@ -325,10 +344,10 @@ G5 Gate: {Go | Go-with-advisory}
 
 ### TD-{N}: {description}
 **Classification:** {resolved (from PLAN.md) | was needs-spike, now resolved}
-{If was needs-spike:}
-**Resolution method:** {Spike judgment (clear-cut) | User decision (ambiguous) | Focused research}
 **Resolution:** {the resolution}
 **Rationale:** {rationale}
+{If was needs-spike:}
+**Resolution method:** {Spike judgment (clear-cut) | User decision (ambiguous) | Focused research}
 {If researched:} **Evidence:** {path to spike-research-td-N.md}
 
 {... repeat for each TD}
