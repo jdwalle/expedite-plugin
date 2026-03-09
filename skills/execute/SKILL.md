@@ -498,8 +498,42 @@ Phase: complete
 
 ### Next Steps
 - Review per-phase PROGRESS.md files for detailed task outcomes
-- Run `/expedite:scope` to start a new lifecycle
+- Archive this lifecycle (prompted next) or run `/expedite:scope` to start a new lifecycle
 {If product intent:} - Review .expedite/design/HANDOFF.md for engineer handoff documentation
 ```
 
-Note: Do NOT archive the lifecycle. Archival is Phase 10 functionality (ARTF-03).
+**7d: Offer archival.**
+
+After displaying the lifecycle completion summary, prompt the user:
+
+```
+Archive this completed lifecycle? Archiving moves all lifecycle artifacts to
+.expedite/archive/{slug}/ while preserving sources.yml, log.yml, and .gitignore.
+
+> yes / no
+```
+
+Handle responses:
+- **"yes"**, **"archive"**: Execute the archival flow below.
+- **"no"**, **"keep"**, **"skip"**: Display "Lifecycle artifacts preserved in .expedite/. Run `/expedite:scope` to start a new lifecycle." Then STOP.
+
+**Archival flow:**
+
+1. Generate a slug from the project_name: lowercase, replace spaces and special characters with hyphens, append the date in YYYYMMDD format. Example: "Auth Redesign" becomes "auth-redesign-20260308".
+2. Create the archive directory:
+   ```bash
+   mkdir -p .expedite/archive/{slug}
+   ```
+3. Move all contents of `.expedite/` to the archive directory EXCEPT: `archive/` itself, `sources.yml`, `log.yml`, `.gitignore`. Use Bash:
+   ```bash
+   for item in .expedite/*; do
+     base=$(basename "$item")
+     if [ "$base" != "archive" ] && [ "$base" != "sources.yml" ] && [ "$base" != "log.yml" ] && [ "$base" != ".gitignore" ]; then
+       mv "$item" ".expedite/archive/{slug}/"
+     fi
+   done
+   ```
+4. If any move command fails, warn but proceed: "Warning: Could not archive some files."
+5. Display: "Lifecycle archived to `.expedite/archive/{slug}/`. Run `/expedite:scope` to start a new lifecycle."
+
+Then STOP.
