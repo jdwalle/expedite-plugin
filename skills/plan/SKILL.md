@@ -36,20 +36,22 @@ Display: "Starting plan phase..."
 
 Proceed to Step 2.
 
-**Case B: Phase is "design_recycled" AND `--override` flag is present**
+**Case B: Phase is "design_in_progress" AND `--override` flag is present AND gate_history contains at least one G3 recycle entry**
 
-The user's design did not pass G3 but they want to proceed to plan with known gaps. This is the override entry path.
+The user's design gate recycled, they exited the session, and are now re-entering with --override to proceed to plan with known gaps.
 
-1. Read `.expedite/design/override-context.md` (must exist after a G3 override/recycle). If it doesn't exist, display error: "Override requested but no override-context.md found. Run `/expedite:design` first." → STOP.
-2. Record the override entry in state.yml gate_history (backup-before-write):
+1. Verify gate_history contains at least one entry where `gate: "G3"` and `outcome: "recycle"`.
+   If no G3 recycle found, display error: "Override requested but no G3 recycle found in gate history. Run `/expedite:design` first." -> STOP.
+2. Read `.expedite/design/override-context.md` (must exist after a G3 override/recycle). If it doesn't exist, display error: "Override requested but no override-context.md found. Run `/expedite:design` first." -> STOP.
+3. Record the override entry in state.yml gate_history (backup-before-write):
    ```yaml
    - gate: "G3-plan-entry"
      timestamp: "{ISO 8601 UTC}"
      outcome: "override"
-     notes: "Entered plan via --override with design_recycled phase"
+     notes: "Entered plan via --override with design_in_progress phase and G3 recycle evidence"
      overridden: true
    ```
-3. Display:
+4. Display:
    ```
    Starting plan phase with --override...
 
@@ -59,7 +61,7 @@ The user's design did not pass G3 but they want to proceed to plan with known ga
 
 Proceed to Step 2. (Step 2 already reads override-context.md if it exists and flags affected DAs.)
 
-**Case C: Phase is anything else (not "design_complete", not "design_recycled" with --override)**
+**Case C: Phase is anything else (not "design_complete", not matching Case B conditions)**
 
 Display:
 ```
@@ -67,7 +69,7 @@ Error: Design is not complete. Run `/expedite:design` to generate a design befor
 
 Current phase: {phase}
 ```
-If phase is "design_recycled", additionally display: "Design was recycled. Use `--override` flag to proceed with known gaps: `/expedite:plan --override`"
+If phase is "design_in_progress" and `--override` flag is NOT present, additionally check gate_history for G3 recycle entries. If found, display: "Design was recycled in a prior session. Use `--override` flag to proceed with known gaps: `/expedite:plan --override`"
 
 Then STOP. Do not proceed to any other step.
 

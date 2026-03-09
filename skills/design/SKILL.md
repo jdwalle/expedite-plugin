@@ -36,20 +36,22 @@ Display: "Starting design phase..."
 
 Proceed to Step 2.
 
-**Case B: Phase is "research_recycled" AND `--override` flag is present**
+**Case B: Phase is "research_in_progress" AND `--override` flag is present AND gate_history contains at least one G2 recycle entry**
 
-The user's research did not pass G2 but they want to proceed to design with known gaps. This is the override entry path from the original design.
+The user's research gate recycled, they exited the session, and are now re-entering with --override to proceed to design with known gaps.
 
-1. Read `.expedite/research/override-context.md` (must exist after a G2 override/recycle). If it doesn't exist, display error: "Override requested but no override-context.md found. Run `/expedite:research` first." → STOP.
-2. Record the override entry in state.yml gate_history (backup-before-write):
+1. Verify gate_history contains at least one entry where `gate: "G2"` and `outcome: "recycle"`.
+   If no G2 recycle found, display error: "Override requested but no G2 recycle found in gate history. Run `/expedite:research` first." -> STOP.
+2. Read `.expedite/research/override-context.md` (must exist after a G2 override/recycle). If it doesn't exist, display error: "Override requested but no override-context.md found. Run `/expedite:research` first." -> STOP.
+3. Record the override entry in state.yml gate_history (backup-before-write):
    ```yaml
    - gate: "G2-design-entry"
      timestamp: "{ISO 8601 UTC}"
      outcome: "override"
-     notes: "Entered design via --override with research_recycled phase"
+     notes: "Entered design via --override with research_in_progress phase and G2 recycle evidence"
      overridden: true
    ```
-3. Display:
+4. Display:
    ```
    Starting design phase with --override...
 
@@ -59,7 +61,7 @@ The user's research did not pass G2 but they want to proceed to design with know
 
 Proceed to Step 2. (Step 2 already reads override-context.md if it exists and flags affected DAs.)
 
-**Case C: Phase is anything else (not "research_complete", not "research_recycled" with --override)**
+**Case C: Phase is anything else (not "research_complete", not matching Case B conditions)**
 
 Display:
 ```
@@ -67,7 +69,7 @@ Error: Research is not complete. Run `/expedite:research` to gather evidence bef
 
 Current phase: {phase}
 ```
-If phase is "research_recycled", additionally display: "Research was recycled. Use `--override` flag to proceed with known gaps: `/expedite:design --override`"
+If phase is "research_in_progress" and `--override` flag is NOT present, additionally check gate_history for G2 recycle entries. If found, display: "Research was recycled in a prior session. Use `--override` flag to proceed with known gaps: `/expedite:design --override`"
 
 Then STOP. Do not proceed to any other step.
 
@@ -121,7 +123,7 @@ Update state.yml using the backup-before-write pattern:
    event: phase_transition
    timestamp: "{ISO 8601 UTC}"
    lifecycle_id: "{lifecycle_id}"
-   from_phase: "{research_complete|design_recycled}"
+   from_phase: "{research_complete|research_in_progress}"
    to_phase: "design_in_progress"
    LOG_EOF
    ```
