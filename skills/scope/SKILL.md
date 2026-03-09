@@ -277,7 +277,7 @@ Using the backup-before-write pattern (same as Step 4):
 3. Update `last_modified` to current timestamp
 4. Write the entire file back
 
-Note: Refinement answers are used as context for question plan generation in Step 6 but are NOT stored as individual fields in state.yml (to keep state flat). They are held in the conversation context and will be written into SCOPE.md's "Project Context" section in Step 8.
+Note: Refinement answers are used as context for question plan generation in Step 6 but are NOT stored as individual fields in state.yml (to keep state flat). They are held in the conversation context and will be written into SCOPE.md's "Project Context" section in Step 9.
 
 Display: "Context collected. Now I'll generate a question plan based on everything you've shared."
 
@@ -376,7 +376,71 @@ Wait for user response:
   multiSelect: false
   ```
 
-### Step 7: Source Configuration
+### Step 7: Codebase Analysis (Additive Questions)
+
+This step generates additive codebase-routed questions that help the research phase understand existing patterns in the user's codebase. These questions are NOT counted against the 15-question budget and have no cap -- generate as many as needed per DA.
+
+**7a. Determine relevance.**
+
+If the user described this as a greenfield project with no existing codebase (no project directory, or the project directory is empty/contains only scaffolding), skip this step entirely:
+
+Display: "No existing codebase detected. Skipping codebase analysis."
+
+Proceed to Step 8.
+
+**7b. Analyze codebase per DA.**
+
+For each Decision Area in the approved question plan:
+
+1. Determine relevant codebase search patterns based on the DA name and the user's project description.
+2. Use Grep, Glob, and Read to scan the project codebase for existing patterns:
+   - Directory structure (Glob for relevant directories)
+   - File patterns (Glob for relevant file types)
+   - Code patterns (Grep for imports, function signatures, configuration, conventions)
+3. Generate codebase-routed questions based on findings. Each question:
+   - Is specific to patterns found (or notably absent) in the codebase
+   - Has `source_hints: ["codebase"]` (always codebase-only)
+   - Is NOT counted against the 15-question budget
+   - Focuses on "how does the existing code handle X" rather than general knowledge
+   - Gets an evidence requirement like any other question (concrete and checkable)
+4. If no relevant patterns found for a DA, skip that DA with a note.
+
+Assign IDs continuing sequentially from the last approved question ID. If the approved plan has questions q01-q12, codebase-routed questions start at q13.
+
+**7c. Present codebase-routed questions.**
+
+Display all generated codebase-routed questions:
+
+```
+--- Codebase-Routed Questions ---
+
+DA-1: {Name}
+  [CB] q{N}: {question about existing pattern} (codebase)
+    Evidence needed: {specific codebase evidence}
+  [CB] q{N+1}: {question about existing pattern} (codebase)
+    Evidence needed: {specific codebase evidence}
+
+DA-3: {Name}
+  [CB] q{N+2}: {question about existing pattern} (codebase)
+    Evidence needed: {specific codebase evidence}
+
+DA-2: {Name}
+  (No relevant codebase patterns detected)
+
+--- {N} codebase questions across {M} DAs ---
+Approve? (approve all / select specific / skip all)
+```
+
+**7d. Review.**
+
+Wait for user response:
+- **"approve all"** or **"yes"**: Accept all codebase-routed questions. Proceed to Step 8.
+- **"select specific"** or **"modify"**: User indicates which questions to keep. Remove unselected ones. Proceed to Step 8.
+- **"skip all"** or **"skip"**: Discard all codebase-routed questions. Proceed to Step 8.
+
+Note: Codebase-routed questions will be written to state.yml alongside the original questions in Step 9 (Write Artifacts). They use `source: "codebase-routed"` to distinguish them from original questions.
+
+### Step 8: Source Configuration
 
 Read `.expedite/sources.yml` and display the configured sources as a checklist:
 
@@ -408,14 +472,14 @@ options:
 multiSelect: false
 ```
 
-- Yes, use these: Proceed to Step 8.
+- Yes, use these: Proceed to Step 9.
 - If the user asks to edit sources: Respond with "Source editing will be available in a future update. For now, you can manually edit `.expedite/sources.yml` to add or remove MCP sources. Proceeding with current configuration."
 
-### Step 8: Write Artifacts
+### Step 9: Write Artifacts
 
 Now that the user has approved the question plan and confirmed sources, write the artifacts.
 
-**8a. Write SCOPE.md.**
+**9a. Write SCOPE.md.**
 
 Create `.expedite/scope/SCOPE.md` (create the `scope/` directory if it does not exist) with this structure:
 
@@ -464,7 +528,7 @@ Create `.expedite/scope/SCOPE.md` (create the `scope/` directory if it does not 
 
 ## Source Configuration
 
-{Checklist from Step 7, showing enabled/disabled sources}
+{Checklist from Step 8, showing enabled/disabled sources}
 
 ## Metadata
 
@@ -474,7 +538,7 @@ Create `.expedite/scope/SCOPE.md` (create the `scope/` directory if it does not 
 - Created: {timestamp}
 ```
 
-**8b. Update state.yml with questions.**
+**9b. Update state.yml with questions.**
 
 Using the backup-before-write pattern:
 1. Read `.expedite/state.yml`
@@ -494,6 +558,12 @@ Using the backup-before-write pattern:
        gap_details: null
        evidence_files: []
      ```
+     ```yaml
+     # For codebase-routed questions from Step 7:
+     # - source: "codebase-routed"
+     # - source_hints: ["codebase"]
+     # Include these in the same questions array alongside original questions.
+     ```
    - Use YAML flow-style arrays for `source_hints` and `evidence_files` (e.g., `["web", "codebase"]` and `[]`) to stay within the 2-level nesting limit.
 4. Write the entire file back to `.expedite/state.yml`
 
@@ -501,9 +571,9 @@ Using the backup-before-write pattern:
 
 Display: "Scope artifacts written. Running gate evaluation..."
 
-Proceed to Step 9.
+Proceed to Step 10.
 
-### Step 9: Gate G1 Evaluation
+### Step 10: Gate G1 Evaluation
 
 Evaluate the G1 gate. This is a **structural gate** -- all checks are deterministic (counts, field existence, string matching). Do NOT apply LLM judgment. For each criterion, state the specific evidence from the artifacts.
 
@@ -555,7 +625,7 @@ Evaluate the G1 gate. This is a **structural gate** -- all checks are determinis
       description: "Exit and run /expedite:scope again when ready"
   multiSelect: false
   ```
-  - Fix now: Guide the user through fixing each issue (e.g., add missing evidence requirements, add a success criterion). After fixes, re-run the gate evaluation from the beginning of Step 9.
+  - Fix now: Guide the user through fixing each issue (e.g., add missing evidence requirements, add a success criterion). After fixes, re-run the gate evaluation from the beginning of Step 10.
   - Fix later: Display: "Scope is incomplete. Run `/expedite:scope` again when ready to continue." Then STOP.
 
 **Record gate result in state.yml:**
