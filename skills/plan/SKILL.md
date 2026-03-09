@@ -116,6 +116,18 @@ Update state.yml using the backup-before-write pattern:
    - Set `last_modified` to current ISO 8601 UTC timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
+5. Log phase transition:
+   ```bash
+   cat >> .expedite/log.yml << 'LOG_EOF'
+   ---
+   event: phase_transition
+   timestamp: "{ISO 8601 UTC}"
+   lifecycle_id: "{lifecycle_id}"
+   from_phase: "design_complete"
+   to_phase: "plan_in_progress"
+   LOG_EOF
+   ```
+
 Create the plan output directory:
 ```bash
 mkdir -p .expedite/plan/
@@ -382,6 +394,22 @@ Gate Outcome: {Go | Go-with-advisory | Recycle}
 - **Recycle**: Any MUST criterion fails
 - **Override**: Only when user explicitly requests (not auto-determined)
 
+**Log gate outcome to telemetry** (after evaluation, before outcome routing):
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: gate_outcome
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+gate: "G4"
+outcome: "{go|go_advisory|recycle|override}"
+must_passed: {N}
+must_failed: {N}
+should_passed: {N}
+should_failed: {N}
+LOG_EOF
+```
+
 Proceed to Step 8.
 
 ### Step 8: Gate Outcome Handling
@@ -441,11 +469,37 @@ phases should account for these gaps.
 {List affected criteria and recommendations}
 ```
 
-4. Proceed to Step 9.
+4. Log override event:
+   ```bash
+   cat >> .expedite/log.yml << 'LOG_EOF'
+   ---
+   event: override
+   timestamp: "{ISO 8601 UTC}"
+   lifecycle_id: "{lifecycle_id}"
+   gate: "G4"
+   severity: "{low|medium|high}"
+   must_failed: {N}
+   affected_das: ["{affected DA names}"]
+   LOG_EOF
+   ```
+
+5. Proceed to Step 9.
 
 ### Step 9: Plan Completion
 
 Update state.yml (backup-before-write): set `phase` to `"plan_complete"`, update `last_modified`.
+
+**Log phase transition:**
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: phase_transition
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+from_phase: "plan_in_progress"
+to_phase: "plan_complete"
+LOG_EOF
+```
 
 NOTE: Do NOT populate the `tasks` array or `current_wave` field in state.yml. These fields exist in the schema but are populated by the execute skill, not the plan skill. The plan skill produces PLAN.md as its artifact; the execute skill reads PLAN.md and creates task-tracking state.
 

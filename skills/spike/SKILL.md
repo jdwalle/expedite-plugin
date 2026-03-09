@@ -212,7 +212,20 @@ If user says **research**:
      subagent_type: "general-purpose"
    )
    ```
-5. Read the returned summary and present to user for confirmation:
+5. Log agent completion:
+   ```bash
+   cat >> .expedite/log.yml << 'LOG_EOF'
+   ---
+   event: agent_completion
+   timestamp: "{ISO 8601 UTC}"
+   lifecycle_id: "{lifecycle_id}"
+   agent_type: "spike-researcher"
+   batch_id: "spike-td-{N}"
+   questions: ["{TD description}"]
+   status: "{complete|failed}"
+   LOG_EOF
+   ```
+6. Read the returned summary and present to user for confirmation:
    ```
    Research complete for TD-{N}:
    {condensed summary from Task() return}
@@ -278,6 +291,36 @@ Validate the spike output structurally before writing SPIKE.md. G5 is a structur
 | S1 | Implementation steps add spike-specific guidance | Check that steps tracing to already-resolved TDs (from design) include implementation guidance beyond what was in PLAN.md. State reasoning. |
 | S2 | Full task coverage | Every task/story from the phase definition is covered by at least one implementation step. State: "{N}/{M} tasks covered" |
 | S3 | File lists are specific paths | Each implementation step's Files field contains specific file paths (not generic descriptions like "relevant files" or "various config files"). State: "{N}/{M} steps have specific file paths" |
+
+**Log gate outcome to telemetry** (after evaluation, before outcome routing):
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: gate_outcome
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+gate: "G5"
+outcome: "{go|go_advisory|recycle|override}"
+must_passed: {N}
+must_failed: {N}
+should_passed: {N}
+should_failed: {N}
+LOG_EOF
+```
+
+If the user overrides G5 (recycle with user override), also log:
+```bash
+cat >> .expedite/log.yml << 'LOG_EOF'
+---
+event: override
+timestamp: "{ISO 8601 UTC}"
+lifecycle_id: "{lifecycle_id}"
+gate: "G5"
+severity: "low"
+must_failed: {N}
+affected_das: ["{affected DA names from TDs}"]
+LOG_EOF
+```
 
 **Gate evaluation:**
 

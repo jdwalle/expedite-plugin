@@ -141,6 +141,18 @@ Update state.yml using the backup-before-write pattern:
    - Set `last_modified` to current ISO 8601 UTC timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
+5. Log phase transition (only if phase was CHANGED to `execute_in_progress`, i.e., it was previously `plan_complete`; do NOT log on resume when already `execute_in_progress`):
+   ```bash
+   cat >> .expedite/log.yml << 'LOG_EOF'
+   ---
+   event: phase_transition
+   timestamp: "{ISO 8601 UTC}"
+   lifecycle_id: "{lifecycle_id}"
+   from_phase: "plan_complete"
+   to_phase: "execute_in_progress"
+   LOG_EOF
+   ```
+
 Create the per-phase execute output directory:
 ```bash
 mkdir -p .expedite/plan/phases/{slug}/
@@ -449,6 +461,18 @@ This step only runs when the FINAL phase has been executed.
    - Clear `tasks` array (phase-level tracking complete)
    - Set `last_modified` to current ISO 8601 UTC timestamp
 4. Write the entire file back to `.expedite/state.yml`
+
+5. Log phase transition:
+   ```bash
+   cat >> .expedite/log.yml << 'LOG_EOF'
+   ---
+   event: phase_transition
+   timestamp: "{ISO 8601 UTC}"
+   lifecycle_id: "{lifecycle_id}"
+   from_phase: "execute_in_progress"
+   to_phase: "complete"
+   LOG_EOF
+   ```
 
 **7b: Append final phase summary to PROGRESS.md via Bash.**
 
