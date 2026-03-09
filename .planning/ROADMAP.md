@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Prompt Template System** - All prompt templates (researcher, sufficiency, design guide) with 8-section XML structure
 - [x] **Phase 4: Scope Skill** - Interactive scoping, intent detection, question plan generation, G1 gate
 - [x] **Phase 5: Research Orchestration Core** - Subagent dispatch, source-affinity batching, parallel evidence collection
-- [ ] **Phase 6: Research Quality and Synthesis** - Sufficiency assessment, G2 gate, gap-fill rounds, dynamic question discovery, SYNTHESIS.md
+- [x] **Phase 6: Research Quality and Synthesis** - Sufficiency assessment, G2 gate, gap-fill rounds, dynamic question discovery, SYNTHESIS.md
 - [x] **Phase 7: Design Skill** - Main-session design generation, RFC/PRD format, revision cycle, G3 gate
 - [x] **Phase 8: Plan Skill** - Break design into uniform-sized phases, tactical decision identification, intent-adaptive format (waves/epics), G4 gate
 - [x] **Phase 9: Spike and Execute Skills** - Spike: tactical decision resolution + step planning; Execute: follow spike plan, nudge for missing spike, checkpoint/resume
