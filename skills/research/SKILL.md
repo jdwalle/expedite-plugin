@@ -659,12 +659,12 @@ Proceed to Step 15.
 
 **Go-with-advisory** → Show user which SHOULD criteria failed and which questions have weak areas. Present via freeform prompt: "1. Proceed with advisory (weak areas documented in SYNTHESIS.md) | 2. Run gap-fill to strengthen." If proceed → record advisory data for synthesizer, proceed to Step 17. If gap-fill → treat as Recycle, proceed to Step 16.
 
-**Recycle** → Read `skills/research/references/ref-recycle-escalation.md` for escalation messaging appropriate to the current recycle count (GATE-04). Show gap details for each deficient question. Wait for user decision:
+**Recycle** → Read `skills/research/references/ref-recycle-escalation.md` (use Glob with `**/ref-recycle-escalation.md` if the direct path fails) for escalation messaging appropriate to the current recycle count (GATE-04). Show gap details for each deficient question. Wait for user decision:
 - **Approve gap-fill** → Proceed to Step 16.
 - **Adjust** → User reprioritizes or accepts gaps. Update state.yml (backup-before-write), then re-run Step 14.
 - **Override** → Proceed to 15c.
 
-**15c: Override handling.** Read `skills/research/references/ref-override-handling.md` and follow its instructions: record override in gate_history, determine severity, write `.expedite/research/override-context.md`.
+**15c: Override handling.** Read `skills/research/references/ref-override-handling.md` (use Glob with `**/ref-override-handling.md` if the direct path fails) and follow its instructions: record override in gate_history, determine severity, write `.expedite/research/override-context.md`.
 
 **Log override event:**
 ```bash
@@ -688,7 +688,7 @@ Filter deficient questions from state.yml: include `"partial"` or `"not_covered"
 
 Display: "Gap-fill targets: {count} questions (Partial: {N}, Not covered: {N}, Pending: {N})"
 
-Read `skills/research/references/ref-gapfill-dispatch.md` for detailed batch structure and dispatch modifications.
+Read `skills/research/references/ref-gapfill-dispatch.md` (use Glob with `**/ref-gapfill-dispatch.md` if the direct path fails) for detailed batch structure and dispatch modifications.
 
 Increment `research_round` in state.yml (backup-before-write). Create output directory: `mkdir -p .expedite/research/round-{research_round}/`.
 
