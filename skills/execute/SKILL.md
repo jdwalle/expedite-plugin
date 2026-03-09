@@ -285,7 +285,7 @@ cat >> .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
 
 ## {task_id}: {task_title}
 - Status: {complete|partial|failed|needs_review}
-- Wave: {wave_number}
+- {Wave/Epic}: {wave_number}
 - Tactical decision: {TD-N}: {brief} (resolved via {method})
 - Design decision: {DA-X}: {brief}
 - Files modified: {list}
@@ -301,7 +301,7 @@ cat >> .expedite/plan/phases/{slug}/PROGRESS.md << 'PROGRESS_EOF'
 
 ## {task_id}: {task_title}
 - Status: {complete|partial|failed|needs_review}
-- Wave: {wave_number}
+- {Wave/Epic}: {wave_number}
 - Design decision: {DA-X}: {brief}
 - Files modified: {list}
 - Verification: {VERIFIED|PARTIAL|FAILED|NEEDS REVIEW}
