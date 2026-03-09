@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-09T02:29:04.000Z"
+last_updated: "2026-03-09T02:30:00.000Z"
 progress:
   total_phases: 10
   completed_phases: 10
   total_plans: 28
-  completed_plans: 27
+  completed_plans: 28
 ---
 
 # Project State
@@ -144,6 +144,9 @@ Recent decisions affecting current work:
 - 09-03: Human review identified 13 issues (7 execute, 6 spike) -- all fixed in single commit before approval
 - 09-03: Phase completion (Step 6) explicitly STOPs with next-step guidance -- no auto-chaining between phases
 - 09-03: Lifecycle completion (Step 7) only triggers on final phase -- sets phase to complete in state.yml
+- 10-01: Codebase-routed questions use sequential IDs continuing from last approved question
+- 10-01: No cap on codebase-routed questions -- budget constraint only applies to original questions
+- 10-01: Source configuration checklist reference updated from Step 7 to Step 8 after renumbering
 - 10-02: Archival replicates scope SKILL.md Step 1 pattern exactly -- same slug generation, same exclusion list, same bash for-loop
 - 10-02: GATE-05 verified as already complete -- no code changes needed, G2/G3/G4 write override-context.md, G5 uses SPIKE.md as advisory channel
 - 10-02: INTNT-01/02/03 verified as fully implemented -- only fix needed was hardcoded "Wave" in execute Step 5e PROGRESS.md entries
@@ -160,5 +163,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-09
-Stopped at: Completed 10-02-PLAN.md -- intent flow + archival + gate override verification
+Stopped at: Completed 10-01-PLAN.md -- codebase analysis step + scope skill renumbering (Steps 7-10)
 Resume file: None

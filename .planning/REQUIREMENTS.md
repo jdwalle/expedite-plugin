@@ -43,7 +43,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **SCOPE-09**: Each question/DA defines evidence requirements — what specific evidence would constitute a sufficient answer
 - [x] **SCOPE-10**: Each DA defines a readiness criterion — how to know when enough evidence exists to make a design decision
 - [x] **SCOPE-11**: Each DA has a depth calibration (Deep/Standard/Light) that sets evidence count expectations for research
-- [ ] **SCOPE-12**: Scope Step 7 generates additive codebase-routed questions per DA — not counted against question budget, as many as needed to understand existing codebase patterns relevant to each decision area
+- [x] **SCOPE-12**: Scope Step 7 generates additive codebase-routed questions per DA — not counted against question budget, as many as needed to understand existing codebase patterns relevant to each decision area
 
 ### Research Skill
 
@@ -277,7 +277,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EXEC-04 | Phase 9 | Complete |
 | EXEC-05 | Phase 9 | Complete |
 | EXEC-06 | Phase 9 | Complete |
-| SCOPE-12 | Phase 10 | Pending |
+| SCOPE-12 | Phase 10 | Complete |
 | INTNT-01 | Phase 10 | Complete |
 | INTNT-02 | Phase 10 | Complete |
 | INTNT-03 | Phase 10 | Complete |
