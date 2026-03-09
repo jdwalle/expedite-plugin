@@ -33,7 +33,57 @@ You are the Expedite research orchestrator. Your job is to dispatch parallel res
 
 Look at the injected lifecycle state above.
 
-**Case A: Phase is NOT "scope_complete"**
+**Case A: Phase is "scope_complete"**
+
+This is normal entry. Check the `research_round` field in state.yml.
+
+- If `research_round` is 0: This is the initial research run. Display: "Starting research phase..."
+- If `research_round` is greater than 0: This is a re-entry (gap-fill round from Phase 6). Display: "Resuming research (round {research_round + 1})... This is a gap-fill round -- only pending/partial questions will be researched."
+
+Proceed to Step 2.
+
+**Case B: Phase is "research_in_progress"**
+
+This is a resume scenario. The research skill was running when the session ended.
+
+1. Read `.expedite/state.yml` to get `research_round`, `project_name`, `intent`, and question statuses.
+2. Check artifact existence to determine the resume point using this decision tree:
+   - `research_round == 0`: Crashed before Step 3 initialized state. Resume at Step 2 (read scope artifacts).
+   - `research_round >= 1` AND no evidence files in `.expedite/research/`: Crashed during batching/dispatch (Steps 4-9). Resume at Step 4 (re-form batches).
+   - `research_round >= 1` AND evidence files exist AND no `.expedite/research/sufficiency-results.yml`: Crashed during collection or before assessment. Resume at Step 12 (assess with available evidence).
+   - `research_round >= 1` AND `sufficiency-results.yml` exists AND no `.expedite/research/SYNTHESIS.md`: Crashed during gate/synthesis. Resume at Step 14 (re-run gate).
+   - `research_round >= 1` AND `SYNTHESIS.md` exists: Crashed during completion. Resume at Step 18 (finalize).
+
+3. Display progress summary:
+```
+Found in-progress research for "{project_name}".
+
+Progress detected:
+- Research round: {research_round}
+- Evidence files: {count or "none"}
+- Sufficiency assessed: {yes/no}
+- Synthesis written: {yes/no}
+- Resume point: Step {N}
+
+Continue from where you left off?
+```
+
+4. Use AskUserQuestion:
+```
+header: "Resume"
+question: "Continue from where you left off?"
+options:
+  - label: "Continue"
+    description: "Resume from Step {N}"
+  - label: "Start over"
+    description: "Reset research state and start from Step 2"
+multiSelect: false
+```
+
+- Continue: Skip to the determined resume step. Do NOT re-run Step 3 (state transition) since state is already research_in_progress.
+- Start over: Reset `research_round` to 0, clear all question statuses to `"pending"`, proceed to Step 2.
+
+**Case C: Phase is anything else (not "scope_complete", not "research_in_progress")**
 
 Display:
 ```
@@ -42,15 +92,6 @@ Error: Scope is not complete. Run `/expedite:scope` to define your question plan
 Current phase: {phase}
 ```
 Then STOP. Do not proceed to any other step.
-
-**Case B: Phase IS "scope_complete"**
-
-Check the `research_round` field in state.yml.
-
-- If `research_round` is 0: This is the initial research run. Display: "Starting research phase..."
-- If `research_round` is greater than 0: This is a re-entry (gap-fill round from Phase 6). Display: "Resuming research (round {research_round + 1})... This is a gap-fill round -- only pending/partial questions will be researched."
-
-Proceed to Step 2.
 
 ### Step 2: Read Scope Artifacts
 
