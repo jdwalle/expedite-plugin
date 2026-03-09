@@ -109,7 +109,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **GATE-02**: Each gate has MUST criteria (all must pass for Go) and SHOULD criteria (failures produce advisory)
 - [x] **GATE-03**: Four gate outcomes: Go, Go-with-advisory, Recycle, Override
 - [x] **GATE-04**: Recycle escalation: 1st informational, 2nd suggest adjustment, 3rd recommend override
-- [ ] **GATE-05**: Override records severity and injects gap context into downstream phase prompts
+- [x] **GATE-05**: Override records severity and injects gap context into downstream phase prompts
 - [x] **GATE-06**: G1 is structural (deterministic); G2 and G3 require LLM judgment; G4 is structural; G5 is structural
 - [x] **GATE-07**: Anti-bias instructions in G2/G3 prompts ("evaluate as if someone else produced this")
 
@@ -124,9 +124,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Dual Intent
 
-- [ ] **INTNT-01**: Intent (product/engineering) declared during scope, stored in state.yml, flows through entire lifecycle
-- [ ] **INTNT-02**: Product intent: PRD-style design, epics/stories plan, HANDOFF.md generation
-- [ ] **INTNT-03**: Engineering intent: RFC-style design, wave-ordered tasks, technical checklists
+- [x] **INTNT-01**: Intent (product/engineering) declared during scope, stored in state.yml, flows through entire lifecycle
+- [x] **INTNT-02**: Product intent: PRD-style design, epics/stories plan, HANDOFF.md generation
+- [x] **INTNT-03**: Engineering intent: RFC-style design, wave-ordered tasks, technical checklists
 
 ### Telemetry
 
@@ -140,7 +140,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **ARTF-01**: Each phase produces Markdown artifacts in `.expedite/` subdirectories
 - [x] **ARTF-02**: Artifact paths: scope/SCOPE.md, research/SYNTHESIS.md, design/DESIGN.md, plan/PLAN.md, execute/PROGRESS.md
-- [ ] **ARTF-03**: Archival flow moves completed lifecycle to `.expedite/archive/{slug}/`
+- [x] **ARTF-03**: Archival flow moves completed lifecycle to `.expedite/archive/{slug}/`
 
 ## v2 Requirements
 
@@ -228,12 +228,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GATE-02 | Phase 4 | Complete |
 | GATE-03 | Phase 6 | Complete |
 | GATE-04 | Phase 10 | Complete |
-| GATE-05 | Phase 10 | Pending |
+| GATE-05 | Phase 10 | Complete |
 | GATE-06 | Phase 4 | Complete |
 | GATE-07 | Phase 6 | Complete |
 | ARTF-01 | Phase 4 | Complete |
 | ARTF-02 | Phase 4 | Complete |
-| ARTF-03 | Phase 10 | Pending |
+| ARTF-03 | Phase 10 | Complete |
 | RSCH-01 | Phase 5 | Complete |
 | RSCH-02 | Phase 5 | Complete |
 | RSCH-03 | Phase 5 | Complete |
@@ -278,9 +278,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EXEC-05 | Phase 9 | Complete |
 | EXEC-06 | Phase 9 | Complete |
 | SCOPE-12 | Phase 10 | Pending |
-| INTNT-01 | Phase 10 | Pending |
-| INTNT-02 | Phase 10 | Pending |
-| INTNT-03 | Phase 10 | Pending |
+| INTNT-01 | Phase 10 | Complete |
+| INTNT-02 | Phase 10 | Complete |
+| INTNT-03 | Phase 10 | Complete |
 | TELE-01 | Phase 10 | Pending |
 | TELE-02 | Phase 10 | Pending |
 | TELE-03 | Phase 10 | Pending |
