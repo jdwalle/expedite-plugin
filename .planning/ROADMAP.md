@@ -139,6 +139,6 @@ Phases execute in numeric order: 14 -> 14.1 -> 15 -> 15.1 -> ... -> 18
 | 13. Tech Debt | v1.0 | 2/2 | Complete | 2026-03-09 |
 | 14. Quick Fixes | 1/1 | Complete    | 2026-03-10 | - |
 | 15. Step-Level Tracking | 4/4 | Complete    | 2026-03-10 | - |
-| 16. Status Improvements | 1/1 | Complete   | 2026-03-10 | - |
+| 16. Status Improvements | 1/1 | Complete    | 2026-03-10 | - |
 | 17. HANDOFF.md Activation | v1.1 | 0/? | Not started | - |
 | 18. Gate Enforcement | v1.1 | 0/? | Not started | - |
