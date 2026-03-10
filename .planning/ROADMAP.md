@@ -37,7 +37,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - Decimal phases (14.1, 14.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 14: Quick Fixes** - Version label, .gitignore, and architecture decision documentation (completed 2026-03-10)
-- [ ] **Phase 15: Step-Level Tracking** - Users know exactly where they are within long-running skills
+- [x] **Phase 15: Step-Level Tracking** - Users know exactly where they are within long-running skills (completed 2026-03-10)
 - [ ] **Phase 16: Status Improvements** - Status skill gains log size warning and artifact-based state reconstruction
 - [ ] **Phase 17: HANDOFF.md Activation** - Product-intent users get validated HANDOFF.md generation
 - [ ] **Phase 18: Gate Enforcement** - DA readiness criteria enforced across G2-G5 quality gates
@@ -138,7 +138,7 @@ Phases execute in numeric order: 14 -> 14.1 -> 15 -> 15.1 -> ... -> 18
 | 12. Audit Cleanup | v1.0 | 2/2 | Complete | 2026-03-09 |
 | 13. Tech Debt | v1.0 | 2/2 | Complete | 2026-03-09 |
 | 14. Quick Fixes | 1/1 | Complete    | 2026-03-10 | - |
-| 15. Step-Level Tracking | 1/4 | In Progress|  | - |
+| 15. Step-Level Tracking | 4/4 | Complete   | 2026-03-10 | - |
 | 16. Status Improvements | v1.1 | 0/? | Not started | - |
 | 17. HANDOFF.md Activation | v1.1 | 0/? | Not started | - |
 | 18. Gate Enforcement | v1.1 | 0/? | Not started | - |
