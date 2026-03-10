@@ -17,7 +17,7 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 - ✓ Flat state.yml (max 2 nesting levels) with complete-file rewrite + backup-before-write — v1.0
 - ✓ 9 prompt templates with 8-section XML structure in references/ — v1.0
 - ✓ Scope skill: interactive question generation, intent detection, question plan preview, codebase analysis — v1.0
-- ✓ Research skill: source-affinity batching, parallel Task() subagents, dynamic question discovery, inline sufficiency assessment — v1.0
+- ✓ Research skill: source-affinity batching, parallel Task() subagents, dynamic question discovery, Task()-dispatched sufficiency assessment — v1.0
 - ✓ Design skill: main-session generation, freeform revision cycle, dual output format (PRD vs RFC) — v1.0
 - ✓ Plan skill: main-session plan generation with tactical decision identification — v1.0
 - ✓ Spike skill: per-phase tactical decision resolution with optional focused research — v1.0
