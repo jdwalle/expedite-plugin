@@ -30,6 +30,13 @@ You are the Expedite execute orchestrator. Your job is to implement plan tasks s
 
 ### Step 1: Prerequisite Check
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "execute", step: 1, label: "Prerequisite Check"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Look at the injected lifecycle state above.
 
 **Case A: Phase is "plan_complete"**
@@ -63,6 +70,13 @@ If phase is "plan_in_progress" and `--override` flag is NOT present, check gate_
 Then STOP. Do not proceed to any other step.
 
 ### Step 2: Read Plan + Spike Artifacts
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "execute", step: 2, label: "Read Plan + Spike Artifacts"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Parse the phase argument. Accept flexible formats:
 - Bare number: "1", "2", "3"
@@ -130,6 +144,7 @@ Update state.yml using the backup-before-write pattern:
 1. Read `.expedite/state.yml`
 2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update the in-memory representation:
+   - Set `current_step` to `{skill: "execute", step: 3, label: "Initialize Execute State"}`
    - Set `phase` to `"execute_in_progress"` (only if currently `plan_complete`; skip if already `execute_in_progress` from prior phase execution)
    - Set `current_wave` to the phase number being executed
    - Set `current_task` to the first task ID in THIS phase
@@ -186,6 +201,13 @@ PROGRESS_EOF
 Display: "Execute state initialized for {Wave/Epic} {N}. Beginning task execution..."
 
 ### Step 4: Determine Starting Point
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "execute", step: 4, label: "Determine Starting Point"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 **4a: Fresh start (came from Step 3):**
 
@@ -285,7 +307,7 @@ status: "in_progress"
 continuation_notes: "{brief: what was done, what's next}"
 ```
 
-Update state.yml (backup-before-write): set `current_task` to next task ID, update the completed task's status to "complete" (or "failed"/"partial" per verification result), set `last_modified`.
+Update state.yml (backup-before-write): set `current_step` to `{skill: "execute", step: 5, label: "Task Execution Loop"}`, set `current_task` to next task ID, update the completed task's status to "complete" (or "failed"/"partial" per verification result), set `last_modified`.
 
 **5e: Append to PROGRESS.md via Bash.**
 
@@ -365,6 +387,13 @@ Display: "All tasks in {Wave/Epic} {N} complete. Proceeding to phase completion.
 
 ### Step 6: Phase Completion
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "execute", step: 6, label: "Phase Completion"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 After all tasks in the current phase are complete (Step 5 loop exhausted):
 
 **6a: Update per-phase checkpoint to complete.**
@@ -438,7 +467,7 @@ Recommended: Run `/expedite:spike {next_N}` to investigate tactical decisions be
 Run `/expedite:spike {next_N}` (optional) or `/expedite:execute {next_N}` to continue.
 ```
 
-Update state.yml (backup-before-write): keep `phase` as `"execute_in_progress"`, set `current_wave` to null, set `current_task` to null, set `last_modified`. Do NOT set phase to "complete" -- there are more phases.
+Update state.yml (backup-before-write): keep `phase` as `"execute_in_progress"`, set `current_step` to null, set `current_wave` to null, set `current_task` to null, set `last_modified`. Do NOT set phase to "complete" -- there are more phases.
 
 STOP. (User explicitly invokes the next phase.)
 
@@ -455,6 +484,7 @@ This step only runs when the FINAL phase has been executed.
 1. Read `.expedite/state.yml`
 2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update the in-memory representation:
+   - Set `current_step` to null
    - Set `phase` to `"complete"`
    - Set `current_task` to null
    - Set `current_wave` to null
