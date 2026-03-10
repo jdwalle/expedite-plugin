@@ -33,8 +33,8 @@ Requirements for v1.1 Production Polish. Each maps to roadmap phases.
 
 ### HANDOFF.md Support
 
-- [ ] **HAND-01**: Design skill Step 6 HANDOFF.md generation works end-to-end for product-intent lifecycles
-- [ ] **HAND-02**: Design revision cycle (Step 7) handles HANDOFF.md-specific revision requests
+- [x] **HAND-01**: Design skill Step 6 HANDOFF.md generation works end-to-end for product-intent lifecycles
+- [x] **HAND-02**: Design revision cycle (Step 7) handles HANDOFF.md-specific revision requests
 - [x] **HAND-03**: G3 gate S4 criterion validates correctly with HANDOFF.md present
 - [x] **HAND-04**: PROJECT.md updated to reflect HANDOFF.md as officially supported (moved from Out of Scope)
 
@@ -96,8 +96,8 @@ Deferred to v1.2 or later. Tracked but not in current roadmap.
 | STAT-01 | 16 | Complete |
 | STAT-02 | 16 | Complete |
 | STAT-03 | 16 | Complete |
-| HAND-01 | 17 | Pending |
-| HAND-02 | 17 | Pending |
+| HAND-01 | 17 | Complete |
+| HAND-02 | 17 | Complete |
 | HAND-03 | 17 | Complete |
 | HAND-04 | 17 | Complete |
 | GATE-01 | 18 | Pending |

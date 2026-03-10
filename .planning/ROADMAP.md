@@ -39,7 +39,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 14: Quick Fixes** - Version label, .gitignore, and architecture decision documentation (completed 2026-03-10)
 - [x] **Phase 15: Step-Level Tracking** - Users know exactly where they are within long-running skills (completed 2026-03-10)
 - [x] **Phase 16: Status Improvements** - Status skill gains log size warning and artifact-based state reconstruction (completed 2026-03-10)
-- [ ] **Phase 17: HANDOFF.md Activation** - Product-intent users get validated HANDOFF.md generation
+- [x] **Phase 17: HANDOFF.md Activation** - Product-intent users get validated HANDOFF.md generation (completed 2026-03-10)
 - [ ] **Phase 18: Gate Enforcement** - DA readiness criteria enforced across G2-G5 quality gates
 
 ## Phase Details
@@ -97,7 +97,7 @@ Plans:
   2. Users can request revisions to HANDOFF.md during the design revision cycle (Step 7) and see changes applied
   3. G3 gate S4 criterion evaluates correctly when HANDOFF.md is present (passes) and when absent for product-intent (flags)
   4. PROJECT.md reflects HANDOFF.md as officially supported — removed from Out of Scope, documented as a validated feature
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 17-01-PLAN.md — Fix design resume logic and status artifact cross-reference for HANDOFF.md support
@@ -142,5 +142,5 @@ Phases execute in numeric order: 14 -> 14.1 -> 15 -> 15.1 -> ... -> 18
 | 14. Quick Fixes | 1/1 | Complete    | 2026-03-10 | - |
 | 15. Step-Level Tracking | 4/4 | Complete    | 2026-03-10 | - |
 | 16. Status Improvements | 1/1 | Complete    | 2026-03-10 | - |
-| 17. HANDOFF.md Activation | 2/3 | In Progress|  | - |
+| 17. HANDOFF.md Activation | v1.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Gate Enforcement | v1.1 | 0/? | Not started | - |
