@@ -31,6 +31,13 @@ You are the Expedite research orchestrator. Your job is to dispatch parallel res
 
 ### Step 1: Prerequisite Check
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write). If `.expedite/state.yml` does not exist yet, skip step tracking (lifecycle not initialized).
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 1, label: "Prerequisite Check"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Look at the injected lifecycle state above.
 
 **Case A: Phase is "scope_complete"**
@@ -95,6 +102,13 @@ Then STOP. Do not proceed to any other step.
 
 ### Step 2: Read Scope Artifacts
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write). If `.expedite/state.yml` does not exist yet, skip step tracking (lifecycle not initialized).
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 2, label: "Read Scope Artifacts"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Read the following files:
 
 1. **`.expedite/scope/SCOPE.md`** -- Extract the full question plan with Decision Areas, questions, priorities, evidence requirements, source hints, depth calibration, and readiness criteria.
@@ -123,6 +137,7 @@ Transition state.yml phase from "scope_complete" to "research_in_progress" using
 1. Read `.expedite/state.yml`
 2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update the in-memory representation:
+   - Set `current_step` to `{skill: "research", step: 3, label: "Initialize Research State"}`
    - Set `phase` to `"research_in_progress"`
    - Increment `research_round` by 1
    - Set `last_modified` to current timestamp (ISO 8601 UTC)
@@ -145,6 +160,13 @@ Display: "Phase: research_in_progress (round {research_round})"
 Proceed to Step 4.
 
 ### Step 4: Form Source-Affinity Batches
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 4, label: "Form Source-Affinity Batches"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Group questions into batches by their primary source affinity. Each question is assigned to exactly one batch -- no question duplication across batches.
 
@@ -179,6 +201,13 @@ Proceed to Step 5.
 
 ### Step 5: Validate DA Coverage
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 5, label: "Validate DA Coverage"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Verify that every Decision Area from the question plan has at least one question assigned to a research batch (not skipped).
 
 1. Extract all unique `decision_area` values from the questions in state.yml.
@@ -208,6 +237,13 @@ multiSelect: false
 5. If all DAs are covered, proceed to Step 6 without prompting.
 
 ### Step 6: Present Batch Plan for Approval
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 6, label: "Present Batch Plan for Approval"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Display the batch plan in this exact format:
 
@@ -258,6 +294,13 @@ Review the batch plan above. You can:
 **Evidence requirements flow-through:** When constructing the batch data structures, ALWAYS include the full `evidence_requirements` string for each question. This is critical -- research agents must receive typed evidence targets (e.g., "At least 2 implementation examples with benchmarks"), not just the question text. This ensures agents know what specific evidence to find, satisfying the contract chain from scope through research.
 
 ### Step 7: Pre-Validate Sources
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 7, label: "Pre-Validate Sources"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Create the output directory for evidence files:
 ```bash
@@ -312,6 +355,13 @@ Note: Log the event when the failure is detected. Update the `action` field afte
 
 ### Step 8: Assemble Prompt Templates
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 8, label: "Assemble Prompt Templates"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 For each batch in the approved plan, assemble the full prompt that will be sent to the research subagent:
 
 1. **Determine the template file** based on the batch source:
@@ -363,6 +413,13 @@ Store each assembled prompt with its batch metadata:
 Proceed to Step 9.
 
 ### Step 9: Dispatch Parallel Subagents
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 9, label: "Dispatch Parallel Subagents"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Display: "Dispatching {N} research agents in parallel..."
 
@@ -428,6 +485,7 @@ For each completed batch:
    - `CONFIDENCE` level: high, medium, or low.
 
 3. **Update state.yml for each question in the batch** using the backup-before-write pattern (read, backup, modify, write for EACH update cycle):
+   - Set `current_step` to `{skill: "research", step: 10, label: "Collect Results and Update State"}`
    - Set `evidence_files` to include the evidence file path (e.g., `[".expedite/research/evidence-batch-01.md"]`)
    - Set `status` based on agent findings:
      - If agent found evidence meeting requirements -> `"covered"` (preliminary -- Phase 6 sufficiency evaluator makes final determination)
@@ -455,6 +513,13 @@ For each completed batch:
 Proceed to Step 11.
 
 ### Step 11: Research Completion Summary
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 11, label: "Research Completion Summary"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Display a structured completion summary:
 
@@ -538,7 +603,7 @@ multiSelect: false
 
 Handling: "Accept gap" keeps UNAVAILABLE-SOURCE status (flows to SYNTHESIS.md advisory). "Suggest alternative source" asks user for details via freeform, updates `source_hints` in state.yml (backup-before-write). "Override and proceed" treats question as resolved for gate purposes.
 
-**Update state.yml** with the evaluator's results using the backup-before-write pattern. For each question, set `status` to the evaluator's categorical rating in lowercase (`covered`, `partial`, `not_covered`, or `unavailable_source`) and set `gap_details` to `null` if COVERED or to the evaluator's gap description otherwise. These are FINAL statuses replacing Phase 5's preliminary statuses.
+**Update state.yml** with the evaluator's results using the backup-before-write pattern. Set `current_step` to `{skill: "research", step: 12, label: "Sufficiency Assessment"}` in the first write. For each question, set `status` to the evaluator's categorical rating in lowercase (`covered`, `partial`, `not_covered`, or `unavailable_source`) and set `gap_details` to `null` if COVERED or to the evaluator's gap description otherwise. These are FINAL statuses replacing Phase 5's preliminary statuses.
 
 **Display assessment summary:**
 
@@ -559,6 +624,13 @@ If gaps exist: "Gaps identified. G2 gate will determine next action."
 Proceed to Step 13.
 
 ### Step 13: Dynamic Question Discovery
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 13, label: "Dynamic Question Discovery"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Surface new questions discovered by research agents during evidence gathering. Proposals are deduplicated via LLM judgment (not string matching), capped at 4, and presented to the user for approval.
 
@@ -595,6 +667,13 @@ Display discovery summary: questions proposed, duplicates removed, presented, ap
 Proceed to Step 14.
 
 ### Step 14: G2 Gate Evaluation
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 14, label: "G2 Gate Evaluation"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Count-based gate evaluation from state.yml question statuses (set in Step 12). No LLM judgment — pure counting.
 
@@ -639,7 +718,7 @@ Proceed to Step 15.
 
 ### Step 15: Gate Outcome Handling
 
-**15a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write):
+**15a: Record gate history.** Set `current_step` to `{skill: "research", step: 15, label: "Gate Outcome Handling"}` and append to `gate_history` in state.yml (backup-before-write):
 
 ```yaml
 - gate: "G2"
@@ -684,6 +763,13 @@ Then proceed to Step 17.
 
 ### Step 16: Gap-Fill Dispatch
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 16, label: "Gap-Fill Dispatch"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Filter deficient questions from state.yml: include `"partial"` or `"not_covered"` status + any newly discovered `"pending"` questions from Step 13. Exclude UNAVAILABLE-SOURCE (handled in Step 12) and user-accepted gaps.
 
 Display: "Gap-fill targets: {count} questions (Partial: {N}, Not covered: {N}, Pending: {N})"
@@ -697,6 +783,13 @@ Re-batch deficient questions by Decision Area (not source affinity). Dispatch ga
 After gap-fill completes: collect proposed questions, update evidence_files in state.yml, display summary. **Return to Step 12** to re-assess sufficiency with new evidence.
 
 ### Step 17: Synthesis Generation
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "research", step: 17, label: "Synthesis Generation"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Read the synthesizer template from `skills/research/references/prompt-research-synthesizer.md` (use Glob with `**/prompt-research-synthesizer.md` if the direct path fails). This template HAS frontmatter (`model: opus`, `subagent_type: general-purpose`) — it runs as a Task() subagent.
 
@@ -714,7 +807,7 @@ Proceed to Step 18.
 
 ### Step 18: Research Completion
 
-Update state.yml to mark research complete (backup-before-write): set `phase` to `"research_complete"`, update `last_modified`.
+Update state.yml to mark research complete (backup-before-write): set `current_step` to null, set `phase` to `"research_complete"`, update `last_modified`.
 
 **Log phase transition:**
 ```bash
