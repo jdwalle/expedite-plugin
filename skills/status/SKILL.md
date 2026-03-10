@@ -45,7 +45,39 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - If the skill name is not in the lookup table, display without total: `{skill}: step {step} -- {label}`
    - If `current_step` is null or absent, skip this entirely (no placeholder, no error)
 
-4. **Map phase to human-readable description.** Use this mapping:
+4. **Log Size Check.** Check if `.expedite/log.yml` exists and exceeds 50KB (51200 bytes).
+
+   1. Run via Bash: `wc -c < .expedite/log.yml 2>/dev/null`
+   2. If the command fails (file does not exist), skip this step entirely -- no warning needed.
+   3. If the byte count exceeds 51200, store a warning:
+      "log.yml is {size_kb}KB -- consider archiving the current lifecycle to reset it"
+      Where {size_kb} is the byte count divided by 1024, rounded to nearest integer.
+   4. This warning will be displayed in the Diagnostics section of the output (Step 9).
+
+5. **Artifact Cross-Reference.** Cross-reference expected artifact files against the current phase from state.yml.
+
+   1. Read the `phase` value from the parsed state (Step 2).
+   2. Use this mapping to determine which artifacts SHOULD exist:
+      - `scope_complete` and later: `.expedite/scope/SCOPE.md`
+      - `research_complete` and later: `.expedite/research/SYNTHESIS.md`
+      - `design_complete` and later: `.expedite/design/DESIGN.md`
+      - `plan_complete` and later: `.expedite/plan/PLAN.md`
+      - `scope_in_progress`: no artifacts expected yet
+      - `archived`: skip check entirely (artifacts may have been moved to archive/)
+
+      "Later" means any phase that comes AFTER in the lifecycle sequence.
+      The full phase ordering is:
+      scope_in_progress < scope_complete < research_in_progress < research_complete < design_in_progress < design_complete < plan_in_progress < plan_complete < execute_in_progress < complete
+
+   3. For each expected artifact, check existence using Glob or Read.
+   4. Collect any missing artifacts as inconsistencies:
+      - Format: "State says {phase} but {artifact_path} not found"
+   5. These inconsistencies will be displayed in the Diagnostics section (Step 9).
+   6. If phase is `scope_in_progress` or `archived`, or if no inconsistencies found, store nothing.
+
+   **Do NOT attempt to fix inconsistencies.** This is a read-only diagnostic.
+
+6. **Map phase to human-readable description.** Use this mapping:
    - `scope_in_progress` -> "Scope: defining questions and intent"
    - `scope_complete` -> "Scope: complete, ready for research"
    - `research_in_progress` -> "Research: gathering evidence"
@@ -58,7 +90,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `complete` -> "Lifecycle complete"
    - `archived` -> "Lifecycle archived"
 
-5. **Determine next action.** Use this routing (same as SessionStart hook):
+7. **Determine next action.** Use this routing (same as SessionStart hook):
    - `scope_in_progress` -> "Continue with `/expedite:scope`"
    - `scope_complete` -> "Run `/expedite:research` to begin evidence gathering"
    - `research_in_progress` -> "Continue with `/expedite:research`"
@@ -71,7 +103,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `complete` -> "Lifecycle complete. Run `/expedite:scope` for a new lifecycle."
    - `archived` -> "Lifecycle archived. Run `/expedite:scope` for a new lifecycle."
 
-6. **Count question statuses.** If `questions` is non-empty, count:
+8. **Count question statuses.** If `questions` is non-empty, count:
    - Total questions
    - Questions with status `covered`
    - Questions with status `partial`
@@ -79,19 +111,19 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - Questions with status `pending`
    - Questions with status `unavailable_source`
 
-7. **Display formatted output.** Use EXACTLY this format:
+9. **Display formatted output.** Use EXACTLY this format:
 
 ```
 # Expedite Lifecycle Status
 
 **Project:** {project_name}
 **Intent:** {intent}
-**Phase:** {phase} ({human-readable description})
+**Phase:** {phase} ({human-readable description from Step 6})
 **Current Step:** {skill}: step {step} of {total} -- {label}
 (Only show Current Step line when current_step is present and not null. Omit entirely otherwise.)
 
 ## Next Action
-{phase-aware recommendation from step 4}
+{phase-aware recommendation from Step 7}
 
 ## Questions ({total} total)
 | Status | Count |
@@ -115,6 +147,20 @@ You are the Expedite status display. Your job is to read the lifecycle state and
 State file: .expedite/state.yml
 Backup: .expedite/state.yml.bak
 Research rounds: {research_round}
+
+## Diagnostics
+{Only display this section if there are warnings or inconsistencies from Steps 4-5.
+ If no issues found, omit this section entirely.}
+
+**Warnings:**
+- {log size warning from Step 4, if applicable}
+
+**Artifact Inconsistencies:**
+- {inconsistency message from Step 5, if applicable}
+
+(Status is read-only. Run the relevant skill to fix inconsistencies.)
 ```
 
-8. **Do NOT modify any files.** This is a read-only skill. Do not write to state.yml or any other file.
+Within the Diagnostics section, only include the **Warnings** sub-heading if there is a log size warning. Only include the **Artifact Inconsistencies** sub-heading if there are inconsistencies. If both exist, show both.
+
+10. **Read-Only Constraint.** Do NOT modify any files. This is a read-only skill. Do not write to state.yml, log.yml, or any other file. If inconsistencies are found in Step 5, REPORT them in the output -- do not attempt to fix them.
