@@ -28,6 +28,13 @@ You are the Expedite plan orchestrator. Your job is to break a design document i
 
 ### Step 1: Prerequisite Check
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "plan", step: 1, label: "Prerequisite Check"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Look at the injected lifecycle state above.
 
 **Case A: Phase is "design_complete"**
@@ -108,6 +115,13 @@ Then STOP. Do not proceed to any other step.
 
 ### Step 2: Read Design + Scope Artifacts
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "plan", step: 2, label: "Read Design + Scope Artifacts"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Read the following files:
 
 1. **`.expedite/design/DESIGN.md`** — Extract per-DA design decisions, confidence levels, open questions, cross-cutting concerns.
@@ -148,6 +162,7 @@ Update state.yml using the backup-before-write pattern:
 2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update the in-memory representation:
    - Set `phase` to `"plan_in_progress"`
+   - Set `current_step` to `{skill: "plan", step: 3, label: "Initialize Plan State"}`
    - Set `last_modified` to current ISO 8601 UTC timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
@@ -171,6 +186,13 @@ mkdir -p .expedite/plan/
 Display: "Plan phase initialized. Generating implementation plan..."
 
 ### Step 4: Generate Implementation Plan
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "plan", step: 4, label: "Generate Implementation Plan"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 This is inline generation in the main session — the plan is generated here, not dispatched to a subagent. Read `skills/plan/references/prompt-plan-guide.md` as a quality reference (use Glob with `**/prompt-plan-guide.md` if the direct path fails). The plan guide defines the required sections, quality criteria, and contract chain enforcement — but is NOT dispatched as a subagent. Its instructions guide the inline generation.
 
@@ -264,6 +286,13 @@ If any check fails, revise the content before writing to disk. Do NOT write a pl
 
 ### Step 5: Write PLAN.md
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "plan", step: 5, label: "Write PLAN.md"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Write the generated plan to `.expedite/plan/PLAN.md`.
 
 Document header (both formats):
@@ -319,6 +348,13 @@ If DA coverage is not complete (covered < total), display WARNING with the list 
 If verification fails on any check, display the specific failure and fix the content before re-writing. Do NOT proceed to Step 6 with a malformed PLAN.md.
 
 ### Step 6: Revision Cycle
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "plan", step: 6, label: "Revision Cycle"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Present the plan to the user for review. This is a freeform revision loop with no hard round limit -- the user keeps revising until satisfied, then proceeds to gate evaluation.
 
@@ -377,6 +413,13 @@ Plan-specific revision types:
 - Modify acceptance criteria
 
 ### Step 7: G4 Gate Evaluation
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "plan", step: 7, label: "G4 Gate Evaluation"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Read `.expedite/plan/PLAN.md` and `.expedite/scope/SCOPE.md` (for DA reference).
 
@@ -449,7 +492,7 @@ Proceed to Step 8.
 
 ### Step 8: Gate Outcome Handling
 
-**8a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write):
+**8a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write). In the same write, also set `current_step` to `{skill: "plan", step: 8, label: "Gate Outcome Handling"}`:
 
 ```yaml
 - gate: "G4"
@@ -522,7 +565,7 @@ phases should account for these gaps.
 
 ### Step 9: Plan Completion
 
-Update state.yml (backup-before-write): set `phase` to `"plan_complete"`, update `last_modified`.
+Update state.yml (backup-before-write): set `current_step` to null, set `phase` to `"plan_complete"`, update `last_modified`.
 
 **Log phase transition:**
 ```bash
