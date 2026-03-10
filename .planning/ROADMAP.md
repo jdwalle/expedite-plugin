@@ -83,10 +83,10 @@ Plans:
   1. When log.yml exceeds 50KB, status skill output includes a visible warning about log size
   2. Status skill cross-references artifact files (SCOPE.md, SYNTHESIS.md, DESIGN.md, PLAN.md) against state.yml phase and reports any inconsistencies (e.g., "state says design_complete but DESIGN.md not found")
   3. Status skill remains strictly read-only — it reports discrepancies but never modifies state.yml
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 16-01: TBD
+- [ ] 16-01-PLAN.md — Add log size warning, artifact cross-reference, and read-only reinforcement to status skill
 
 ### Phase 17: HANDOFF.md Activation
 **Goal**: Product-intent users can generate and refine a validated HANDOFF.md through the design skill
@@ -139,6 +139,6 @@ Phases execute in numeric order: 14 -> 14.1 -> 15 -> 15.1 -> ... -> 18
 | 13. Tech Debt | v1.0 | 2/2 | Complete | 2026-03-09 |
 | 14. Quick Fixes | 1/1 | Complete    | 2026-03-10 | - |
 | 15. Step-Level Tracking | 4/4 | Complete    | 2026-03-10 | - |
-| 16. Status Improvements | v1.1 | 0/? | Not started | - |
+| 16. Status Improvements | v1.1 | 0/1 | Not started | - |
 | 17. HANDOFF.md Activation | v1.1 | 0/? | Not started | - |
 | 18. Gate Enforcement | v1.1 | 0/? | Not started | - |
