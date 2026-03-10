@@ -36,7 +36,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - Integer phases (14, 15, ...): Planned milestone work
 - Decimal phases (14.1, 14.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 14: Quick Fixes** - Version label, .gitignore, and architecture decision documentation
+- [x] **Phase 14: Quick Fixes** - Version label, .gitignore, and architecture decision documentation (completed 2026-03-10)
 - [ ] **Phase 15: Step-Level Tracking** - Users know exactly where they are within long-running skills
 - [ ] **Phase 16: Status Improvements** - Status skill gains log size warning and artifact-based state reconstruction
 - [ ] **Phase 17: HANDOFF.md Activation** - Product-intent users get validated HANDOFF.md generation
@@ -52,7 +52,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
   1. Running `/expedite:status` or inspecting plugin.json shows version `1.0.0`
   2. `.DS_Store` files are gitignored and removed from the git index — `git ls-files` returns no `.DS_Store` entries
   3. PROJECT.md Key Decisions table documents the sufficiency evaluator divergence (spec chose inline, implementation chose Task() for context hygiene)
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 14-01-PLAN.md — Verify and commit version bump, .gitignore, and sufficiency evaluator docs fix
@@ -135,7 +135,7 @@ Phases execute in numeric order: 14 -> 14.1 -> 15 -> 15.1 -> ... -> 18
 | 10. Cross-Cutting | v1.0 | 3/3 | Complete | 2026-03-09 |
 | 12. Audit Cleanup | v1.0 | 2/2 | Complete | 2026-03-09 |
 | 13. Tech Debt | v1.0 | 2/2 | Complete | 2026-03-09 |
-| 14. Quick Fixes | v1.1 | 0/1 | Not started | - |
+| 14. Quick Fixes | 1/1 | Complete   | 2026-03-10 | - |
 | 15. Step-Level Tracking | v1.1 | 0/? | Not started | - |
 | 16. Status Improvements | v1.1 | 0/? | Not started | - |
 | 17. HANDOFF.md Activation | v1.1 | 0/? | Not started | - |

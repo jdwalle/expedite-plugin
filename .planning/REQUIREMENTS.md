@@ -9,9 +9,9 @@ Requirements for v1.1 Production Polish. Each maps to roadmap phases.
 
 ### Housekeeping
 
-- [ ] **HSKP-01**: plugin.json version reads `1.0.0` (not `0.1.0`)
-- [ ] **HSKP-02**: Root .gitignore excludes `.DS_Store` recursively; existing tracked `.DS_Store` files removed from git index
-- [ ] **HSKP-03**: PROJECT.md Key Decisions documents sufficiency evaluator architecture (spec chose inline, implementation chose Task() for context hygiene)
+- [x] **HSKP-01**: plugin.json version reads `1.0.0` (not `0.1.0`)
+- [x] **HSKP-02**: Root .gitignore excludes `.DS_Store` recursively; existing tracked `.DS_Store` files removed from git index
+- [x] **HSKP-03**: PROJECT.md Key Decisions documents sufficiency evaluator architecture (spec chose inline, implementation chose Task() for context hygiene)
 
 ### Step Tracking
 
@@ -81,35 +81,35 @@ Deferred to v1.2 or later. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| HSKP-01 | — | Pending |
-| HSKP-02 | — | Pending |
-| HSKP-03 | — | Pending |
-| STEP-01 | — | Pending |
-| STEP-02 | — | Pending |
-| STEP-03 | — | Pending |
-| STEP-04 | — | Pending |
-| STEP-05 | — | Pending |
-| STEP-06 | — | Pending |
-| STEP-07 | — | Pending |
-| STEP-08 | — | Pending |
-| STEP-09 | — | Pending |
-| STAT-01 | — | Pending |
-| STAT-02 | — | Pending |
-| STAT-03 | — | Pending |
-| HAND-01 | — | Pending |
-| HAND-02 | — | Pending |
-| HAND-03 | — | Pending |
-| HAND-04 | — | Pending |
-| GATE-01 | — | Pending |
-| GATE-02 | — | Pending |
-| GATE-03 | — | Pending |
-| GATE-04 | — | Pending |
+| HSKP-01 | 14 | Complete |
+| HSKP-02 | 14 | Complete |
+| HSKP-03 | 14 | Complete |
+| STEP-01 | 15 | Pending |
+| STEP-02 | 15 | Pending |
+| STEP-03 | 15 | Pending |
+| STEP-04 | 15 | Pending |
+| STEP-05 | 15 | Pending |
+| STEP-06 | 15 | Pending |
+| STEP-07 | 15 | Pending |
+| STEP-08 | 15 | Pending |
+| STEP-09 | 15 | Pending |
+| STAT-01 | 16 | Pending |
+| STAT-02 | 16 | Pending |
+| STAT-03 | 16 | Pending |
+| HAND-01 | 17 | Pending |
+| HAND-02 | 17 | Pending |
+| HAND-03 | 17 | Pending |
+| HAND-04 | 17 | Pending |
+| GATE-01 | 18 | Pending |
+| GATE-02 | 18 | Pending |
+| GATE-03 | 18 | Pending |
+| GATE-04 | 18 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 23 total
-- Mapped to phases: 0
-- Unmapped: 23
+- Mapped to phases: 23
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-09*
-*Last updated: 2026-03-09 after initial definition*
+*Last updated: 2026-03-09 after traceability mapping*
