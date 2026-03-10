@@ -34,7 +34,27 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 
 ### Active
 
-(None yet — define during next milestone)
+<!-- v1.1 scope — from AUDIT-ACTIONS.md -->
+
+- [ ] Update plugin.json version to 1.0.0
+- [ ] Add root .gitignore
+- [ ] Document sufficiency evaluator architecture decision
+- [ ] HANDOFF.md official support (testing + PROJECT.md status update)
+- [ ] Log.yml 50KB size warning in status skill
+- [ ] Artifact-based state reconstruction in status skill
+- [ ] Step-level tracking for user orientation within skills
+- [ ] DA readiness criterion enforcement across G2-G5 gates
+
+## Current Milestone: v1.1 Production Polish
+
+**Goal:** Close audit gaps — quick fixes, UX orientation, gate integrity, and deferred feature support.
+
+**Target features:**
+- Quick fixes: version label, .gitignore, architecture doc (FIX-1/2/3)
+- Step-level tracking so users know where they are within long skills (DEFER-11)
+- DA readiness criterion enforcement across all quality gates (DEFER-12)
+- HANDOFF.md official support for product-intent users (DEFER-1)
+- Status skill improvements: log.yml size warning + state reconstruction (DEFER-2/3)
 
 ### Out of Scope
 
@@ -82,6 +102,7 @@ Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagent
 | Spike as separate skill (not inline in execute) | Per-phase granularity, optional usage, G5 gate boundary | ✓ Good — clean separation |
 | Per-phase artifacts at .expedite/plan/phases/{slug}/ | User decision — collocate spike/execute outputs per phase | ✓ Good — organized |
 | Case B override via *_in_progress + gate_history | Simpler than *_recycled phase tracking, uses existing state | ✓ Good — reliable |
+| Sufficiency evaluator as Task() subagent (not inline) | Spec Decision 10 chose inline (~80K token savings). Implementation dispatches via Task() with `<self_contained_reads>`, trading token cost for orchestrator context hygiene. Keeps research SKILL.md lean. | ✓ Good — context-clean |
 
 ---
-*Last updated: 2026-03-09 after v1.0 milestone*
+*Last updated: 2026-03-09 after v1.1 milestone start*
