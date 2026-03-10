@@ -61,6 +61,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
       - `scope_complete` and later: `.expedite/scope/SCOPE.md`
       - `research_complete` and later: `.expedite/research/SYNTHESIS.md`
       - `design_complete` and later: `.expedite/design/DESIGN.md`
+      - `design_complete` and later, if intent is "product": `.expedite/design/HANDOFF.md`
       - `plan_complete` and later: `.expedite/plan/PLAN.md`
       - `scope_in_progress`: no artifacts expected yet
       - `archived`: skip check entirely (artifacts may have been moved to archive/)
@@ -69,7 +70,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
       The full phase ordering is:
       scope_in_progress < scope_complete < research_in_progress < research_complete < design_in_progress < design_complete < plan_in_progress < plan_complete < execute_in_progress < complete
 
-   3. For each expected artifact, check existence using Glob or Read.
+   3. For each expected artifact, check existence using Glob or Read. Note: the HANDOFF.md check is conditional on the `intent` field parsed in Step 2 -- only expect HANDOFF.md when intent is "product". Do not flag missing HANDOFF.md for engineering-intent lifecycles.
    4. Collect any missing artifacts as inconsistencies:
       - Format: "State says {phase} but {artifact_path} not found"
    5. These inconsistencies will be displayed in the Diagnostics section (Step 9).
