@@ -67,11 +67,13 @@ Plans:
   3. Every numbered step in all 6 stateful skills (scope, research, design, plan, spike, execute) writes `current_step` on entry
   4. Status skill displays current step position (e.g., "scope: step 5 of 9 — Adaptive Refinement") when `current_step` exists, and gracefully omits it when absent
   5. Existing v1.0 lifecycles without `current_step` continue to work without errors (backward compatibility)
-**Plans**: TBD
+**Plans**: 4 plans (1 wave)
 
 Plans:
-- [ ] 15-01: TBD
-- [ ] 15-02: TBD
+- [ ] 15-01-PLAN.md — Schema + status: add current_step to state.yml.template and step display to status skill
+- [ ] 15-02-PLAN.md — Scope + research: add step tracking to scope (10 steps) and research (18 steps)
+- [ ] 15-03-PLAN.md — Design + plan: add step tracking to design (10 steps) and plan (9 steps)
+- [ ] 15-04-PLAN.md — Spike + execute: add step tracking to spike (9 steps) and execute (7 steps)
 
 ### Phase 16: Status Improvements
 **Goal**: Status skill provides actionable diagnostics beyond basic lifecycle overview
