@@ -412,7 +412,10 @@ Changes applied:
 ```
 
 4. Rewrite `.expedite/design/DESIGN.md` with the updated content.
-5. If product intent AND changes affect sections mirrored in HANDOFF.md (Problem Statement, Key Decisions, Scope Boundaries, Success Metrics, User Flows), also rewrite `.expedite/design/HANDOFF.md` with corresponding updates.
+5. If product intent, check whether HANDOFF.md needs updating:
+   a. **Mirrored sections** (Problem Statement, Key Decisions, Scope Boundaries, Success Metrics, User Flows): If changes affect any of these DESIGN.md sections, also rewrite the corresponding HANDOFF.md sections with the updated content.
+   b. **HANDOFF-only sections** (Acceptance Criteria, Assumptions and Constraints, Suggested Engineering Questions, Priority Ranking): If the user's revision request targets any of these sections directly, apply the changes to `.expedite/design/HANDOFF.md` only (these sections have no DESIGN.md counterpart).
+   c. After any HANDOFF.md update, re-validate that HANDOFF.md still has 9 sections and is shorter than DESIGN.md.
 6. Re-validate DA coverage: verify every DA from SCOPE.md still has a section in the updated DESIGN.md. If any DA section was accidentally removed during revision, display warning and restore it.
 7. Return to 7a — present the revision prompt again.
 
