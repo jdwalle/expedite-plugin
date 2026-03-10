@@ -39,7 +39,7 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 - [ ] Update plugin.json version to 1.0.0
 - [ ] Add root .gitignore
 - [ ] Document sufficiency evaluator architecture decision
-- [ ] HANDOFF.md official support (testing + PROJECT.md status update)
+- [x] HANDOFF.md official support (testing + PROJECT.md status update) -- v1.1
 - [ ] Log.yml 50KB size warning in status skill
 - [ ] Artifact-based state reconstruction in status skill
 - [ ] Step-level tracking for user orientation within skills
@@ -58,7 +58,6 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 
 ### Out of Scope
 
-- HANDOFF.md generation — deferred from v1 (LOW confidence), candidate for v1.1
 - Cross-lifecycle artifact import — novel feature, needs design research
 - Locked constraints from imported artifacts — LLM enforcement unreliable
 - Extended thinking for gates — excluded in v1, candidate for v1.1
@@ -91,8 +90,8 @@ Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagent
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
 | Rename arc → expedite | User preference for project naming | ✓ Good — clean namespace |
-| Defer LOW-confidence features to v2 | HANDOFF.md, cross-lifecycle import, locked constraints have weak evidence | ✓ Good — kept scope tight |
-| Keep dual intent in v1 | Product + engineering modes retained despite HANDOFF.md deferral | ✓ Good — both paths work |
+| Defer LOW-confidence features to v2 | Cross-lifecycle import, locked constraints have weak evidence (HANDOFF.md validated in v1.1) | ✓ Good — kept scope tight |
+| Keep dual intent in v1 | Product + engineering modes retained (HANDOFF.md now validated in v1.1) | ✓ Good — both paths work |
 | Inline gates (not separate gate skill) | User decision D1 — streamlined UX, each skill validates own output | ✓ Good — cohesive skills |
 | log.yml gitignored | User decision D5 — single-user workflow, less commit noise | ✓ Good — clean repos |
 | Categorical sufficiency (not numeric) | Proven by research-engine, more stable than numeric scores | ✓ Good — clear thresholds |
@@ -105,4 +104,4 @@ Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagent
 | Sufficiency evaluator as Task() subagent (not inline) | Spec Decision 10 chose inline (~80K token savings). Implementation dispatches via Task() with `<self_contained_reads>`, trading token cost for orchestrator context hygiene. Keeps research SKILL.md lean. | ✓ Good — context-clean |
 
 ---
-*Last updated: 2026-03-09 after v1.1 milestone start*
+*Last updated: 2026-03-10 after HANDOFF.md activation (Phase 17)*
