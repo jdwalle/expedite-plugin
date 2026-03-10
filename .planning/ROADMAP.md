@@ -97,7 +97,7 @@ Plans:
   2. Users can request revisions to HANDOFF.md during the design revision cycle (Step 7) and see changes applied
   3. G3 gate S4 criterion evaluates correctly when HANDOFF.md is present (passes) and when absent for product-intent (flags)
   4. PROJECT.md reflects HANDOFF.md as officially supported — removed from Out of Scope, documented as a validated feature
-**Plans:** 3 plans (2 waves)
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 17-01-PLAN.md — Fix design resume logic and status artifact cross-reference for HANDOFF.md support
@@ -142,5 +142,5 @@ Phases execute in numeric order: 14 -> 14.1 -> 15 -> 15.1 -> ... -> 18
 | 14. Quick Fixes | 1/1 | Complete    | 2026-03-10 | - |
 | 15. Step-Level Tracking | 4/4 | Complete    | 2026-03-10 | - |
 | 16. Status Improvements | 1/1 | Complete    | 2026-03-10 | - |
-| 17. HANDOFF.md Activation | v1.1 | 0/3 | Not started | - |
+| 17. HANDOFF.md Activation | 2/3 | In Progress|  | - |
 | 18. Gate Enforcement | v1.1 | 0/? | Not started | - |
