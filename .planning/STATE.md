@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Production Polish
-status: unknown
-last_updated: "2026-03-10T06:12:48.050Z"
+status: executing
+last_updated: "2026-03-10T06:26:26Z"
 progress:
   total_phases: 2
   completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # Project State
@@ -18,23 +18,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-09)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 15 — Step-Level Tracking (v1.1 Production Polish)
+**Current focus:** Phase 16 — Status Improvements (v1.1 Production Polish)
 
 ## Current Position
 
-Phase: 15 of 18 (Step-Level Tracking)
-Plan: 1 of 4 (complete)
-Status: Executing Phase 15
-Last activity: 2026-03-10 -- Completed 15-01-PLAN.md (Schema and Status Display)
+Phase: 16 of 18 (Status Improvements)
+Plan: 1 of 1 (complete)
+Status: Phase 16 complete
+Last activity: 2026-03-10 -- Completed 16-01-PLAN.md (Status Diagnostics)
 
-Progress: [██░░░░░░░░] 20%
+Progress: [███░░░░░░░] 24%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2 (v1.1)
-- Average duration: 1.5 min
-- Total execution time: 3 min
+- Total plans completed: 3 (v1.1)
+- Average duration: 1.7 min
+- Total execution time: 5 min
 
 **By Phase:**
 
@@ -42,6 +42,7 @@ Progress: [██░░░░░░░░] 20%
 |-------|-------|-------|----------|
 | 14-quick-fixes | 1 | 1 min | 1 min |
 | 15-step-level-tracking | 1 | 2 min | 2 min |
+| 16-status-improvements | 1 | 2 min | 2 min |
 
 *Updated after each plan completion*
 
@@ -57,6 +58,7 @@ Recent decisions affecting current work:
 - .gitignore kept minimal (.DS_Store only) -- other patterns handled by .expedite/.gitignore template
 - Step counts hardcoded in status SKILL.md lookup table (scope:10, research:18, design:10, plan:9, spike:9, execute:7)
 - current_step conditionally displayed -- omitted entirely when null/absent for backward compatibility
+- Status diagnostics: log size check (51200-byte threshold) and artifact cross-reference added as Steps 4-5, existing steps renumbered 6-10
 
 ### Pending Todos
 
@@ -70,5 +72,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-10
-Stopped at: Completed 15-01-PLAN.md (Schema and Status Display). Phase 15, plan 2 of 4 next.
+Stopped at: Completed 16-01-PLAN.md (Status Diagnostics). Phase 16 complete (1/1 plans). Phase 17 next.
 Resume file: None

@@ -27,9 +27,9 @@ Requirements for v1.1 Production Polish. Each maps to roadmap phases.
 
 ### Status Improvements
 
-- [ ] **STAT-01**: Status skill warns when log.yml exceeds 50KB
-- [ ] **STAT-02**: Status skill cross-references artifact existence (SCOPE.md, SYNTHESIS.md, DESIGN.md, PLAN.md) against state.yml phase and flags inconsistencies
-- [ ] **STAT-03**: Status skill remains read-only — reconstruction reports discrepancies but never writes state.yml
+- [x] **STAT-01**: Status skill warns when log.yml exceeds 50KB
+- [x] **STAT-02**: Status skill cross-references artifact existence (SCOPE.md, SYNTHESIS.md, DESIGN.md, PLAN.md) against state.yml phase and flags inconsistencies
+- [x] **STAT-03**: Status skill remains read-only — reconstruction reports discrepancies but never writes state.yml
 
 ### HANDOFF.md Support
 
@@ -93,9 +93,9 @@ Deferred to v1.2 or later. Tracked but not in current roadmap.
 | STEP-07 | 15 | Pending |
 | STEP-08 | 15 | Pending |
 | STEP-09 | 15 | Complete |
-| STAT-01 | 16 | Pending |
-| STAT-02 | 16 | Pending |
-| STAT-03 | 16 | Pending |
+| STAT-01 | 16 | Complete |
+| STAT-02 | 16 | Complete |
+| STAT-03 | 16 | Complete |
 | HAND-01 | 17 | Pending |
 | HAND-02 | 17 | Pending |
 | HAND-03 | 17 | Pending |
