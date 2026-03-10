@@ -31,6 +31,13 @@ You are the Expedite spike orchestrator. Your job is to resolve tactical decisio
 
 ### Step 1: Prerequisite Check
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "spike", step: 1, label: "Prerequisite Check"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Look at the injected lifecycle state above.
 
 **Case A: Phase is "plan_complete"**
@@ -57,6 +64,13 @@ Current phase: {phase}
 Then STOP. Do not proceed to any other step.
 
 ### Step 2: Parse Phase Argument
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "spike", step: 2, label: "Parse Phase Argument"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Extract the phase number from user input. Support flexible matching:
 
@@ -86,6 +100,13 @@ Store the extracted phase number. Determine the slug based on intent from state.
 Display: "Targeting phase: {slug}"
 
 ### Step 3: Read Plan Artifacts
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "spike", step: 3, label: "Read Plan Artifacts"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Read the following files:
 
@@ -118,6 +139,13 @@ Then STOP. Do not proceed.
 
 ### Step 4: Extract Phase Definition
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "spike", step: 4, label: "Extract Phase Definition"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 From PLAN.md, find the matching wave/epic heading by number (e.g., "## Wave 2:" or "## Epic 2:").
 
 Extract:
@@ -149,6 +177,13 @@ Phase {N}: {description}
 ```
 
 ### Step 5: Resolve Tactical Decisions
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "spike", step: 5, label: "Resolve Tactical Decisions"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 For each tactical decision in the phase:
 
@@ -247,6 +282,13 @@ Proceed to Step 6.
 
 ### Step 6: Generate Implementation Steps
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "spike", step: 6, label: "Generate Implementation Steps"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Generate ordered implementation steps based on:
 - The resolved tactical decisions (from Step 5)
 - The tasks/stories from the phase definition (from Step 4)
@@ -312,7 +354,8 @@ LOG_EOF
 
 1. Read `.expedite/state.yml`
 2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
-3. Append to `gate_history`:
+3. Set `current_step` to `{skill: "spike", step: 7, label: "G5 Structural Gate"}`
+4. Append to `gate_history`:
    ```yaml
    - gate: "G5"
      timestamp: "{ISO 8601 UTC}"
@@ -324,7 +367,7 @@ LOG_EOF
      notes: "Spike phase: {slug}"
      overridden: false
    ```
-4. Write the entire file back to `.expedite/state.yml`
+5. Write the entire file back to `.expedite/state.yml`
 
 If the user overrides G5 (recycle with user override), also log:
 ```bash
@@ -378,6 +421,13 @@ List the failing MUST criteria with specific details (which TD is unresolved, wh
 - After fixes, re-run G5 gate (loop back to Step 7)
 
 ### Step 8: Write SPIKE.md
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "spike", step: 8, label: "Write SPIKE.md"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Create the output directory:
 
@@ -435,6 +485,13 @@ If verification fails, display the issue and re-write.
 
 ### Step 9: Display Summary
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "spike", step: 9, label: "Display Summary"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Display the spike completion summary:
 
 ```
@@ -468,5 +525,12 @@ Project: {project_name}
 ### Next Step
 Run `/expedite:execute {phase_number}` to begin implementation of this phase.
 ```
+
+**Clear step tracking:** Update state.yml to clear `current_step` (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to null
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 NOTE: Do NOT write **phase transitions** to state.yml. Spike does not have a lifecycle phase (no `spike_in_progress` or `spike_complete`) -- it operates within `plan_complete` or `execute_in_progress`. The output file (SPIKE.md) is the only indicator of spike completion. This is deliberate: spike is optional and phase-scoped, so lifecycle-level state tracking would add unnecessary complexity. However, G5 gate outcomes ARE recorded in gate_history (Step 7) since gate outcomes are events, not phase transitions, and the status skill needs them for the complete G1-G5 gate chain display.
