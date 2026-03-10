@@ -30,6 +30,10 @@ description: null
 #   (any) -> archived
 phase: "scope_in_progress"
 current_task: null
+# Current position within active skill (set on step entry, cleared on skill completion)
+# Sub-keys: skill (string), step (integer), label (string)
+# Example: {skill: "scope", step: 5, label: "Interactive Questioning (Round 2: Adaptive Refinement)"}
+current_step: null
 
 # Reserved for v2 -- cross-lifecycle import (IMPORT-01 through IMPORT-04)
 imported_from: null
