@@ -90,15 +90,22 @@ This is a resume scenario. The design skill was running when the session ended.
    **If NO G2 recycle evidence:** This is a pure crash resume. Continue with the artifact check below.
 
 2. Check for `.expedite/design/DESIGN.md`:
-   - If DESIGN.md exists: Step 5 completed. Resume at Step 7 (revision cycle). Display: "Found in-progress design with DESIGN.md already generated. Resuming at revision cycle..."
-   - If DESIGN.md does not exist: Resume at Step 2 (read artifacts, then generate). Display: "Found in-progress design, but no DESIGN.md yet. Resuming from artifact loading..."
+   - If DESIGN.md exists AND (intent is "engineering" OR `.expedite/design/HANDOFF.md` exists):
+     Step 6 completed. Resume at Step 7 (revision cycle).
+     Display: "Found in-progress design with DESIGN.md already generated. Resuming at revision cycle..."
+   - If DESIGN.md exists AND intent is "product" AND `.expedite/design/HANDOFF.md` does NOT exist:
+     Step 5 completed but Step 6 not yet done. Resume at Step 6 (HANDOFF.md generation).
+     Display: "Found in-progress design with DESIGN.md generated but HANDOFF.md missing. Resuming at HANDOFF.md generation..."
+   - If DESIGN.md does not exist:
+     Resume at Step 2 (read artifacts, then generate).
+     Display: "Found in-progress design, but no DESIGN.md yet. Resuming from artifact loading..."
 
 3. Display:
 ```
 Found in-progress design for "{project_name}".
 
 Design document: {exists/not yet generated}
-Resume point: Step {2 or 7}
+Resume point: Step {2, 6, or 7}
 ```
 
 4. Proceed directly to the resume step. Do NOT re-run Step 3 (state transition) since state is already design_in_progress.
