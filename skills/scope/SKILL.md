@@ -30,6 +30,13 @@ You are the Expedite scope orchestrator. Your job is to guide the user through d
 
 ### Step 1: Lifecycle Check
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write). If `.expedite/state.yml` does not exist yet, skip step tracking (lifecycle not initialized).
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "scope", step: 1, label: "Lifecycle Check"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Look at the injected lifecycle state above.
 
 **Case A: "No active lifecycle"**
@@ -111,6 +118,13 @@ multiSelect: false
 
 ### Step 2: Connected Flow Import (v2)
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write). If `.expedite/state.yml` does not exist yet, skip step tracking (lifecycle not initialized).
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "scope", step: 2, label: "Connected Flow Import (v2)"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 > **Not yet implemented.** Connected flow artifact detection (scanning for HANDOFF.md/DESIGN.md from prior lifecycles) is a v2 feature (IMPORT-01 through IMPORT-04). The state.yml template has reserved `imported_from` and `constraints` fields for this.
 
 Proceed to Step 3.
@@ -130,6 +144,7 @@ If no `.expedite/state.yml` exists (fresh start or post-archival):
    - Write it to `.expedite/state.yml` with these initial values set:
      - `last_modified`: current timestamp in ISO 8601 UTC format
      - `phase`: `"scope_in_progress"` (should already be this in template)
+     - `current_step` to `{skill: "scope", step: 3, label: "Initialize Lifecycle"}`
    - All other fields keep their template defaults (null, empty arrays, etc.)
 
 3. Copy the sources template (only if `.expedite/sources.yml` does not already exist -- it persists across lifecycles):
@@ -208,6 +223,7 @@ Using the backup-before-write pattern:
    - Set `intent` to "product" or "engineering"
    - Set `lifecycle_id` to `{project_name_slugified}-{YYYYMMDD}` (e.g., "auth-redesign-20260302")
    - Set `description` to the collected value
+   - Set `current_step` to `{skill: "scope", step: 4, label: "Interactive Questioning (Round 1: Context)"}`
    - Set `last_modified` to current timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
@@ -286,7 +302,9 @@ Summarize what you now understand in 3-5 sentences. Ask via AskUserQuestion: "Do
 Using the backup-before-write pattern (same as Step 4):
 1. Read `.expedite/state.yml`
 2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
-3. Update `last_modified` to current timestamp
+3. Update the in-memory representation:
+   - Set `current_step` to `{skill: "scope", step: 5, label: "Interactive Questioning (Round 2: Adaptive Refinement)"}`
+   - Set `last_modified` to current timestamp
 4. Write the entire file back
 
 Note: Refinement answers are used as context for question plan generation in Step 6 but are NOT stored as individual fields in state.yml (to keep state flat). They are held in the conversation context and will be written into SCOPE.md's "Project Context" section in Step 9.
@@ -296,6 +314,13 @@ Display: "Context collected. Now I'll generate a question plan based on everythi
 Proceed to Step 6.
 
 ### Step 6: Question Plan Generation and Review
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "scope", step: 6, label: "Question Plan Generation and Review"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 This is the most important step. The question plan defines the contract chain for the entire lifecycle.
 
@@ -390,6 +415,13 @@ Wait for user response:
 
 ### Step 7: Codebase Analysis (Additive Questions)
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "scope", step: 7, label: "Codebase Analysis (Additive Questions)"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 This step generates additive codebase-routed questions that help the research phase understand existing patterns in the user's codebase. These questions are NOT counted against the 15-question budget and have no cap -- generate as many as needed per DA.
 
 **7a. Determine relevance.**
@@ -453,6 +485,13 @@ Wait for user response:
 Note: Codebase-routed questions will be written to state.yml alongside the original questions in Step 9 (Write Artifacts). They use `source: "codebase-routed"` to distinguish them from original questions.
 
 ### Step 8: Source Configuration
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "scope", step: 8, label: "Source Configuration"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Read `.expedite/sources.yml` and display the configured sources as a checklist:
 
@@ -556,6 +595,7 @@ Using the backup-before-write pattern:
 1. Read `.expedite/state.yml`
 2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update the in-memory representation:
+   - Set `current_step` to `{skill: "scope", step: 9, label: "Write Artifacts"}`
    - Set `last_modified` to current timestamp
    - Set `questions` array with one entry per question from the approved plan. Each question entry:
      ```yaml
@@ -646,7 +686,8 @@ Using the backup-before-write pattern:
 1. Read `.expedite/state.yml`
 2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update:
-   - If outcome is "go" or "go_advisory": set `phase: "scope_complete"`
+   - Set `current_step` to `{skill: "scope", step: 10, label: "Gate G1 Evaluation"}`
+   - If outcome is "go" or "go_advisory": set `phase: "scope_complete"` and set `current_step` to null
    - Set `last_modified` to current timestamp
    - Append to `gate_history` array:
      ```yaml

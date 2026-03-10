@@ -28,6 +28,13 @@ You are the Expedite design orchestrator. Your job is to generate a design docum
 
 ### Step 1: Prerequisite Check
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "design", step: 1, label: "Prerequisite Check"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Look at the injected lifecycle state above.
 
 **Case A: Phase is "research_complete"**
@@ -108,6 +115,13 @@ Then STOP. Do not proceed to any other step.
 
 ### Step 2: Read Scope + Research Artifacts
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "design", step: 2, label: "Read Scope + Research Artifacts"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Read the following files:
 
 1. **`.expedite/scope/SCOPE.md`** — Extract the full list of Decision Areas (DA-1 through DA-N) with their names, depth calibration (Deep/Standard/Light), evidence requirements, and readiness criteria.
@@ -146,6 +160,7 @@ Update state.yml using the backup-before-write pattern:
 2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Update the in-memory representation:
    - Set `phase` to `"design_in_progress"`
+   - Set `current_step` to `{skill: "design", step: 3, label: "Initialize Design State"}`
    - Set `last_modified` to current ISO 8601 UTC timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
@@ -169,6 +184,13 @@ mkdir -p .expedite/design/
 Display: "Design phase initialized. Generating design document..."
 
 ### Step 4: Generate Design Document
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "design", step: 4, label: "Generate Design Document"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 This is inline generation in the main session — the design document is generated here, not dispatched to a subagent. Read `skills/design/references/prompt-design-guide.md` as a quality reference (use Glob with `**/prompt-design-guide.md` if the direct path fails). The design guide defines the required sections, quality criteria, and contract chain enforcement — but is NOT dispatched as a subagent. Its instructions guide the inline generation.
 
@@ -240,6 +262,13 @@ If any check fails, revise the content before writing to disk. Do NOT write a de
 
 ### Step 5: Write DESIGN.md
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "design", step: 5, label: "Write DESIGN.md"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Write the generated design document to `.expedite/design/DESIGN.md`.
 
 Document header (both formats):
@@ -273,6 +302,13 @@ If the count of DAs in DESIGN.md does not match the count from SCOPE.md, display
 If post-write verification fails on any check, display the specific failure and attempt to fix the content before re-writing. Do not proceed to the next step with a malformed DESIGN.md.
 
 ### Step 6: Generate HANDOFF.md (Product Intent Only)
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "design", step: 6, label: "Generate HANDOFF.md (Product Intent Only)"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Check the `intent` value from state.yml (loaded in Step 2).
 
@@ -329,6 +365,13 @@ Proceed to Step 7.
 
 ### Step 7: Revision Cycle
 
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "design", step: 7, label: "Revision Cycle"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
+
 Present the design document to the user for review. This is a freeform revision loop with no hard round limit — the user keeps revising until satisfied, then proceeds to gate evaluation.
 
 **7a: Present design for review.** Display:
@@ -380,6 +423,13 @@ Proceed to Step 8.
 - If user feedback is ambiguous (cannot determine which DAs or sections to change), ask for clarification rather than guessing.
 
 ### Step 8: G3 Gate Evaluation
+
+**Step tracking:** Update `current_step` in state.yml (backup-before-write):
+1. Read `.expedite/state.yml`
+2. Backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
+3. Set `current_step` to `{skill: "design", step: 8, label: "G3 Gate Evaluation"}`
+4. Set `last_modified` to current timestamp
+5. Write the entire file back
 
 Read `.expedite/design/DESIGN.md` and `.expedite/scope/SCOPE.md` (for DA reference).
 
@@ -449,7 +499,7 @@ Proceed to Step 9.
 
 ### Step 9: Gate Outcome Handling
 
-**9a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write):
+**9a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write). In the same write, also set `current_step` to `{skill: "design", step: 9, label: "Gate Outcome Handling"}`:
 
 ```yaml
 - gate: "G3"
@@ -522,7 +572,7 @@ account for these gaps when creating tasks.
 
 ### Step 10: Design Completion
 
-Update state.yml (backup-before-write): set `phase` to `"design_complete"`, update `last_modified`.
+Update state.yml (backup-before-write): set `phase` to `"design_complete"`, set `current_step` to null, update `last_modified`.
 
 **Log phase transition:**
 ```bash
