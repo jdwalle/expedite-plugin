@@ -35,8 +35,17 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `research_round` -- number of research rounds completed
    - `current_task` -- current task ID during execute phase (may be null)
    - `current_wave` -- current wave during execute phase (may be null)
+   - `current_step` -- current position within active skill (may be null or absent)
 
-3. **Map phase to human-readable description.** Use this mapping:
+3. **Parse current_step (if present).** If the injected state contains a `current_step` field that is not null:
+   - Extract `skill`, `step`, and `label` sub-keys
+   - Look up total steps for the skill using this table:
+     - scope: 10, research: 18, design: 10, plan: 9, spike: 9, execute: 7
+   - Format the display string: `{skill}: step {step} of {total} -- {label}`
+   - If the skill name is not in the lookup table, display without total: `{skill}: step {step} -- {label}`
+   - If `current_step` is null or absent, skip this entirely (no placeholder, no error)
+
+4. **Map phase to human-readable description.** Use this mapping:
    - `scope_in_progress` -> "Scope: defining questions and intent"
    - `scope_complete` -> "Scope: complete, ready for research"
    - `research_in_progress` -> "Research: gathering evidence"
@@ -49,7 +58,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `complete` -> "Lifecycle complete"
    - `archived` -> "Lifecycle archived"
 
-4. **Determine next action.** Use this routing (same as SessionStart hook):
+5. **Determine next action.** Use this routing (same as SessionStart hook):
    - `scope_in_progress` -> "Continue with `/expedite:scope`"
    - `scope_complete` -> "Run `/expedite:research` to begin evidence gathering"
    - `research_in_progress` -> "Continue with `/expedite:research`"
@@ -62,7 +71,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `complete` -> "Lifecycle complete. Run `/expedite:scope` for a new lifecycle."
    - `archived` -> "Lifecycle archived. Run `/expedite:scope` for a new lifecycle."
 
-5. **Count question statuses.** If `questions` is non-empty, count:
+6. **Count question statuses.** If `questions` is non-empty, count:
    - Total questions
    - Questions with status `covered`
    - Questions with status `partial`
@@ -70,7 +79,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - Questions with status `pending`
    - Questions with status `unavailable_source`
 
-6. **Display formatted output.** Use EXACTLY this format:
+7. **Display formatted output.** Use EXACTLY this format:
 
 ```
 # Expedite Lifecycle Status
@@ -78,6 +87,8 @@ You are the Expedite status display. Your job is to read the lifecycle state and
 **Project:** {project_name}
 **Intent:** {intent}
 **Phase:** {phase} ({human-readable description})
+**Current Step:** {skill}: step {step} of {total} -- {label}
+(Only show Current Step line when current_step is present and not null. Omit entirely otherwise.)
 
 ## Next Action
 {phase-aware recommendation from step 4}
@@ -106,4 +117,4 @@ Backup: .expedite/state.yml.bak
 Research rounds: {research_round}
 ```
 
-7. **Do NOT modify any files.** This is a read-only skill. Do not write to state.yml or any other file.
+8. **Do NOT modify any files.** This is a read-only skill. Do not write to state.yml or any other file.
