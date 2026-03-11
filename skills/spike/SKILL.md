@@ -333,6 +333,9 @@ Validate the spike output structurally before writing SPIKE.md. G5 is a structur
 | S1 | Implementation steps add spike-specific guidance | Check that steps tracing to already-resolved TDs (from design) include implementation guidance beyond what was in PLAN.md. State reasoning. |
 | S2 | Full task coverage | Every task/story from the phase definition is covered by at least one implementation step. State: "{N}/{M} tasks covered" |
 | S3 | File lists are specific paths | Each implementation step's Files field contains specific file paths (not generic descriptions like "relevant files" or "various config files"). State: "{N}/{M} steps have specific file paths" |
+| S4 | Spike resolution addresses specific ambiguity | For each needs-spike TD, read the ambiguity described in the TD (from PLAN.md). Check the resolution rationale (from Step 5) explains how it resolves that specific ambiguity -- not just picks an option, but explains why the chosen approach resolves the uncertainty. Clear-cut resolutions with brief but ambiguity-specific rationale are adequate. State: "{N}/{M} spike resolutions address their specific ambiguity{. TD-2 picks an option without explaining why the ambiguity is resolved}" |
+
+Note: S4 distinguishes between resolutions that address ambiguity and those that merely pick an option. A rationale of "chose LRU" is insufficient. A rationale of "chose LRU because the access pattern is temporal with hot keys" addresses the ambiguity. Clear-cut TDs (resolved directly without extensive research) may have brief rationale -- this is acceptable as long as the rationale mentions the specific ambiguity.
 
 **Log gate outcome to telemetry** (after evaluation, before outcome routing):
 ```bash
