@@ -443,6 +443,9 @@ This is a **structural gate** -- all checks are deterministic (counts, field exi
 | S2 | Effort estimates present (engineering) or sizing present (product) | Check each task/story has effort/sizing field. State: "{N}/{M} tasks have estimates" | PASS/ADVISORY |
 | S3 | No orphan tasks | Every task/story traces to at least one DA via "Design decision" field. State: "{N} tasks without DA reference" | PASS/ADVISORY |
 | S4 | Override-affected DAs flagged | If `.expedite/design/override-context.md` exists, check affected DAs are annotated in plan. Auto-PASS if no override context file exists. | PASS/ADVISORY |
+| S5 | Task coverage reflects DA depth calibration | Read SCOPE.md DA depth levels (Deep/Standard/Light). For each depth level, count how many tasks or acceptance criteria cover DAs at that level. Check that no Deep DA has fewer tasks or acceptance criteria than any Light DA. State: "Deep DAs: {DA-list with task counts}. Light DAs: {DA-list with task counts}. Depth-proportional: {yes|advisory}" | PASS/ADVISORY |
+
+Note: S5 uses task count as a heuristic for implementation depth. A Deep DA with fewer tasks than a Light DA is suspicious but may be valid (e.g., one complex task vs many simple ones). The advisory acknowledges this: "This may be intentional if the Deep DA's tasks are individually complex."
 
 Display gate results:
 
@@ -462,6 +465,7 @@ SHOULD Criteria:
   S2: {PASS|ADVISORY} -- {evidence}
   S3: {PASS|ADVISORY} -- {evidence}
   S4: {PASS|ADVISORY} -- {evidence}
+  S5: {PASS|ADVISORY} -- {evidence}
 
 Gate Outcome: {Go | Go-with-advisory | Recycle}
 ```
