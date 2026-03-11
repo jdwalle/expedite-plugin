@@ -40,7 +40,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 15: Step-Level Tracking** - Users know exactly where they are within long-running skills (completed 2026-03-10)
 - [x] **Phase 16: Status Improvements** - Status skill gains log size warning and artifact-based state reconstruction (completed 2026-03-10)
 - [x] **Phase 17: HANDOFF.md Activation** - Product-intent users get validated HANDOFF.md generation (completed 2026-03-10)
-- [ ] **Phase 18: Gate Enforcement** - DA readiness criteria enforced across G2-G5 quality gates
+- [x] **Phase 18: Gate Enforcement** - DA readiness criteria enforced across G2-G5 quality gates (completed 2026-03-11)
 
 ## Phase Details
 
@@ -114,10 +114,10 @@ Plans:
   3. G4 (plan gate) checks that task coverage accounts for DA depth calibration (Deep vs Light) — failure produces advisory (SHOULD criterion)
   4. G5 (spike gate) checks that spike resolution addresses the specific ambiguity identified — failure produces advisory (SHOULD criterion)
   5. Gates that were previously passing continue to pass — no false Recycle regressions on well-formed lifecycles
-**Plans:** 2 plans (1 wave)
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 18-01-PLAN.md — Add M5 MUST criteria to G2 (research) and G3 (design) gates for DA readiness enforcement
+- [x] 18-01-PLAN.md — Add M5 MUST criteria to G2 (research) and G3 (design) gates for DA readiness enforcement
 - [ ] 18-02-PLAN.md — Add SHOULD criteria to G4 (plan S5) and G5 (spike S4) gates for depth and ambiguity advisories
 
 ## Progress
@@ -144,4 +144,4 @@ Phases execute in numeric order: 14 -> 14.1 -> 15 -> 15.1 -> ... -> 18
 | 15. Step-Level Tracking | 4/4 | Complete    | 2026-03-10 | - |
 | 16. Status Improvements | 1/1 | Complete    | 2026-03-10 | - |
 | 17. HANDOFF.md Activation | v1.1 | Complete    | 2026-03-11 | 2026-03-10 |
-| 18. Gate Enforcement | v1.1 | 0/2 | Not started | - |
+| 18. Gate Enforcement | 2/2 | Complete   | 2026-03-11 | - |

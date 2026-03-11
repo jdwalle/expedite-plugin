@@ -40,8 +40,8 @@ Requirements for v1.1 Production Polish. Each maps to roadmap phases.
 
 ### Gate Enforcement
 
-- [ ] **GATE-01**: G2 (research) validates every DA readiness criterion marked MET in SYNTHESIS.md — MUST criterion
-- [ ] **GATE-02**: G3 (design) validates evidence citations address DA-specific readiness criteria — MUST criterion
+- [x] **GATE-01**: G2 (research) validates every DA readiness criterion marked MET in SYNTHESIS.md — MUST criterion
+- [x] **GATE-02**: G3 (design) validates evidence citations address DA-specific readiness criteria — MUST criterion
 - [ ] **GATE-03**: G4 (plan) validates task coverage accounts for DA depth calibration (Deep vs Light) — SHOULD criterion
 - [ ] **GATE-04**: G5 (spike) validates spike resolution addresses the specific ambiguity identified — SHOULD criterion
 
@@ -100,8 +100,8 @@ Deferred to v1.2 or later. Tracked but not in current roadmap.
 | HAND-02 | 17 | Complete |
 | HAND-03 | 17 | Complete |
 | HAND-04 | 17 | Complete |
-| GATE-01 | 18 | Pending |
-| GATE-02 | 18 | Pending |
+| GATE-01 | 18 | Complete |
+| GATE-02 | 18 | Complete |
 | GATE-03 | 18 | Pending |
 | GATE-04 | 18 | Pending |
 
