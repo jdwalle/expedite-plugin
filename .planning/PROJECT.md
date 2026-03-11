@@ -39,7 +39,15 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 
 ### Active
 
-(No active requirements — next milestone not yet defined)
+<!-- Current scope for v1.2 — Infrastructure Hardening & Quality -->
+
+- [ ] State recovery: detect malformed/corrupted state.yml and auto-recover from .bak
+- [ ] Codebase analyst subagent type: switch from general-purpose to explore
+- [ ] Conditional alternative-surfacing: present competing options only when genuine tradeoffs exist
+- [ ] Split state.yml into scoped files with full coordination audit
+- [ ] External verifier agent for research reasoning soundness
+- [ ] Per-task atomic git commits during execute with DA traceability
+- [ ] Skill line limit: soft 500-line cap with content extraction to references/
 
 ### Out of Scope
 
@@ -49,6 +57,19 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 - Mobile/web UI — pure CLI plugin
 - Multi-user collaboration — single-developer workflow
 - Numeric scoring for sufficiency — categorical model working well
+
+## Current Milestone: v1.2 Infrastructure Hardening & Quality
+
+**Goal:** Harden plugin infrastructure (state resilience, state splitting, skill sizing) and elevate quality gates (research verifier, conditional alternatives, git traceability).
+
+**Target features:**
+- State recovery (malformed YAML + auto .bak fallback)
+- Codebase analyst → explore subagent type
+- Conditional alternative-surfacing in design/plan
+- Split state.yml into scoped files
+- External verifier agent for research reasoning
+- Per-task atomic git commits in execute
+- Skill line limit (500-line soft cap)
 
 ## Context
 
@@ -93,4 +114,4 @@ Total: 18 phases, 43 plans, 115 requirements across 2 milestones.
 | Three-branch Case B2 resume logic | Engineering/HANDOFF→Step 7, product/no HANDOFF→Step 6, no DESIGN.md→Step 2 | ✓ Good — covers all paths |
 
 ---
-*Last updated: 2026-03-11 after v1.1 milestone*
+*Last updated: 2026-03-11 after v1.2 milestone started*
