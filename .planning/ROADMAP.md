@@ -46,7 +46,7 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 
 **Milestone Goal:** Harden plugin infrastructure (state resilience, state splitting, skill sizing) and elevate quality gates (research verifier, conditional alternatives, git traceability).
 
-- [ ] **Phase 19: State Recovery** - Corrupted state.yml is automatically detected and recovered from backups or artifacts
+- [ ] **Phase 19: State Recovery** - Missing state.yml is automatically detected and recovered from lifecycle artifacts
 - [ ] **Phase 20: Explore Subagent Validation** - Codebase analyst subagent uses explore type, validated empirically
 - [ ] **Phase 21: State Splitting** - Monolithic state.yml split into scoped files with full migration and coordination
 - [ ] **Phase 22: Skill Line Limit** - All skills under 500-line soft cap via content extraction to references/
@@ -56,20 +56,20 @@ Full details: `.planning/milestones/v1.1-ROADMAP.md`
 ## Phase Details
 
 ### Phase 19: State Recovery
-**Goal**: Users never lose lifecycle progress due to corrupted or malformed state files
+**Goal**: Users never lose lifecycle progress when state.yml goes missing -- automatic recovery from existing artifacts
 **Depends on**: Nothing (foundation for all subsequent phases)
 **Requirements**: RESL-01, RESL-02, RESL-03, RESL-04, RESL-05
 **Success Criteria** (what must be TRUE):
-  1. User invokes any skill with a corrupted state.yml and the skill proceeds normally after auto-recovering from .bak
-  2. User sees a warning message after recovery that identifies what was recovered and shows the last known lifecycle phase
-  3. User invokes any skill when both state.yml and .bak are corrupted, and state is reconstructed from existing artifacts (SCOPE.md, SYNTHESIS.md, DESIGN.md, PLAN.md)
-  4. User sees a clear unrecoverable error with instructions when no recovery source exists (no state.yml, no .bak, no artifacts)
-  5. Every state file write ends with a `_write_complete` sentinel field, and reads that find it missing trigger .bak fallback
-**Plans**: TBD
+  1. User invokes any skill with missing state.yml and the skill proceeds normally after auto-recovering from artifacts (PLAN.md, DESIGN.md, SYNTHESIS.md, SCOPE.md)
+  2. User sees an inline notice after recovery identifying the last known lifecycle phase
+  3. Recovery scans artifacts in reverse lifecycle order and reconstructs minimal state (phase + project_name)
+  4. User sees a clear unrecoverable error with instructions when no recovery source exists (no state.yml, no artifacts)
+  5. RESL-05 (sentinel field) is explicitly deferred -- write atomicity is handled by the Claude Code platform
+**Plans**: 2 plans
 
 Plans:
-- [ ] 19-01: TBD
-- [ ] 19-02: TBD
+- [ ] 19-01-PLAN.md — Create recovery protocol reference file and update status skill
+- [ ] 19-02-PLAN.md — Wire recovery preambles into all 7 skills
 
 ### Phase 20: Explore Subagent Validation
 **Goal**: Codebase analyst research subagents use the more appropriate explore type instead of general-purpose
@@ -173,7 +173,7 @@ Phases execute in numeric order: 19 → 20 → 21 → 22 → 23 → 24
 | 16. Status Improvements | v1.1 | 1/1 | Complete | 2026-03-10 |
 | 17. HANDOFF.md Activation | v1.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Gate Enforcement | v1.1 | 2/2 | Complete | 2026-03-11 |
-| 19. State Recovery | v1.2 | 0/TBD | Not started | - |
+| 19. State Recovery | v1.2 | 0/2 | Planning | - |
 | 20. Explore Subagent | v1.2 | 0/TBD | Not started | - |
 | 21. State Splitting | v1.2 | 0/TBD | Not started | - |
 | 22. Skill Line Limit | v1.2 | 0/TBD | Not started | - |
