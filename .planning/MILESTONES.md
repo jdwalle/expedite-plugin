@@ -1,5 +1,25 @@
 # Milestones
 
+## v1.1 Production Polish (Shipped: 2026-03-11)
+
+**Phases completed:** 5 phases, 11 plans
+**Timeline:** 2 days (2026-03-09 → 2026-03-11)
+**Lines of code:** 5,968 (plugin source, up from 5,563)
+**Requirements:** 23/23 satisfied (3 pending human runtime verification)
+**Git range:** cf2926e..726a171
+
+**Key accomplishments:**
+1. Plugin metadata and repo hygiene — version 1.0.0, .gitignore, architecture decision docs
+2. Step-level tracking across all 6 stateful skills — users always know their position
+3. Status diagnostics — log size warning (50KB threshold) and artifact cross-reference
+4. HANDOFF.md activation — product-intent users get validated generation, revision, and G3 gate evaluation
+5. DA readiness enforcement across G2-G5 gates — MUST criteria on G2/G3, SHOULD criteria on G4/G5
+
+### Known Gaps
+- HAND-01, HAND-02, HAND-03: Implementation complete and static analysis confirmed correct; human runtime verification pending
+
+---
+
 ## v1.0 Expedite Plugin Initial Release (Shipped: 2026-03-09)
 
 **Phases completed:** 13 phases, 32 plans

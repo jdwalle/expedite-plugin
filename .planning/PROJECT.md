@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Expedite is a Claude Code plugin that orchestrates a 5-phase research-to-implementation lifecycle: Scope, Research, Design, Plan, Execute. It turns "research a problem, then build a solution" into a structured, repeatable workflow with 5 quality gates, parallel research agents, crash-resilient state management, and dual-intent support for both product managers and engineers. The plugin lives at `~/.claude/plugins/expedite/` and is invoked via `/expedite:` commands.
+Expedite is a Claude Code plugin that orchestrates a 5-phase research-to-implementation lifecycle: Scope, Research, Design, Plan, Execute. It turns "research a problem, then build a solution" into a structured, repeatable workflow with 5 quality gates, parallel research agents, crash-resilient state management, dual-intent support for both product managers and engineers, step-level progress tracking, and DA readiness enforcement across all gates. The plugin lives at `~/.claude/plugins/expedite/` and is invoked via `/expedite:` commands.
 
 ## Core Value
 
@@ -31,48 +31,33 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 - ✓ Gate outcomes: Go, Go-with-advisory, Recycle, Override with escalation — v1.0
 - ✓ Archival flow (move completed lifecycle to `.expedite/archive/{slug}/`) — v1.0
 - ✓ Mid-phase crash resume for all stateful skills — v1.0
+- ✓ Plugin metadata: version 1.0.0, .gitignore, architecture decision documentation — v1.1
+- ✓ Step-level tracking across all 6 stateful skills with status display — v1.1
+- ✓ Status diagnostics: log size warning (50KB) and artifact cross-reference — v1.1
+- ✓ HANDOFF.md generation, revision, and G3 gate validation for product-intent — v1.1
+- ✓ DA readiness enforcement: G2/G3 MUST criteria, G4/G5 SHOULD criteria — v1.1
 
 ### Active
 
-<!-- v1.1 scope — from AUDIT-ACTIONS.md -->
-
-- [ ] Update plugin.json version to 1.0.0
-- [ ] Add root .gitignore
-- [ ] Document sufficiency evaluator architecture decision
-- [x] HANDOFF.md official support (testing + PROJECT.md status update) -- v1.1
-- [ ] Log.yml 50KB size warning in status skill
-- [ ] Artifact-based state reconstruction in status skill
-- [ ] Step-level tracking for user orientation within skills
-- [ ] DA readiness criterion enforcement across G2-G5 gates
-
-## Current Milestone: v1.1 Production Polish
-
-**Goal:** Close audit gaps — quick fixes, UX orientation, gate integrity, and deferred feature support.
-
-**Target features:**
-- Quick fixes: version label, .gitignore, architecture doc (FIX-1/2/3)
-- Step-level tracking so users know where they are within long skills (DEFER-11)
-- DA readiness criterion enforcement across all quality gates (DEFER-12)
-- HANDOFF.md official support for product-intent users (DEFER-1)
-- Status skill improvements: log.yml size warning + state reconstruction (DEFER-2/3)
+(No active requirements — next milestone not yet defined)
 
 ### Out of Scope
 
 - Cross-lifecycle artifact import — novel feature, needs design research
 - Locked constraints from imported artifacts — LLM enforcement unreliable
-- Extended thinking for gates — excluded in v1, candidate for v1.1
-- SessionStart hook — deferred to v2 due to 3 open Claude Code bugs (#16538, #13650, #11509)
+- SessionStart hook — deferred due to 3 open Claude Code bugs (#16538, #13650, #11509)
 - Mobile/web UI — pure CLI plugin
 - Multi-user collaboration — single-developer workflow
-- Numeric scoring for sufficiency — categorical model working well, revisit if coarse
+- Numeric scoring for sufficiency — categorical model working well
 
 ## Context
 
-Shipped v1.0 with 5,563 LOC across Markdown, YAML, and JSON.
+Shipped v1.1 with 5,968 LOC across Markdown, YAML, and JSON.
 Plugin source: 7 skill directories + 10 prompt templates + 3 inline references + state templates.
 Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagents, plugin.json auto-discovery).
-92 requirements satisfied across 13 implementation phases in 11 days.
-3 audit cycles ensured zero gaps, zero tech debt remaining.
+v1.0: 92 requirements satisfied across 13 phases in 11 days.
+v1.1: 23 requirements satisfied across 5 phases in 2 days. Production polish — step tracking, status diagnostics, HANDOFF.md activation, gate enforcement.
+Total: 18 phases, 43 plans, 115 requirements across 2 milestones.
 
 ## Constraints
 
@@ -101,7 +86,11 @@ Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagent
 | Spike as separate skill (not inline in execute) | Per-phase granularity, optional usage, G5 gate boundary | ✓ Good — clean separation |
 | Per-phase artifacts at .expedite/plan/phases/{slug}/ | User decision — collocate spike/execute outputs per phase | ✓ Good — organized |
 | Case B override via *_in_progress + gate_history | Simpler than *_recycled phase tracking, uses existing state | ✓ Good — reliable |
-| Sufficiency evaluator as Task() subagent (not inline) | Spec Decision 10 chose inline (~80K token savings). Implementation dispatches via Task() with `<self_contained_reads>`, trading token cost for orchestrator context hygiene. Keeps research SKILL.md lean. | ✓ Good — context-clean |
+| Sufficiency evaluator as Task() subagent (not inline) | Spec chose inline (~80K token savings). Implementation dispatches via Task() for context hygiene. | ✓ Good — context-clean |
+| Hardcoded step counts in status lookup table | Dynamic parsing too fragile; update table when skill steps change | ✓ Good — reliable |
+| G2/G3 DA criteria as MUST, G4/G5 as SHOULD | Research recommended SHOULD for judgment-adjacent checks to avoid mass Recycle | ✓ Good — balanced enforcement |
+| Step 7b dual-path revision propagation | Mirrored sections sync from DESIGN.md, HANDOFF-only sections edited directly | ✓ Good — correct semantics |
+| Three-branch Case B2 resume logic | Engineering/HANDOFF→Step 7, product/no HANDOFF→Step 6, no DESIGN.md→Step 2 | ✓ Good — covers all paths |
 
 ---
-*Last updated: 2026-03-10 after HANDOFF.md activation (Phase 17)*
+*Last updated: 2026-03-11 after v1.1 milestone*

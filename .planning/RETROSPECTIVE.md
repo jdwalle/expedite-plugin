@@ -50,16 +50,63 @@
 
 ---
 
+## Milestone: v1.1 — Production Polish
+
+**Shipped:** 2026-03-11
+**Phases:** 5 | **Plans:** 11
+
+### What Was Built
+- Step-level tracking across all 6 stateful skills — users always know their position within long-running workflows
+- Status diagnostics: log size warning (50KB threshold) and artifact cross-reference for inconsistency detection
+- HANDOFF.md activation — product-intent lifecycles get validated generation, revision cycle, and G3 gate evaluation
+- DA readiness enforcement across G2-G5 gates — MUST criteria on evidence gates, SHOULD criteria on structural gates
+- Plugin metadata polish: version 1.0.0, .gitignore, architecture decision documentation
+
+### What Worked
+- Blast-radius ordering (isolated changes first, cross-cutting last) meant no phase blocked another — clean sequential execution
+- 2-day turnaround for 11 plans — established patterns from v1.0 made execution nearly mechanical
+- Milestone audit before completion caught stale checkboxes and identified the 3 human-verification items cleanly
+- MUST vs SHOULD distinction for gate criteria avoided over-enforcement while still catching real gaps
+
+### What Was Inefficient
+- SUMMARY.md files still lack one_liner frontmatter — same extraction problem as v1.0 (pattern not fixed between milestones)
+- Stale checkboxes in REQUIREMENTS.md and PROJECT.md accumulated across phases — should update tracking docs as part of each phase execution, not defer to audit
+- 3 partial requirements (HAND-01/02/03) could only be verified by human runtime testing — static verifier can't exercise SKILL.md orchestration logic
+
+### Patterns Established
+- current_step schema (skill/step/label) for tracking position within multi-step skills
+- Hardcoded step-count lookup table in status skill (simpler than dynamic parsing)
+- Conditional output sections in status (omit entire section when no issues)
+- Dual-path revision propagation: mirrored sections sync both docs, HANDOFF-only sections edited independently
+- SHOULD criteria for judgment-adjacent gate checks (advisory, not blocking)
+
+### Key Lessons
+1. Tracking doc maintenance should happen per-phase, not deferred to audit — stale checkboxes create noise
+2. Static verification has a ceiling — orchestration logic that depends on LLM behavior needs human runtime testing
+3. Production polish milestones are fast when the foundation is solid — 2 days vs 11 days for the same codebase
+4. MUST vs SHOULD gate distinction is the right pattern — prevents over-enforcement while maintaining quality floors
+
+### Cost Observations
+- Model mix: 100% opus (quality profile throughout)
+- Average plan duration: 1.9 minutes
+- Total execution time: ~15 minutes across 11 plans
+- Notable: Fastest milestone yet — all plans under 3 minutes. Established v1.0 patterns eliminated decision overhead entirely.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
 
-| Milestone | Phases | Plans | Key Change |
-|-----------|--------|-------|------------|
-| v1.0 | 13 | 32 | Initial build with 3 audit cycles |
+| Milestone | Phases | Plans | Timeline | Key Change |
+|-----------|--------|-------|----------|------------|
+| v1.0 | 13 | 32 | 11 days | Initial build with 3 audit cycles |
+| v1.1 | 5 | 11 | 2 days | Production polish — patterns from v1.0 made execution mechanical |
 
 ### Top Lessons (Verified Across Milestones)
 
-1. Plan-first with verbatim specifications enables fast, accurate execution
-2. Human verification checkpoints at phase boundaries catch issues subagents miss
-3. Audit-before-ship ensures zero-gap releases
+1. Plan-first with verbatim specifications enables fast, accurate execution (v1.0, v1.1)
+2. Human verification checkpoints at phase boundaries catch issues subagents miss (v1.0, v1.1)
+3. Audit-before-ship ensures zero-gap releases (v1.0, v1.1)
+4. Tracking doc maintenance should happen per-phase, not deferred — stale checkboxes are noise (v1.0 inefficiency, v1.1 confirmed)
+5. Established patterns compound — v1.1 was 7x faster per plan than v1.0 initial phases
