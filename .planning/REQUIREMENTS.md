@@ -17,12 +17,12 @@ Requirements for v1.1 Production Polish. Each maps to roadmap phases.
 
 - [x] **STEP-01**: state.yml schema includes optional `current_step` field (`skill`, `step`, `label`)
 - [x] **STEP-02**: state.yml.template documents the `current_step` field
-- [ ] **STEP-03**: Scope skill writes `current_step` on entry to each of its 9 numbered steps
-- [ ] **STEP-04**: Research skill writes `current_step` on entry to each numbered step
-- [ ] **STEP-05**: Design skill writes `current_step` on entry to each of its 10 numbered steps
-- [ ] **STEP-06**: Plan skill writes `current_step` on entry to each numbered step
-- [ ] **STEP-07**: Spike skill writes `current_step` on entry to each numbered step
-- [ ] **STEP-08**: Execute skill writes `current_step` on entry to each numbered step
+- [x] **STEP-03**: Scope skill writes `current_step` on entry to each of its 9 numbered steps
+- [x] **STEP-04**: Research skill writes `current_step` on entry to each numbered step
+- [x] **STEP-05**: Design skill writes `current_step` on entry to each of its 10 numbered steps
+- [x] **STEP-06**: Plan skill writes `current_step` on entry to each numbered step
+- [x] **STEP-07**: Spike skill writes `current_step` on entry to each numbered step
+- [x] **STEP-08**: Execute skill writes `current_step` on entry to each numbered step
 - [x] **STEP-09**: Status skill displays current step ("scope: step 5 of 9 — Adaptive Refinement") when `current_step` field exists; gracefully omits when absent
 
 ### Status Improvements
@@ -86,12 +86,12 @@ Deferred to v1.2 or later. Tracked but not in current roadmap.
 | HSKP-03 | 14 | Complete |
 | STEP-01 | 15 | Complete |
 | STEP-02 | 15 | Complete |
-| STEP-03 | 15 | Pending |
-| STEP-04 | 15 | Pending |
-| STEP-05 | 15 | Pending |
-| STEP-06 | 15 | Pending |
-| STEP-07 | 15 | Pending |
-| STEP-08 | 15 | Pending |
+| STEP-03 | 15 | Complete |
+| STEP-04 | 15 | Complete |
+| STEP-05 | 15 | Complete |
+| STEP-06 | 15 | Complete |
+| STEP-07 | 15 | Complete |
+| STEP-08 | 15 | Complete |
 | STEP-09 | 15 | Complete |
 | STAT-01 | 16 | Complete |
 | STAT-02 | 16 | Complete |
