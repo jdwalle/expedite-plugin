@@ -453,6 +453,9 @@ Evaluate the design document with explicit anti-bias instructions: **"Evaluate a
 | M2 | Every decision references evidence | For each DA section, check for evidence citations (evidence file references or SYNTHESIS.md finding references). State: "{N}/{M} decisions cite evidence" | PASS/FAIL |
 | M3 | Correct format for intent | Check document structure matches PRD (product) or RFC (engineering) required sections from design guide. State: "Found {N}/{M} required sections" | PASS/FAIL |
 | M4 | DESIGN.md exists and is non-empty | File exists and has substantive content (not just headers). State: "DESIGN.md: {line_count} lines" | PASS/FAIL |
+| M5 | Evidence citations address DA readiness criteria | For each DA, read its readiness criterion from SCOPE.md. Check that evidence cited in DESIGN.md's DA section addresses what the readiness criterion requires (not just any evidence -- evidence relevant to the specific readiness criterion). State: "{N}/{M} DAs cite evidence addressing their readiness criteria{. Gaps: DA-3 readiness asks for benchmarks but citations only reference API docs}" | PASS/FAIL |
+
+Note: M2 checks that evidence citations *exist* for each DA. M5 checks that the cited evidence *addresses the specific readiness criterion* from SCOPE.md. Both must pass. Example: if a readiness criterion asks for "benchmark data comparing approaches" and the design cites evidence that only contains API documentation, M2 passes (citation exists) but M5 fails (citation does not address the readiness criterion).
 
 **SHOULD criteria (failures produce advisory, not block):**
 
@@ -473,6 +476,7 @@ MUST Criteria:
   M2: {PASS|FAIL} — {evidence}
   M3: {PASS|FAIL} — {evidence}
   M4: {PASS|FAIL} — {evidence}
+  M5: {PASS|FAIL} — {evidence}
 
 SHOULD Criteria:
   S1: {PASS|ADVISORY} — {evidence}
