@@ -679,11 +679,16 @@ Count-based gate evaluation from state.yml question statuses (set in Step 12). N
 
 Compute counts: `total_questions`, `covered_count`, `partial_count`, `not_covered_count`, `unavailable_count`, `p0_questions`, `p0_not_covered`, `unresolved_unavailable`.
 
+Read `.expedite/research/SYNTHESIS.md`. For each `## Decision Area:` section, find the `Readiness status:` line. Count how many say "MET" vs "NOT MET" (case-insensitive, whitespace-tolerant). If a DA section is missing a readiness status line, treat it as NOT MET. Store as `da_total`, `da_met_count`.
+
 **MUST criteria (all must pass for Go):**
 - M1: Every question assessed (covered + partial + not_covered + unavailable = total)
 - M2: Majority COVERED (covered_count > total / 2)
 - M3: All P0 questions COVERED or PARTIAL (p0_not_covered == 0)
 - M4: No unresolved UNAVAILABLE-SOURCE (unresolved_unavailable == 0)
+- M5: Every DA readiness criterion MET (da_met_count == da_total). State: "{da_met_count}/{da_total} DA readiness criteria MET{. NOT MET: DA-2, DA-5 if any}"
+
+Note: M1-M4 evaluate question-level coverage from state.yml. M5 evaluates DA-level readiness from SYNTHESIS.md. Both must pass.
 
 **SHOULD criteria (failures produce advisory, not block):**
 - S1: All questions COVERED (covered_count == total)
