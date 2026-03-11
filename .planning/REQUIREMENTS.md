@@ -82,40 +82,40 @@ Deferred to v1.3+.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| RESL-01 | — | Pending |
-| RESL-02 | — | Pending |
-| RESL-03 | — | Pending |
-| RESL-04 | — | Pending |
-| RESL-05 | — | Pending |
-| ARCH-01 | — | Pending |
-| ARCH-02 | — | Pending |
-| ARCH-03 | — | Pending |
-| ARCH-04 | — | Pending |
-| ARCH-05 | — | Pending |
-| ARCH-06 | — | Pending |
-| QUAL-01 | — | Pending |
-| QUAL-02 | — | Pending |
-| QUAL-03 | — | Pending |
-| QUAL-04 | — | Pending |
-| QUAL-05 | — | Pending |
-| QUAL-06 | — | Pending |
-| QUAL-07 | — | Pending |
-| DEVW-01 | — | Pending |
-| DEVW-02 | — | Pending |
-| DEVW-03 | — | Pending |
-| DEVW-04 | — | Pending |
-| DEVW-05 | — | Pending |
-| DEVW-06 | — | Pending |
-| MAINT-01 | — | Pending |
-| MAINT-02 | — | Pending |
-| MAINT-03 | — | Pending |
-| MAINT-04 | — | Pending |
+| RESL-01 | Phase 19 | Pending |
+| RESL-02 | Phase 19 | Pending |
+| RESL-03 | Phase 19 | Pending |
+| RESL-04 | Phase 19 | Pending |
+| RESL-05 | Phase 19 | Pending |
+| ARCH-01 | Phase 20 | Pending |
+| ARCH-02 | Phase 21 | Pending |
+| ARCH-03 | Phase 21 | Pending |
+| ARCH-04 | Phase 21 | Pending |
+| ARCH-05 | Phase 21 | Pending |
+| ARCH-06 | Phase 21 | Pending |
+| QUAL-01 | Phase 24 | Pending |
+| QUAL-02 | Phase 24 | Pending |
+| QUAL-03 | Phase 24 | Pending |
+| QUAL-04 | Phase 24 | Pending |
+| QUAL-05 | Phase 24 | Pending |
+| QUAL-06 | Phase 24 | Pending |
+| QUAL-07 | Phase 24 | Pending |
+| DEVW-01 | Phase 23 | Pending |
+| DEVW-02 | Phase 23 | Pending |
+| DEVW-03 | Phase 23 | Pending |
+| DEVW-04 | Phase 23 | Pending |
+| DEVW-05 | Phase 23 | Pending |
+| DEVW-06 | Phase 23 | Pending |
+| MAINT-01 | Phase 22 | Pending |
+| MAINT-02 | Phase 22 | Pending |
+| MAINT-03 | Phase 22 | Pending |
+| MAINT-04 | Phase 22 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28 ⚠️
+- Mapped to phases: 28
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 after initial definition*
+*Last updated: 2026-03-11 after roadmap creation*
