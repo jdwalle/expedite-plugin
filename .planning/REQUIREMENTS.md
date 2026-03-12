@@ -13,7 +13,7 @@ Requirements for v1.2 Infrastructure Hardening & Quality. Each maps to roadmap p
 - [x] **RESL-02**: User sees a warning message identifying what was recovered and the last known phase after auto-recovery
 - [x] **RESL-03**: User's state is reconstructed from artifacts (SCOPE.md, SYNTHESIS.md, DESIGN.md, PLAN.md) when both state.yml and .bak are corrupted
 - [x] **RESL-04**: User sees an unrecoverable error with clear instructions when no recovery source exists
-- [x] **RESL-05**: Every state file write includes a `_write_complete` sentinel as the last field, and reads validate its presence
+- [ ] **RESL-05**: Every state file write includes a `_write_complete` sentinel as the last field, and reads validate its presence _(deferred — write atomicity handled by Claude Code platform)_
 
 ### Architecture
 
@@ -86,7 +86,7 @@ Deferred to v1.3+.
 | RESL-02 | Phase 19 | Complete |
 | RESL-03 | Phase 19 | Complete |
 | RESL-04 | Phase 19 | Complete |
-| RESL-05 | Phase 19 | Complete |
+| RESL-05 | — | Deferred |
 | ARCH-01 | Phase 20 | Pending |
 | ARCH-02 | Phase 21 | Pending |
 | ARCH-03 | Phase 21 | Pending |
