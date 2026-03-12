@@ -9,11 +9,11 @@ Requirements for v1.2 Infrastructure Hardening & Quality. Each maps to roadmap p
 
 ### Resilience
 
-- [ ] **RESL-01**: User's corrupted state.yml is automatically detected and recovered from .bak on any skill invocation
-- [ ] **RESL-02**: User sees a warning message identifying what was recovered and the last known phase after auto-recovery
-- [ ] **RESL-03**: User's state is reconstructed from artifacts (SCOPE.md, SYNTHESIS.md, DESIGN.md, PLAN.md) when both state.yml and .bak are corrupted
-- [ ] **RESL-04**: User sees an unrecoverable error with clear instructions when no recovery source exists
-- [ ] **RESL-05**: Every state file write includes a `_write_complete` sentinel as the last field, and reads validate its presence
+- [x] **RESL-01**: User's corrupted state.yml is automatically detected and recovered from .bak on any skill invocation
+- [x] **RESL-02**: User sees a warning message identifying what was recovered and the last known phase after auto-recovery
+- [x] **RESL-03**: User's state is reconstructed from artifacts (SCOPE.md, SYNTHESIS.md, DESIGN.md, PLAN.md) when both state.yml and .bak are corrupted
+- [x] **RESL-04**: User sees an unrecoverable error with clear instructions when no recovery source exists
+- [x] **RESL-05**: Every state file write includes a `_write_complete` sentinel as the last field, and reads validate its presence
 
 ### Architecture
 
@@ -82,11 +82,11 @@ Deferred to v1.3+.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| RESL-01 | Phase 19 | Pending |
-| RESL-02 | Phase 19 | Pending |
-| RESL-03 | Phase 19 | Pending |
-| RESL-04 | Phase 19 | Pending |
-| RESL-05 | Phase 19 | Pending |
+| RESL-01 | Phase 19 | Complete |
+| RESL-02 | Phase 19 | Complete |
+| RESL-03 | Phase 19 | Complete |
+| RESL-04 | Phase 19 | Complete |
+| RESL-05 | Phase 19 | Complete |
 | ARCH-01 | Phase 20 | Pending |
 | ARCH-02 | Phase 21 | Pending |
 | ARCH-03 | Phase 21 | Pending |

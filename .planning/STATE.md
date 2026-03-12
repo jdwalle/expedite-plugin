@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Infrastructure Hardening & Quality
 status: active
-last_updated: "2026-03-11"
+last_updated: "2026-03-12"
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 2
+  completed_plans: 1
 ---
 
 # Project State
@@ -23,18 +23,22 @@ See: .planning/PROJECT.md (updated 2026-03-11)
 ## Current Position
 
 Phase: 19 (1 of 6 in v1.2) — State Recovery
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-03-11 — Roadmap created for v1.2
+Plan: 1 of 2 complete
+Status: Executing plan 02
+Last activity: 2026-03-12 — Completed 19-01 (recovery protocol + status skill update)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 5%
 
 ## Performance Metrics
 
 **Velocity:**
 - v1.0: 32 plans across 13 phases in 11 days
 - v1.1: 11 plans across 5 phases in 2 days
-- v1.2: Not started
+- v1.2: 1 plan completed (Phase 19 in progress)
+
+| Phase | Plan | Duration | Tasks | Files |
+|-------|------|----------|-------|-------|
+| 19 | 01 | 2min | 2 | 2 |
 
 ## Accumulated Context
 
@@ -45,6 +49,9 @@ Full decision log in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 - v1.2 scope: 7 features, 28 requirements across 6 phases (19-24)
 - Phase ordering: State Recovery first (foundation), then Explore (trivial), then State Splitting (high blast radius), then Skill Line Limit (post-split extraction), then Git Commits and Verifier/Alternatives (quality features last)
+- Recovery protocol uses centralized reference in skills/shared/ref-state-recovery.md (established pattern)
+- Artifact scan order: PLAN.md > DESIGN.md > SYNTHESIS.md > SCOPE.md (reverse lifecycle)
+- Always infer _complete phases during recovery, never _in_progress
 
 ### Pending Todos
 
@@ -58,6 +65,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-11
-Stopped at: Roadmap created for v1.2 milestone. Ready to plan Phase 19.
+Last session: 2026-03-12
+Stopped at: Completed 19-01-PLAN.md (recovery protocol + status skill update). Ready for 19-02.
 Resume file: None
