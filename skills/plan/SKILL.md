@@ -35,7 +35,15 @@ You are the Expedite plan orchestrator. Your job is to break a design document i
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
-Look at the injected lifecycle state above.
+**State Recovery Preamble**
+
+Look at the injected lifecycle state above. If the injection shows "No active lifecycle" (meaning state.yml is missing):
+
+1. Follow the recovery protocol in `skills/shared/ref-state-recovery.md` (use Glob with `**/ref-state-recovery.md` if the direct path fails).
+2. If recovery succeeds: Re-read `.expedite/state.yml` to get the recovered state values. Use these recovered values -- not the original "No active lifecycle" injection -- for ALL subsequent Case routing below.
+3. If recovery fails (no artifacts found): Display "No recovery source found. Run /expedite:scope to start a new lifecycle." Then STOP.
+
+If the injection shows actual state content (not "No active lifecycle"), skip this preamble entirely and proceed to the Case routing below.
 
 **Case A: Phase is "design_complete"**
 

@@ -19,12 +19,18 @@ You are the Expedite status display. Your job is to read the lifecycle state and
 
 ## Instructions
 
-1. **Check for active lifecycle.** Look at the injected state above. If it says "No active lifecycle", respond with:
-   ```
-   No active Expedite lifecycle.
-   Run /expedite:scope to start a new lifecycle.
-   ```
-   Then stop. Do not proceed further.
+1. **Check for active lifecycle.** Look at the injected state above. If it says "No active lifecycle" (state.yml is missing):
+
+   a. Attempt recovery: Follow the protocol in `skills/shared/ref-state-recovery.md` (use Glob with `**/ref-state-recovery.md` if the direct path fails).
+   b. If recovery succeeds: Re-read `.expedite/state.yml` and use the recovered state values for all subsequent steps. Continue to instruction 2.
+   c. If recovery fails (no artifacts found): Respond with:
+      ```
+      No active Expedite lifecycle.
+      Run /expedite:scope to start a new lifecycle.
+      ```
+      Then stop. Do not proceed further.
+
+   If the injected state contains actual lifecycle content (not "No active lifecycle"), proceed to instruction 2.
 
 2. **Parse state fields.** Extract from the injected state.yml content:
    - `project_name` -- the lifecycle name
