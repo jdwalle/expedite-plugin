@@ -6,9 +6,9 @@ status: active
 last_updated: "2026-03-12"
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -18,27 +18,28 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-11)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 19 - State Recovery
+**Current focus:** Phase 19 complete. Next: Phase 20 - Explore Subagent
 
 ## Current Position
 
-Phase: 19 (1 of 6 in v1.2) — State Recovery
-Plan: 1 of 2 complete
-Status: Executing plan 02
-Last activity: 2026-03-12 — Completed 19-01 (recovery protocol + status skill update)
+Phase: 19 (1 of 6 in v1.2) — State Recovery [COMPLETE]
+Plan: 2 of 2 complete
+Status: Phase 19 complete. Ready for Phase 20.
+Last activity: 2026-03-12 — Completed 19-02 (skill preamble wiring)
 
-Progress: [█░░░░░░░░░] 5%
+Progress: [██░░░░░░░░] 17%
 
 ## Performance Metrics
 
 **Velocity:**
 - v1.0: 32 plans across 13 phases in 11 days
 - v1.1: 11 plans across 5 phases in 2 days
-- v1.2: 1 plan completed (Phase 19 in progress)
+- v1.2: 2 plans across 1 phase in 1 day
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 19 | 01 | 2min | 2 | 2 |
+| 19 | 02 | 2min | 2 | 7 |
 
 ## Accumulated Context
 
@@ -52,6 +53,8 @@ Recent decisions affecting current work:
 - Recovery protocol uses centralized reference in skills/shared/ref-state-recovery.md (established pattern)
 - Artifact scan order: PLAN.md > DESIGN.md > SYNTHESIS.md > SCOPE.md (reverse lifecycle)
 - Always infer _complete phases during recovery, never _in_progress
+- Scope skill no-artifacts -> Case A (fresh start); all other skills no-artifacts -> STOP with error
+- Recovery preamble placed between step tracking and Case routing in all lifecycle skills
 
 ### Pending Todos
 
@@ -66,5 +69,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Completed 19-01-PLAN.md (recovery protocol + status skill update). Ready for 19-02.
+Stopped at: Completed 19-02-PLAN.md (skill preamble wiring). Phase 19 complete. Ready for Phase 20.
 Resume file: None
