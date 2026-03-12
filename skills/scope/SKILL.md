@@ -37,7 +37,15 @@ You are the Expedite scope orchestrator. Your job is to guide the user through d
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
-Look at the injected lifecycle state above.
+**State Recovery Preamble**
+
+Look at the injected lifecycle state above. If the injection shows "No active lifecycle" (meaning state.yml is missing):
+
+1. Check whether recovery artifacts exist: Follow the artifact scan in `skills/shared/ref-state-recovery.md` (use Glob with `**/ref-state-recovery.md` if the direct path fails).
+2. If recovery succeeds (artifacts found and state.yml reconstructed): Re-read `.expedite/state.yml` to get the recovered state values. The recovered state will have a phase like `scope_complete` or later -- fall through to **Case C** below (active lifecycle with phase other than scope_in_progress).
+3. If no artifacts found: This is a genuine fresh start. Proceed to **Case A** below.
+
+If the injection shows actual state content (not "No active lifecycle"), skip this preamble entirely and proceed to the Case routing below.
 
 **Case A: "No active lifecycle"**
 Proceed directly to Step 3.
