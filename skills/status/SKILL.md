@@ -146,7 +146,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
 
 ## Recovery Info
 State file: .expedite/state.yml
-Backup: .expedite/state.yml.bak
+Recovery: artifact-based (PLAN.md > DESIGN.md > SYNTHESIS.md > SCOPE.md)
 Research rounds: {research_round}
 
 ## Diagnostics
