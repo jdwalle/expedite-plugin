@@ -53,7 +53,7 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 
 </details>
 
-### 🚧 v2.0 Agent Harness Foundation (In Progress)
+### v2.0 Agent Harness Foundation (In Progress)
 
 **Milestone Goal:** Evolve from prompt-driven orchestration to code-enforced agent harness -- state splitting with hook validation, checkpoint-based deterministic resume, override mechanism with audit trail, and session handoff across session boundaries.
 
@@ -124,11 +124,11 @@ Plans:
   2. Every skill writes checkpoint.yml at every step transition with skill, step, label, substep, and continuation_notes fields
   3. Mid-step context is preserved: substep records sub-state (e.g., "waiting_for_agents") and continuation_notes records progress (e.g., "3 of 5 researchers dispatched")
   4. Artifact-existence checking is used as a secondary fallback only when checkpoint.yml is missing or its skill field does not match the invoked skill
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 28-01: TBD
-- [ ] 28-02: TBD
+- [ ] 28-01-PLAN.md -- Add checkpoint.yml write protocol to all 6 skills at every step transition
+- [ ] 28-02-PLAN.md -- Rewrite resume logic to use checkpoint.yml as primary mechanism with artifact fallback
 
 ### Phase 29: Session Handoff
 **Goal**: Session boundaries are invisible to the user -- context from the previous session is automatically preserved and loaded, and compaction events do not lose checkpoint state
@@ -174,5 +174,5 @@ Phases execute in numeric order: 25 -> 26 -> 27 -> 28 -> 29
 | 25. State Splitting + Hooks | v2.0 | 3/3 | Complete | 2026-03-13 |
 | 26. Phase Transition Enforcement | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 27. Override + Audit | v2.0 | Complete    | 2026-03-13 | 2026-03-13 |
-| 28. Checkpoint Resume | v2.0 | 0/TBD | Not started | - |
+| 28. Checkpoint Resume | v2.0 | 0/2 | Not started | - |
 | 29. Session Handoff | v2.0 | 0/TBD | Not started | - |
