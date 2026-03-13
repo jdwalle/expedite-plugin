@@ -24,6 +24,9 @@ Checkpoint:
 Tasks:
 !`cat .expedite/tasks.yml 2>/dev/null || echo "No tasks"`
 
+Session context:
+!`cat .expedite/session-summary.md 2>/dev/null`
+
 Override protocol:
 !`cat skills/shared/ref-override-protocol.md 2>/dev/null || echo "No override protocol found"`
 
