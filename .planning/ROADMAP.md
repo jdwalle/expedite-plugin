@@ -59,7 +59,7 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 
 - [x] **Phase 25: State Splitting and Hook Infrastructure** - Split monolithic state.yml into 5 scoped files; build Node.js hook scaffolding with schema validation and non-state passthrough (completed 2026-03-13)
 - [x] **Phase 26: Phase Transition Enforcement** - FSM phase transitions, gate passage requirements, checkpoint regression guards, and gates.yml structural validation (completed 2026-03-13)
-- [ ] **Phase 27: Override Mechanism and Audit Trail** - Deny-override-retry flow with actionable denials, override records in gates.yml, PostToolUse audit hook, escalation, and env var bypass
+- [x] **Phase 27: Override Mechanism and Audit Trail** - Deny-override-retry flow with actionable denials, override records in gates.yml, PostToolUse audit hook, escalation, and env var bypass (completed 2026-03-13)
 - [ ] **Phase 28: Checkpoint-Based Resume** - Generalize checkpoint.yml writes to all skills; deterministic resume from checkpoint with substep context and artifact fallback
 - [ ] **Phase 29: Session Handoff** - Stop and PreCompact hooks write session-summary.md; frontmatter injection for next-session context; checkpoint backup before compaction
 
@@ -112,8 +112,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 27-01-PLAN.md -- Actionable denials, override deadlock prevention, denial escalation, and audit enrichment
-- [ ] 27-02-PLAN.md -- Skill preamble override protocol injection
+- [x] 27-01-PLAN.md -- Actionable denials, override deadlock prevention, denial escalation, and audit enrichment
+- [x] 27-02-PLAN.md -- Skill preamble override protocol injection
 
 ### Phase 28: Checkpoint-Based Resume
 **Goal**: Resuming a skill after any interruption (crash, /clear, new session) lands on the correct step deterministically from checkpoint.yml, not from artifact-existence heuristics
@@ -173,6 +173,6 @@ Phases execute in numeric order: 25 -> 26 -> 27 -> 28 -> 29
 | 19. State Recovery | v1.2 | 2/2 | Complete | 2026-03-12 |
 | 25. State Splitting + Hooks | v2.0 | 3/3 | Complete | 2026-03-13 |
 | 26. Phase Transition Enforcement | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 27. Override + Audit | 1/2 | In Progress|  | - |
+| 27. Override + Audit | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 28. Checkpoint Resume | v2.0 | 0/TBD | Not started | - |
 | 29. Session Handoff | v2.0 | 0/TBD | Not started | - |

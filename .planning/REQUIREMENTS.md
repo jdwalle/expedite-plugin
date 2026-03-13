@@ -31,7 +31,7 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 - [x] **OVRD-03**: gates.yml writes are not intercepted for gate passage checks (prevents override deadlock)
 - [x] **OVRD-04**: After 3 denials for the same pattern, user sees a suggestion to intervene directly
 - [x] **OVRD-05**: User can bypass all enforcement via `EXPEDITE_HOOKS_DISABLED=true` for debugging
-- [ ] **OVRD-06**: All skill preambles include an override protocol section before the LLM encounters a denial
+- [x] **OVRD-06**: All skill preambles include an override protocol section before the LLM encounters a denial
 
 ### Resume & Recovery
 
@@ -118,7 +118,7 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | OVRD-03 | Phase 27 | Complete |
 | OVRD-04 | Phase 27 | Complete |
 | OVRD-05 | Phase 27 | Complete |
-| OVRD-06 | Phase 27 | Pending |
+| OVRD-06 | Phase 27 | Complete |
 | RESM-01 | Phase 28 | Pending |
 | RESM-02 | Phase 28 | Pending |
 | RESM-03 | Phase 28 | Pending |
