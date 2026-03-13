@@ -58,7 +58,7 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 **Milestone Goal:** Evolve from prompt-driven orchestration to code-enforced agent harness -- state splitting with hook validation, checkpoint-based deterministic resume, override mechanism with audit trail, and session handoff across session boundaries.
 
 - [x] **Phase 25: State Splitting and Hook Infrastructure** - Split monolithic state.yml into 5 scoped files; build Node.js hook scaffolding with schema validation and non-state passthrough (completed 2026-03-13)
-- [ ] **Phase 26: Phase Transition Enforcement** - FSM phase transitions, gate passage requirements, checkpoint regression guards, and gates.yml structural validation
+- [x] **Phase 26: Phase Transition Enforcement** - FSM phase transitions, gate passage requirements, checkpoint regression guards, and gates.yml structural validation (completed 2026-03-13)
 - [ ] **Phase 27: Override Mechanism and Audit Trail** - Deny-override-retry flow with actionable denials, override records in gates.yml, PostToolUse audit hook, escalation, and env var bypass
 - [ ] **Phase 28: Checkpoint-Based Resume** - Generalize checkpoint.yml writes to all skills; deterministic resume from checkpoint with substep context and artifact fallback
 - [ ] **Phase 29: Session Handoff** - Stop and PreCompact hooks write session-summary.md; frontmatter injection for next-session context; checkpoint backup before compaction
@@ -172,7 +172,7 @@ Phases execute in numeric order: 25 -> 26 -> 27 -> 28 -> 29
 | 18. Gate Enforcement | v1.1 | 2/2 | Complete | 2026-03-11 |
 | 19. State Recovery | v1.2 | 2/2 | Complete | 2026-03-12 |
 | 25. State Splitting + Hooks | 3/3 | Complete    | 2026-03-13 | - |
-| 26. Phase Transition Enforcement | v2.0 | 1/2 | In progress | - |
+| 26. Phase Transition Enforcement | 2/2 | Complete   | 2026-03-13 | - |
 | 27. Override + Audit | v2.0 | 0/TBD | Not started | - |
 | 28. Checkpoint Resume | v2.0 | 0/TBD | Not started | - |
 | 29. Session Handoff | v2.0 | 0/TBD | Not started | - |
