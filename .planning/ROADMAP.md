@@ -93,11 +93,11 @@ Plans:
   2. User's attempt to advance to a `_complete` phase is blocked until gates.yml contains a passing result (go, go-with-advisory, or overridden) for the required gate
   3. User's checkpoint.yml write that decreases the step number is blocked unless the inputs_hash differs from the current checkpoint (changed inputs justify re-execution)
   4. User's gates.yml write is validated for structure: valid gate ID matching the current phase, recognized outcome enum, and override_reason present when outcome is "overridden"
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [x] 26-01-PLAN.md -- FSM transition library, gate passage checker, VALID_PHASES update
-- [ ] 26-02-PLAN.md -- Integrate FSM and gate checks into validate-state-write hook
+- [x] 26-02-PLAN.md -- Integrate FSM and gate checks into validate-state-write hook
 
 ### Phase 27: Override Mechanism and Audit Trail
 **Goal**: Users can deliberately bypass enforcement when justified, with every override auditable and traceable -- the system preserves user agency without silent escape hatches
@@ -109,11 +109,11 @@ Plans:
   3. gates.yml writes are not intercepted for gate passage checks (only schema-validated), preventing override deadlock where writing the override itself requires passing the gate
   4. After 3 denials for the same transition pattern, the user sees a suggestion to intervene directly (edit state files manually or use EXPEDITE_HOOKS_DISABLED)
   5. User can set `EXPEDITE_HOOKS_DISABLED=true` to bypass all enforcement for debugging, and all hooks exit 0 immediately
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 27-01: TBD
-- [ ] 27-02: TBD
+- [ ] 27-01-PLAN.md -- Actionable denials, override deadlock prevention, denial escalation, and audit enrichment
+- [ ] 27-02-PLAN.md -- Skill preamble override protocol injection
 
 ### Phase 28: Checkpoint-Based Resume
 **Goal**: Resuming a skill after any interruption (crash, /clear, new session) lands on the correct step deterministically from checkpoint.yml, not from artifact-existence heuristics
@@ -171,8 +171,8 @@ Phases execute in numeric order: 25 -> 26 -> 27 -> 28 -> 29
 | 17. HANDOFF.md Activation | v1.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Gate Enforcement | v1.1 | 2/2 | Complete | 2026-03-11 |
 | 19. State Recovery | v1.2 | 2/2 | Complete | 2026-03-12 |
-| 25. State Splitting + Hooks | 3/3 | Complete    | 2026-03-13 | - |
-| 26. Phase Transition Enforcement | 2/2 | Complete    | 2026-03-13 | - |
-| 27. Override + Audit | v2.0 | 0/TBD | Not started | - |
+| 25. State Splitting + Hooks | v2.0 | 3/3 | Complete | 2026-03-13 |
+| 26. Phase Transition Enforcement | v2.0 | 2/2 | Complete | 2026-03-13 |
+| 27. Override + Audit | v2.0 | 0/2 | Not started | - |
 | 28. Checkpoint Resume | v2.0 | 0/TBD | Not started | - |
 | 29. Session Handoff | v2.0 | 0/TBD | Not started | - |
