@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Agent Harness Foundation
-status: unknown
-last_updated: "2026-03-13T07:39:51.974Z"
+status: in_progress
+last_updated: "2026-03-13T15:45:32Z"
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 10
+  completed_plans: 10
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 27 - Override Mechanism and Audit Trail
+**Current focus:** Phase 28 - Checkpoint-Based Resume
 
 ## Current Position
 
-Phase: 27 of 29 (Override Mechanism and Audit Trail)
-Plan: 2 of 2 complete
-Status: Phase complete
-Last activity: 2026-03-13 -- Completed 27-02 (Skill preamble override protocol injection)
+Phase: 28 of 29 (Checkpoint-Based Resume)
+Plan: 1 of 2 complete
+Status: In progress
+Last activity: 2026-03-13 -- Completed 28-01 (Checkpoint write protocol for all 6 skills)
 
-Progress: [██████████] 100% (7/7 plans)
+Progress: [████████████████████░] 90% (8/9 plans)
 
 ## Performance Metrics
 
@@ -35,7 +35,7 @@ Progress: [██████████] 100% (7/7 plans)
 - v1.0: 32 plans across 13 phases in 11 days
 - v1.1: 11 plans across 5 phases in 2 days
 - v1.2: 2 plans across 1 phase in 1 day
-- v2.0: 7 plans across 5 phases (in progress)
+- v2.0: 8 plans across 5 phases (in progress)
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -46,6 +46,7 @@ Progress: [██████████] 100% (7/7 plans)
 | 26 | 02 | 3min | 1 | 1 |
 | 27 | 01 | 3min | 2 | 3 |
 | 27 | 02 | 2min | 1 | 8 |
+| 28 | 01 | 11min | 2 | 6 |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - Gate denials include override record format with retry instruction; non-gate denials suggest EXPEDITE_HOOKS_DISABLED -- 27-01
 - Override records (outcome: overridden) bypass gate-phase validation to prevent deadlock -- 27-01
 - Override protocol injected via !cat skills/shared/ref-override-protocol.md in all skill preambles -- 27-02
+- Checkpoint writes added AFTER existing state.yml writes (coexist until M4 skill-thinning) -- 28-01
+- Execute skill checkpoint writes target top-level .expedite/checkpoint.yml, NOT per-phase checkpoint -- 28-01
 
 ### Pending Todos
 
@@ -90,5 +93,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 27-02-PLAN.md (Skill preamble override protocol injection) -- Phase 27 complete
+Stopped at: Completed 28-01-PLAN.md (Checkpoint write protocol for all 6 skills)
 Resume file: None
