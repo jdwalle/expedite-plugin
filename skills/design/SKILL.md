@@ -46,6 +46,17 @@ You are the Expedite design orchestrator. Your job is to generate a design docum
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 1
+label: "Prerequisite Check"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 **State Recovery Preamble**
 
 Look at the injected lifecycle state above. If the injection shows "No active lifecycle" (meaning state.yml is missing):
@@ -148,6 +159,17 @@ Then STOP. Do not proceed to any other step.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 2
+label: "Read Scope + Research Artifacts"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Read the following files:
 
 1. **`.expedite/scope/SCOPE.md`** — Extract the full list of Decision Areas (DA-1 through DA-N) with their names, depth calibration (Deep/Standard/Light), evidence requirements, and readiness criteria.
@@ -190,6 +212,17 @@ Update state.yml using the backup-before-write pattern:
    - Set `last_modified` to current ISO 8601 UTC timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 3
+label: "Initialize Design State"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 5. Log phase transition:
    ```bash
    cat >> .expedite/log.yml << 'LOG_EOF'
@@ -217,6 +250,17 @@ Display: "Design phase initialized. Generating design document..."
 3. Set `current_step` to `{skill: "design", step: 4, label: "Generate Design Document"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 4
+label: "Generate Design Document"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 This is inline generation in the main session — the design document is generated here, not dispatched to a subagent. Read `skills/design/references/prompt-design-guide.md` as a quality reference (use Glob with `**/prompt-design-guide.md` if the direct path fails). The design guide defines the required sections, quality criteria, and contract chain enforcement — but is NOT dispatched as a subagent. Its instructions guide the inline generation.
 
@@ -295,6 +339,17 @@ If any check fails, revise the content before writing to disk. Do NOT write a de
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 5
+label: "Write DESIGN.md"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Write the generated design document to `.expedite/design/DESIGN.md`.
 
 Document header (both formats):
@@ -335,6 +390,17 @@ If post-write verification fails on any check, display the specific failure and 
 3. Set `current_step` to `{skill: "design", step: 6, label: "Generate HANDOFF.md (Product Intent Only)"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 6
+label: "Generate HANDOFF.md (Product Intent Only)"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Check the `intent` value from state.yml (loaded in Step 2).
 
@@ -398,6 +464,17 @@ Proceed to Step 7.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 7
+label: "Revision Cycle"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Present the design document to the user for review. This is a freeform revision loop with no hard round limit — the user keeps revising until satisfied, then proceeds to gate evaluation.
 
 **7a: Present design for review.** Display:
@@ -459,6 +536,17 @@ Proceed to Step 8.
 3. Set `current_step` to `{skill: "design", step: 8, label: "G3 Gate Evaluation"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 8
+label: "G3 Gate Evaluation"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Read `.expedite/design/DESIGN.md` and `.expedite/scope/SCOPE.md` (for DA reference).
 
@@ -534,6 +622,17 @@ Proceed to Step 9.
 
 **9a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write). In the same write, also set `current_step` to `{skill: "design", step: 9, label: "Gate Outcome Handling"}`:
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: 9
+label: "Gate Outcome Handling"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 ```yaml
 - gate: "G3"
   timestamp: "{ISO 8601 UTC}"
@@ -606,6 +705,17 @@ account for these gaps when creating tasks.
 ### Step 10: Design Completion
 
 Update state.yml (backup-before-write): set `phase` to `"design_complete"`, set `current_step` to null, update `last_modified`.
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "design"
+step: "complete"
+label: "design complete"
+substep: null
+continuation_notes: "Design complete. Next: /expedite:plan"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 **Log phase transition:**
 ```bash

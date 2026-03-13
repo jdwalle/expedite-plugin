@@ -48,6 +48,17 @@ You are the Expedite scope orchestrator. Your job is to guide the user through d
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** If `.expedite/state.yml` exists, Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 1
+label: "Lifecycle Check"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 **State Recovery Preamble**
 
 Look at the injected lifecycle state above. If the injection shows "No active lifecycle" (meaning state.yml is missing):
@@ -144,6 +155,17 @@ multiSelect: false
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** If `.expedite/state.yml` exists, Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 2
+label: "Connected Flow Import (v2)"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 > **Not yet implemented.** Connected flow artifact detection (scanning for HANDOFF.md/DESIGN.md from prior lifecycles) is a v2 feature (IMPORT-01 through IMPORT-04). The state.yml template has reserved `imported_from` and `constraints` fields for this.
 
 Proceed to Step 3.
@@ -189,6 +211,17 @@ If no `.expedite/state.yml` exists (fresh start or post-archival):
    ```
 
 6. Display: "Initialized new Expedite lifecycle."
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 3
+label: "Initialize Lifecycle"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 **Error handling:** If any template file cannot be found via Glob, display: "Error: Could not find Expedite plugin templates. Verify the plugin is installed at ~/.claude/plugins/expedite/." Then STOP.
 
@@ -245,6 +278,17 @@ Using the backup-before-write pattern:
    - Set `current_step` to `{skill: "scope", step: 4, label: "Interactive Questioning (Round 1: Context)"}`
    - Set `last_modified` to current timestamp
 4. Write the entire file back to `.expedite/state.yml`
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 4
+label: "Interactive Questioning (Round 1: Context)"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 ### Step 5: Interactive Questioning (Round 2: Adaptive Refinement)
 
@@ -326,6 +370,17 @@ Using the backup-before-write pattern (same as Step 4):
    - Set `last_modified` to current timestamp
 4. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 5
+label: "Interactive Questioning (Round 2: Adaptive Refinement)"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Note: Refinement answers are used as context for question plan generation in Step 6 but are NOT stored as individual fields in state.yml (to keep state flat). They are held in the conversation context and will be written into SCOPE.md's "Project Context" section in Step 9.
 
 Display: "Context collected. Now I'll generate a question plan based on everything you've shared."
@@ -340,6 +395,17 @@ Proceed to Step 6.
 3. Set `current_step` to `{skill: "scope", step: 6, label: "Question Plan Generation and Review"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 6
+label: "Question Plan Generation and Review"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 This is the most important step. The question plan defines the contract chain for the entire lifecycle.
 
@@ -441,6 +507,17 @@ Wait for user response:
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 7
+label: "Codebase Analysis (Additive Questions)"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 This step generates additive codebase-routed questions that help the research phase understand existing patterns in the user's codebase. These questions are NOT counted against the 15-question budget and have no cap -- generate as many as needed per DA.
 
 **7a. Determine relevance.**
@@ -511,6 +588,17 @@ Note: Codebase-routed questions will be written to state.yml alongside the origi
 3. Set `current_step` to `{skill: "scope", step: 8, label: "Source Configuration"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 8
+label: "Source Configuration"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Read `.expedite/sources.yml` and display the configured sources as a checklist:
 
@@ -616,6 +704,18 @@ Using the backup-before-write pattern:
 3. Update the in-memory representation:
    - Set `current_step` to `{skill: "scope", step: 9, label: "Write Artifacts"}`
    - Set `last_modified` to current timestamp
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 9
+label: "Write Artifacts"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
    - Set `questions` array with one entry per question from the approved plan. Each question entry:
      ```yaml
      - id: "q01"
@@ -708,6 +808,29 @@ Using the backup-before-write pattern:
    - Set `current_step` to `{skill: "scope", step: 10, label: "Gate G1 Evaluation"}`
    - If outcome is "go" or "go_advisory": set `phase: "scope_complete"` and set `current_step` to null
    - Set `last_modified` to current timestamp
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: 10
+label: "Gate G1 Evaluation"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+If outcome is "go" or "go_advisory", also Write the completion checkpoint to `.expedite/checkpoint.yml`:
+```yaml
+skill: "scope"
+step: "complete"
+label: "scope complete"
+substep: null
+continuation_notes: "Scope complete. Next: /expedite:research"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
    - Append to `gate_history` array:
      ```yaml
      - gate: "G1"

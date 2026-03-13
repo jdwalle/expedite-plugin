@@ -46,6 +46,17 @@ You are the Expedite plan orchestrator. Your job is to break a design document i
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: 1
+label: "Prerequisite Check"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 **State Recovery Preamble**
 
 Look at the injected lifecycle state above. If the injection shows "No active lifecycle" (meaning state.yml is missing):
@@ -141,6 +152,17 @@ Then STOP. Do not proceed to any other step.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: 2
+label: "Read Design + Scope Artifacts"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Read the following files:
 
 1. **`.expedite/design/DESIGN.md`** — Extract per-DA design decisions, confidence levels, open questions, cross-cutting concerns.
@@ -185,6 +207,17 @@ Update state.yml using the backup-before-write pattern:
    - Set `last_modified` to current ISO 8601 UTC timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: 3
+label: "Initialize Plan State"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 5. Log phase transition:
    ```bash
    cat >> .expedite/log.yml << 'LOG_EOF'
@@ -212,6 +245,17 @@ Display: "Plan phase initialized. Generating implementation plan..."
 3. Set `current_step` to `{skill: "plan", step: 4, label: "Generate Implementation Plan"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: 4
+label: "Generate Implementation Plan"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 This is inline generation in the main session — the plan is generated here, not dispatched to a subagent. Read `skills/plan/references/prompt-plan-guide.md` as a quality reference (use Glob with `**/prompt-plan-guide.md` if the direct path fails). The plan guide defines the required sections, quality criteria, and contract chain enforcement — but is NOT dispatched as a subagent. Its instructions guide the inline generation.
 
@@ -312,6 +356,17 @@ If any check fails, revise the content before writing to disk. Do NOT write a pl
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: 5
+label: "Write PLAN.md"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Write the generated plan to `.expedite/plan/PLAN.md`.
 
 Document header (both formats):
@@ -374,6 +429,17 @@ If verification fails on any check, display the specific failure and fix the con
 3. Set `current_step` to `{skill: "plan", step: 6, label: "Revision Cycle"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: 6
+label: "Revision Cycle"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Present the plan to the user for review. This is a freeform revision loop with no hard round limit -- the user keeps revising until satisfied, then proceeds to gate evaluation.
 
@@ -439,6 +505,17 @@ Plan-specific revision types:
 3. Set `current_step` to `{skill: "plan", step: 7, label: "G4 Gate Evaluation"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: 7
+label: "G4 Gate Evaluation"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Read `.expedite/plan/PLAN.md` and `.expedite/scope/SCOPE.md` (for DA reference).
 
@@ -517,6 +594,17 @@ Proceed to Step 8.
 
 **8a: Record gate history.** Append to `gate_history` in state.yml (backup-before-write). In the same write, also set `current_step` to `{skill: "plan", step: 8, label: "Gate Outcome Handling"}`:
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: 8
+label: "Gate Outcome Handling"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 ```yaml
 - gate: "G4"
   timestamp: "{ISO 8601 UTC}"
@@ -589,6 +677,17 @@ phases should account for these gaps.
 ### Step 9: Plan Completion
 
 Update state.yml (backup-before-write): set `current_step` to null, set `phase` to `"plan_complete"`, update `last_modified`.
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "plan"
+step: "complete"
+label: "plan complete"
+substep: null
+continuation_notes: "Plan complete. Next: /expedite:spike or /expedite:execute"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 **Log phase transition:**
 ```bash
