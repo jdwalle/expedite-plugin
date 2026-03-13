@@ -73,34 +73,52 @@ If the injection shows actual state content (not "No active lifecycle"), skip th
 Proceed directly to Step 3.
 
 **Case B: Active lifecycle with `phase: "scope_in_progress"` AND `project_name` is set (not null)**
-This is a resume scenario. Display:
 
-```
-Found an in-progress scope for "{project_name}" ({intent} intent).
+This is a resume scenario. Check the injected checkpoint above for deterministic resume.
 
-Context collected so far:
-- Project: {project_name}
-- Intent: {intent}
-- Description: {description if available}
-- Questions defined: {count of questions array}
+**Checkpoint-based resume (primary):**
+If the injected checkpoint shows actual values (not "No checkpoint" and not all-null) AND `checkpoint.skill` is "scope":
+  1. Read `checkpoint.step` and `checkpoint.label`
+  2. Cross-reference: if state.yml says scope_complete but checkpoint says scope step N, state wins -- treat as Case C instead
+  3. Display:
+     ```
+     Found in-progress scope for "{project_name}" ({intent} intent).
+     Checkpoint: step {checkpoint.step} -- {checkpoint.label}
+     {If checkpoint.continuation_notes is not null: "Context: {continuation_notes}"}
+     ```
+  4. Use AskUserQuestion:
+     ```
+     header: "Resume"
+     question: "Continue from where you left off?"
+     options:
+       - label: "Continue"
+         description: "Resume from step {checkpoint.step}: {checkpoint.label}"
+       - label: "Start over"
+         description: "Archive this lifecycle and begin fresh"
+     multiSelect: false
+     ```
+  5. If Continue: Jump to Step {checkpoint.step}. Do NOT re-run earlier steps.
+  6. If Start over: Execute the archival flow below, then proceed to Step 3.
 
-Continue from where you left off?
-```
+**Artifact-based fallback (secondary):**
+If checkpoint is missing, all-null, or checkpoint.skill is not "scope":
+  Display: "Checkpoint unavailable or mismatched. Using artifact heuristic for resume."
+  If questions exist, skip to Step 6. If intent and description are set but no questions, skip to Step 5. If only project_name is set, skip to Step 4.
 
-Use AskUserQuestion:
-```
-header: "Resume"
-question: "Continue from where you left off?"
-options:
-  - label: "Continue"
-    description: "Pick up from the last completed step"
-  - label: "Start over"
-    description: "Archive this lifecycle and begin fresh"
-multiSelect: false
-```
+  Use AskUserQuestion:
+  ```
+  header: "Resume"
+  question: "Continue from where you left off?"
+  options:
+    - label: "Continue"
+      description: "Pick up from the last completed step"
+    - label: "Start over"
+      description: "Archive this lifecycle and begin fresh"
+  multiSelect: false
+  ```
 
-- Continue: Skip to the step that corresponds to the current progress. If questions exist, skip to Step 6. If intent and description are set but no questions, skip to Step 5. If only project_name is set, skip to Step 4.
-- Start over: Execute the archival flow below, then proceed to Step 3.
+  - Continue: Skip to the step determined by the artifact heuristic above.
+  - Start over: Execute the archival flow below, then proceed to Step 3.
 
 **Case C: Active lifecycle with any other phase (not scope_in_progress)**
 Display:

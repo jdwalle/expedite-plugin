@@ -81,44 +81,73 @@ Proceed to Step 2.
 
 **Case B: Phase is "research_in_progress"**
 
-This is a resume scenario. The research skill was running when the session ended.
+This is a resume scenario. Check the injected checkpoint above for deterministic resume.
 
-1. Read `.expedite/state.yml` to get `research_round`, `project_name`, `intent`, and question statuses.
-2. Check artifact existence to determine the resume point using this decision tree:
-   - `research_round == 0`: Crashed before Step 3 initialized state. Resume at Step 2 (read scope artifacts).
-   - `research_round >= 1` AND no evidence files in `.expedite/research/`: Crashed during batching/dispatch (Steps 4-9). Resume at Step 4 (re-form batches).
-   - `research_round >= 1` AND evidence files exist AND no `.expedite/research/sufficiency-results.yml`: Crashed during collection or before assessment. Resume at Step 12 (assess with available evidence).
-   - `research_round >= 1` AND `sufficiency-results.yml` exists AND no `.expedite/research/SYNTHESIS.md`: Crashed during gate/synthesis. Resume at Step 14 (re-run gate).
-   - `research_round >= 1` AND `SYNTHESIS.md` exists: Crashed during completion. Resume at Step 18 (finalize).
+**Checkpoint-based resume (primary):**
+If the injected checkpoint shows actual values AND `checkpoint.skill` is "research":
+  1. Read `checkpoint.step` and `checkpoint.label`
+  2. Cross-reference: if state.yml says research_complete but checkpoint says research step N, state wins -- the skill finished. Display: "Research already complete." Then STOP.
+  3. Display progress summary:
+     ```
+     Found in-progress research for "{project_name}".
 
-3. Display progress summary:
-```
-Found in-progress research for "{project_name}".
+     Checkpoint: step {checkpoint.step} of 18 -- {checkpoint.label}
+     {If checkpoint.substep: "Sub-state: {substep}"}
+     {If checkpoint.continuation_notes: "Context: {continuation_notes}"}
+     Research round: {research_round from state.yml}
 
-Progress detected:
-- Research round: {research_round}
-- Evidence files: {count or "none"}
-- Sufficiency assessed: {yes/no}
-- Synthesis written: {yes/no}
-- Resume point: Step {N}
+     Continue from checkpoint?
+     ```
+  4. Use AskUserQuestion:
+     ```
+     header: "Resume"
+     question: "Continue from where you left off?"
+     options:
+       - label: "Continue"
+         description: "Resume from step {checkpoint.step}: {checkpoint.label}"
+       - label: "Start over"
+         description: "Reset research state and start from Step 2"
+     multiSelect: false
+     ```
+  5. If Continue: Jump to Step {checkpoint.step}. If substep is populated, use continuation_notes as context for resuming mid-step work (e.g., if substep is "dispatching_agents" and notes say "3 of 5 dispatched", resume dispatching the remaining agents). Do NOT re-run Step 3 (state already research_in_progress).
+  6. If Start over: Reset `research_round` to 0, clear all question statuses to `"pending"`, proceed to Step 2.
 
-Continue from where you left off?
-```
+**Artifact-based fallback (secondary):**
+If checkpoint is missing, all-null, or checkpoint.skill is not "research":
+  Display: "Checkpoint unavailable or mismatched. Using artifact heuristic for resume."
+  1. Read `.expedite/state.yml` to get `research_round`, `project_name`, `intent`, and question statuses.
+  2. Check artifact existence to determine the resume point using this decision tree:
+     - `research_round == 0`: Crashed before Step 3 initialized state. Resume at Step 2 (read scope artifacts).
+     - `research_round >= 1` AND no evidence files in `.expedite/research/`: Crashed during batching/dispatch (Steps 4-9). Resume at Step 4 (re-form batches).
+     - `research_round >= 1` AND evidence files exist AND no `.expedite/research/sufficiency-results.yml`: Crashed during collection or before assessment. Resume at Step 12 (assess with available evidence).
+     - `research_round >= 1` AND `sufficiency-results.yml` exists AND no `.expedite/research/SYNTHESIS.md`: Crashed during gate/synthesis. Resume at Step 14 (re-run gate).
+     - `research_round >= 1` AND `SYNTHESIS.md` exists: Crashed during completion. Resume at Step 18 (finalize).
+  3. Display progress summary:
+     ```
+     Found in-progress research for "{project_name}".
 
-4. Use AskUserQuestion:
-```
-header: "Resume"
-question: "Continue from where you left off?"
-options:
-  - label: "Continue"
-    description: "Resume from Step {N}"
-  - label: "Start over"
-    description: "Reset research state and start from Step 2"
-multiSelect: false
-```
+     Progress detected:
+     - Research round: {research_round}
+     - Evidence files: {count or "none"}
+     - Sufficiency assessed: {yes/no}
+     - Synthesis written: {yes/no}
+     - Resume point: Step {N}
 
-- Continue: Skip to the determined resume step. Do NOT re-run Step 3 (state transition) since state is already research_in_progress.
-- Start over: Reset `research_round` to 0, clear all question statuses to `"pending"`, proceed to Step 2.
+     Continue from where you left off?
+     ```
+  4. Use AskUserQuestion:
+     ```
+     header: "Resume"
+     question: "Continue from where you left off?"
+     options:
+       - label: "Continue"
+         description: "Resume from Step {N}"
+       - label: "Start over"
+         description: "Reset research state and start from Step 2"
+     multiSelect: false
+     ```
+  - Continue: Skip to the determined resume step. Do NOT re-run Step 3 (state transition) since state is already research_in_progress.
+  - Start over: Reset `research_round` to 0, clear all question statuses to `"pending"`, proceed to Step 2.
 
 **Case C: Phase is anything else (not "scope_complete", not "research_in_progress")**
 
