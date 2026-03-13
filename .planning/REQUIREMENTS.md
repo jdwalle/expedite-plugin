@@ -35,10 +35,10 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 
 ### Resume & Recovery
 
-- [ ] **RESM-01**: User resumes a skill and lands on the correct step based on checkpoint.yml (deterministic, not heuristic)
+- [x] **RESM-01**: User resumes a skill and lands on the correct step based on checkpoint.yml (deterministic, not heuristic)
 - [x] **RESM-02**: All skills write checkpoint.yml at every step transition with skill, step, label, substep, continuation_notes
 - [x] **RESM-03**: substep and continuation_notes capture mid-step context (e.g., "3 of 5 researchers dispatched")
-- [ ] **RESM-04**: Artifact-existence checking is secondary fallback; checkpoint.yml is the primary resume mechanism
+- [x] **RESM-04**: Artifact-existence checking is secondary fallback; checkpoint.yml is the primary resume mechanism
 
 ### Session Handoff
 
@@ -119,10 +119,10 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | OVRD-04 | Phase 27 | Complete |
 | OVRD-05 | Phase 27 | Complete |
 | OVRD-06 | Phase 27 | Complete |
-| RESM-01 | Phase 28 | Pending |
+| RESM-01 | Phase 28 | Complete |
 | RESM-02 | Phase 28 | Complete |
 | RESM-03 | Phase 28 | Complete |
-| RESM-04 | Phase 28 | Pending |
+| RESM-04 | Phase 28 | Complete |
 | SESS-01 | Phase 29 | Pending |
 | SESS-02 | Phase 29 | Pending |
 | SESS-03 | Phase 29 | Pending |

@@ -60,7 +60,7 @@ Full details: `.planning/milestones/v1.2-ROADMAP.md`
 - [x] **Phase 25: State Splitting and Hook Infrastructure** - Split monolithic state.yml into 5 scoped files; build Node.js hook scaffolding with schema validation and non-state passthrough (completed 2026-03-13)
 - [x] **Phase 26: Phase Transition Enforcement** - FSM phase transitions, gate passage requirements, checkpoint regression guards, and gates.yml structural validation (completed 2026-03-13)
 - [x] **Phase 27: Override Mechanism and Audit Trail** - Deny-override-retry flow with actionable denials, override records in gates.yml, PostToolUse audit hook, escalation, and env var bypass (completed 2026-03-13)
-- [ ] **Phase 28: Checkpoint-Based Resume** - Generalize checkpoint.yml writes to all skills; deterministic resume from checkpoint with substep context and artifact fallback
+- [x] **Phase 28: Checkpoint-Based Resume** - Generalize checkpoint.yml writes to all skills; deterministic resume from checkpoint with substep context and artifact fallback (completed 2026-03-13)
 - [ ] **Phase 29: Session Handoff** - Stop and PreCompact hooks write session-summary.md; frontmatter injection for next-session context; checkpoint backup before compaction
 
 ## Phase Details
@@ -174,5 +174,5 @@ Phases execute in numeric order: 25 -> 26 -> 27 -> 28 -> 29
 | 25. State Splitting + Hooks | v2.0 | 3/3 | Complete | 2026-03-13 |
 | 26. Phase Transition Enforcement | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 27. Override + Audit | v2.0 | Complete    | 2026-03-13 | 2026-03-13 |
-| 28. Checkpoint Resume | 1/2 | In Progress|  | - |
+| 28. Checkpoint Resume | 2/2 | Complete   | 2026-03-13 | - |
 | 29. Session Handoff | v2.0 | 0/TBD | Not started | - |
