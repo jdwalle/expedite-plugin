@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Agent Harness Foundation
 status: in_progress
-last_updated: "2026-03-13T16:59:12Z"
+last_updated: "2026-03-13T17:03:27Z"
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 12
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-12)
 ## Current Position
 
 Phase: 29 of 29 (Session Handoff)
-Plan: 1 of 2 complete
-Status: In progress
-Last activity: 2026-03-13 -- Completed 29-01 (Stop and PreCompact hooks for session-summary.md)
+Plan: 2 of 2 complete
+Status: Complete
+Last activity: 2026-03-13 -- Completed 29-02 (Session handoff skill injection)
 
-Progress: [███████████████████░░] 92% (11/12 plans)
+Progress: [█████████████████████] 100% (12/12 plans)
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Progress: [███████████████████░░] 92% 
 | 28 | 01 | 11min | 2 | 6 |
 | 28 | 02 | 4min | 2 | 6 |
 | 29 | 01 | 3min | 2 | 4 |
+| 29 | 02 | 1min | 1 | 6 |
 
 ## Accumulated Context
 
@@ -87,6 +88,7 @@ Recent decisions affecting current work:
 - Spike shows checkpoint context informationally but always re-runs from phase argument -- 28-02
 - Shared helper hooks/lib/session-summary.js avoids duplication between Stop and PreCompact hooks -- 29-01
 - Critical state section (questions/tasks counts) is optional in session-summary.md -- 29-01
+- Session context injection uses silent fallback (no echo) for optional context; status skill excluded per consumption matrix -- 29-02
 
 ### Pending Todos
 
@@ -101,5 +103,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 29-01-PLAN.md (Stop and PreCompact hooks for session-summary.md)
+Stopped at: Completed 29-02-PLAN.md (Session handoff skill injection)
 Resume file: None

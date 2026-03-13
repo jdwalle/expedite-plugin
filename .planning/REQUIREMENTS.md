@@ -11,7 +11,7 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 
 - [x] **STATE-01**: User invokes any skill and only the state files relevant to that skill are loaded (scoped injection per consumption matrix)
 - [x] **STATE-02**: User can inspect lifecycle state across 5 separate files: state.yml (~15 lines), checkpoint.yml, questions.yml, gates.yml, tasks.yml
-- [ ] **STATE-03**: session-summary.md is created at session end and loaded by all skill frontmatter
+- [x] **STATE-03**: session-summary.md is created at session end and loaded by all skill frontmatter
 - [x] **STATE-04**: audit.log records override events (append-only, never loaded into LLM context)
 
 ### Hook Enforcement
@@ -45,7 +45,7 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 - [x] **SESS-01**: Stop hook writes session-summary.md with phase, skill, step, accomplishments, next action
 - [x] **SESS-02**: PreCompact hook backs up checkpoint.yml to checkpoint.yml.pre-compact before compaction
 - [x] **SESS-03**: PreCompact hook writes session-summary.md before compaction
-- [ ] **SESS-04**: Each skill's frontmatter includes session-summary.md for next-session context
+- [x] **SESS-04**: Each skill's frontmatter includes session-summary.md for next-session context
 
 ## Future Requirements
 
@@ -104,7 +104,7 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 |-------------|-------|--------|
 | STATE-01 | Phase 25 | Complete |
 | STATE-02 | Phase 25 | Complete |
-| STATE-03 | Phase 29 | Pending |
+| STATE-03 | Phase 29 | Complete |
 | STATE-04 | Phase 27 | Complete |
 | HOOK-01 | Phase 26 | Complete |
 | HOOK-02 | Phase 26 | Complete |
@@ -126,7 +126,7 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | SESS-01 | Phase 29 | Complete |
 | SESS-02 | Phase 29 | Complete |
 | SESS-03 | Phase 29 | Complete |
-| SESS-04 | Phase 29 | Pending |
+| SESS-04 | Phase 29 | Complete |
 
 **Coverage:**
 - v2.0 requirements: 25 total
