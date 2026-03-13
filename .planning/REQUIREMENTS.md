@@ -42,9 +42,9 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 
 ### Session Handoff
 
-- [ ] **SESS-01**: Stop hook writes session-summary.md with phase, skill, step, accomplishments, next action
-- [ ] **SESS-02**: PreCompact hook backs up checkpoint.yml to checkpoint.yml.pre-compact before compaction
-- [ ] **SESS-03**: PreCompact hook writes session-summary.md before compaction
+- [x] **SESS-01**: Stop hook writes session-summary.md with phase, skill, step, accomplishments, next action
+- [x] **SESS-02**: PreCompact hook backs up checkpoint.yml to checkpoint.yml.pre-compact before compaction
+- [x] **SESS-03**: PreCompact hook writes session-summary.md before compaction
 - [ ] **SESS-04**: Each skill's frontmatter includes session-summary.md for next-session context
 
 ## Future Requirements
@@ -123,9 +123,9 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | RESM-02 | Phase 28 | Complete |
 | RESM-03 | Phase 28 | Complete |
 | RESM-04 | Phase 28 | Complete |
-| SESS-01 | Phase 29 | Pending |
-| SESS-02 | Phase 29 | Pending |
-| SESS-03 | Phase 29 | Pending |
+| SESS-01 | Phase 29 | Complete |
+| SESS-02 | Phase 29 | Complete |
+| SESS-03 | Phase 29 | Complete |
 | SESS-04 | Phase 29 | Pending |
 
 **Coverage:**

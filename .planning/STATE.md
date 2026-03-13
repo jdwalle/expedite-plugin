@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Agent Harness Foundation
-status: unknown
-last_updated: "2026-03-13T15:59:02.525Z"
+status: in_progress
+last_updated: "2026-03-13T16:59:12Z"
 progress:
   total_phases: 5
-  completed_phases: 5
-  total_plans: 11
+  completed_phases: 4
+  total_plans: 12
   completed_plans: 11
 ---
 
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 28 - Checkpoint-Based Resume
+**Current focus:** Phase 29 - Session Handoff
 
 ## Current Position
 
-Phase: 28 of 29 (Checkpoint-Based Resume)
-Plan: 2 of 2 complete
-Status: Phase complete
-Last activity: 2026-03-13 -- Completed 28-02 (Checkpoint-based resume dispatcher for all skills)
+Phase: 29 of 29 (Session Handoff)
+Plan: 1 of 2 complete
+Status: In progress
+Last activity: 2026-03-13 -- Completed 29-01 (Stop and PreCompact hooks for session-summary.md)
 
-Progress: [█████████████████████] 100% (10/10 plans)
+Progress: [███████████████████░░] 92% (11/12 plans)
 
 ## Performance Metrics
 
@@ -35,7 +35,7 @@ Progress: [█████████████████████] 100%
 - v1.0: 32 plans across 13 phases in 11 days
 - v1.1: 11 plans across 5 phases in 2 days
 - v1.2: 2 plans across 1 phase in 1 day
-- v2.0: 10 plans across 5 phases (complete)
+- v2.0: 12 plans across 5 phases
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -48,6 +48,7 @@ Progress: [█████████████████████] 100%
 | 27 | 02 | 2min | 1 | 8 |
 | 28 | 01 | 11min | 2 | 6 |
 | 28 | 02 | 4min | 2 | 6 |
+| 29 | 01 | 3min | 2 | 4 |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ Recent decisions affecting current work:
 - Cross-reference rule: state.yml phase wins over checkpoint step in all skills -- 28-02
 - Execute uses dual-layer checkpoint: top-level for skill step resume, per-phase for task tracking -- 28-02
 - Spike shows checkpoint context informationally but always re-runs from phase argument -- 28-02
+- Shared helper hooks/lib/session-summary.js avoids duplication between Stop and PreCompact hooks -- 29-01
+- Critical state section (questions/tasks counts) is optional in session-summary.md -- 29-01
 
 ### Pending Todos
 
@@ -98,5 +101,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 28-02-PLAN.md (Checkpoint-based resume dispatcher for all skills)
+Stopped at: Completed 29-01-PLAN.md (Stop and PreCompact hooks for session-summary.md)
 Resume file: None
