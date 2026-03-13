@@ -49,6 +49,17 @@ You are the Expedite research orchestrator. Your job is to dispatch parallel res
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 1
+label: "Prerequisite Check"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 **State Recovery Preamble**
 
 Look at the injected lifecycle state above. If the injection shows "No active lifecycle" (meaning state.yml is missing):
@@ -128,6 +139,17 @@ Then STOP. Do not proceed to any other step.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 2
+label: "Read Scope Artifacts"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Read the following files:
 
 1. **`.expedite/scope/SCOPE.md`** -- Extract the full question plan with Decision Areas, questions, priorities, evidence requirements, source hints, depth calibration, and readiness criteria.
@@ -162,6 +184,17 @@ Transition state.yml phase from "scope_complete" to "research_in_progress" using
    - Set `last_modified` to current timestamp (ISO 8601 UTC)
 4. Write the entire file back to `.expedite/state.yml`
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 3
+label: "Initialize Research State"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 5. Log phase transition:
    ```bash
    cat >> .expedite/log.yml << 'LOG_EOF'
@@ -186,6 +219,17 @@ Proceed to Step 4.
 3. Set `current_step` to `{skill: "research", step: 4, label: "Form Source-Affinity Batches"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 4
+label: "Form Source-Affinity Batches"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Group questions into batches by their primary source affinity. Each question is assigned to exactly one batch -- no question duplication across batches.
 
@@ -227,6 +271,17 @@ Proceed to Step 5.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 5
+label: "Validate DA Coverage"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Verify that every Decision Area from the question plan has at least one question assigned to a research batch (not skipped).
 
 1. Extract all unique `decision_area` values from the questions in state.yml.
@@ -263,6 +318,17 @@ multiSelect: false
 3. Set `current_step` to `{skill: "research", step: 6, label: "Present Batch Plan for Approval"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 6
+label: "Present Batch Plan for Approval"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Display the batch plan in this exact format:
 
@@ -320,6 +386,17 @@ Review the batch plan above. You can:
 3. Set `current_step` to `{skill: "research", step: 7, label: "Pre-Validate Sources"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 7
+label: "Pre-Validate Sources"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Create the output directory for evidence files:
 ```bash
@@ -381,6 +458,17 @@ Note: Log the event when the failure is detected. Update the `action` field afte
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 8
+label: "Assemble Prompt Templates"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 For each batch in the approved plan, assemble the full prompt that will be sent to the research subagent:
 
 1. **Determine the template file** based on the batch source:
@@ -439,6 +527,28 @@ Proceed to Step 9.
 3. Set `current_step` to `{skill: "research", step: 9, label: "Dispatch Parallel Subagents"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 9
+label: "Dispatch Parallel Subagents"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+After dispatching each batch, update the checkpoint with mid-step context. Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 9
+label: "Dispatch Parallel Subagents"
+substep: "dispatching_agents"
+continuation_notes: "{N} of {M} batches dispatched. Remaining: {batch_ids}"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Display: "Dispatching {N} research agents in parallel..."
 
@@ -503,6 +613,28 @@ For each completed batch:
    - `PROPOSED_QUESTIONS`: Any new questions the agent discovered during research.
    - `CONFIDENCE` level: high, medium, or low.
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 10
+label: "Collect Results and Update State"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+After collecting each batch result, update the checkpoint with mid-step context. Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 10
+label: "Collect Results and Update State"
+substep: "collecting_results"
+continuation_notes: "{N} of {M} batch results collected"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 3. **Update state.yml for each question in the batch** using the backup-before-write pattern (read, backup, modify, write for EACH update cycle):
    - Set `current_step` to `{skill: "research", step: 10, label: "Collect Results and Update State"}`
    - Set `evidence_files` to include the evidence file path (e.g., `[".expedite/research/evidence-batch-01.md"]`)
@@ -539,6 +671,17 @@ Proceed to Step 11.
 3. Set `current_step` to `{skill: "research", step: 11, label: "Research Completion Summary"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 11
+label: "Research Completion Summary"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Display a structured completion summary:
 
@@ -588,6 +731,28 @@ Research evidence collected.
 Proceed to Step 12.
 
 ### Step 12: Sufficiency Assessment
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 12
+label: "Sufficiency Assessment"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+After dispatching the sufficiency evaluator, update the checkpoint with mid-step context. Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 12
+label: "Sufficiency Assessment"
+substep: "waiting_for_evaluator"
+continuation_notes: "Sufficiency evaluator dispatched, awaiting results"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Dispatch the sufficiency evaluator as a Task() subagent. The evaluator reads all evidence files and scope artifacts in its own fresh context — keeping evidence content out of the orchestrator's context.
 
@@ -651,6 +816,17 @@ Proceed to Step 13.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 13
+label: "Dynamic Question Discovery"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Surface new questions discovered by research agents during evidence gathering. Proposals are deduplicated via LLM judgment (not string matching), capped at 4, and presented to the user for approval.
 
 Read `.expedite/research/proposed-questions.yml`. If the file does not exist or is empty, display "No new questions discovered by research agents." and skip to Step 14.
@@ -693,6 +869,17 @@ Proceed to Step 14.
 3. Set `current_step` to `{skill: "research", step: 14, label: "G2 Gate Evaluation"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 14
+label: "G2 Gate Evaluation"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Count-based gate evaluation from state.yml question statuses (set in Step 12). No LLM judgment — pure counting.
 
@@ -741,6 +928,17 @@ LOG_EOF
 Proceed to Step 15.
 
 ### Step 15: Gate Outcome Handling
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 15
+label: "Gate Outcome Handling"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 **15a: Record gate history.** Set `current_step` to `{skill: "research", step: 15, label: "Gate Outcome Handling"}` and append to `gate_history` in state.yml (backup-before-write):
 
@@ -794,6 +992,28 @@ Then proceed to Step 17.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 16
+label: "Gap-Fill Dispatch"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+After dispatching gap-fill agents, update the checkpoint with mid-step context. Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 16
+label: "Gap-Fill Dispatch"
+substep: "dispatching_gap_fill"
+continuation_notes: "{N} gap-fill agents dispatched for {question_ids}"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Filter deficient questions from state.yml: include `"partial"` or `"not_covered"` status + any newly discovered `"pending"` questions from Step 13. Exclude UNAVAILABLE-SOURCE (handled in Step 12) and user-accepted gaps.
 
 Display: "Gap-fill targets: {count} questions (Partial: {N}, Not covered: {N}, Pending: {N})"
@@ -815,6 +1035,28 @@ After gap-fill completes: collect proposed questions, update evidence_files in s
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 17
+label: "Synthesis Generation"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+After dispatching the research synthesizer, update the checkpoint with mid-step context. Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: 17
+label: "Synthesis Generation"
+substep: "waiting_for_synthesizer"
+continuation_notes: "Research synthesizer dispatched, awaiting SYNTHESIS.md"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Read the synthesizer template from `skills/research/references/prompt-research-synthesizer.md` (use Glob with `**/prompt-research-synthesizer.md` if the direct path fails). This template HAS frontmatter (`model: opus`, `subagent_type: general-purpose`) — it runs as a Task() subagent.
 
 Fill template placeholders: `{{project_name}}`, `{{intent}}`, `{{research_round}}` from state.yml. `{{evidence_dir}}` = ".expedite/research". `{{scope_file}}` = ".expedite/scope/SCOPE.md". `{{output_file}}` = ".expedite/research/SYNTHESIS.md". `{{timestamp}}` = current ISO 8601 UTC. The subagent reads evidence files and scope itself (per its `<self_contained_reads>` instructions) — do NOT read or assemble evidence content into the prompt.
@@ -832,6 +1074,17 @@ Proceed to Step 18.
 ### Step 18: Research Completion
 
 Update state.yml to mark research complete (backup-before-write): set `current_step` to null, set `phase` to `"research_complete"`, update `last_modified`.
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "research"
+step: "complete"
+label: "research complete"
+substep: null
+continuation_notes: "Research complete. Next: /expedite:design"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 **Log phase transition:**
 ```bash

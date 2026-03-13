@@ -48,6 +48,17 @@ You are the Expedite execute orchestrator. Your job is to implement plan tasks s
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml` (top-level, NOT the per-phase checkpoint):
+```yaml
+skill: "execute"
+step: 1
+label: "Prerequisite Check"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 **State Recovery Preamble**
 
 Look at the injected lifecycle state above. If the injection shows "No active lifecycle" (meaning state.yml is missing):
@@ -96,6 +107,17 @@ Then STOP. Do not proceed to any other step.
 3. Set `current_step` to `{skill: "execute", step: 2, label: "Read Plan + Spike Artifacts"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml` (top-level, NOT the per-phase checkpoint):
+```yaml
+skill: "execute"
+step: 2
+label: "Read Plan + Spike Artifacts"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Parse the phase argument. Accept flexible formats:
 - Bare number: "1", "2", "3"
@@ -175,6 +197,17 @@ Update state.yml using the backup-before-write pattern:
    - Set `last_modified` to current ISO 8601 UTC timestamp
 4. Write the entire file back to `.expedite/state.yml`
 
+**Checkpoint:** Write `.expedite/checkpoint.yml` (top-level, NOT the per-phase checkpoint):
+```yaml
+skill: "execute"
+step: 3
+label: "Initialize Execute State"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 5. Log phase transition (only if phase was CHANGED to `execute_in_progress`, i.e., it was previously `plan_complete`; do NOT log on resume when already `execute_in_progress`):
    ```bash
    cat >> .expedite/log.yml << 'LOG_EOF'
@@ -227,6 +260,17 @@ Display: "Execute state initialized for {Wave/Epic} {N}. Beginning task executio
 3. Set `current_step` to `{skill: "execute", step: 4, label: "Determine Starting Point"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml` (top-level, NOT the per-phase checkpoint):
+```yaml
+skill: "execute"
+step: 4
+label: "Determine Starting Point"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 **4a: Fresh start (came from Step 3):**
 
@@ -328,6 +372,17 @@ continuation_notes: "{brief: what was done, what's next}"
 
 Update state.yml (backup-before-write): set `current_step` to `{skill: "execute", step: 5, label: "Task Execution Loop"}`, set `current_task` to next task ID, update the completed task's status to "complete" (or "failed"/"partial" per verification result), set `last_modified`.
 
+**Checkpoint:** Write `.expedite/checkpoint.yml` (top-level, NOT the per-phase checkpoint) at each task boundary:
+```yaml
+skill: "execute"
+step: 5
+label: "Task Execution Loop"
+substep: "executing_task_{task_id}"
+continuation_notes: "Executing task {task_id}: {title}. {completed}/{total} tasks done."
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 **5e: Append to PROGRESS.md via Bash.**
 
 NEVER use the Write tool for PROGRESS.md. Use `cat >>` via Bash:
@@ -413,6 +468,17 @@ Display: "All tasks in {Wave/Epic} {N} complete. Proceeding to phase completion.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml` (top-level, NOT the per-phase checkpoint):
+```yaml
+skill: "execute"
+step: 6
+label: "Phase Completion"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 After all tasks in the current phase are complete (Step 5 loop exhausted):
 
 **6a: Update per-phase checkpoint to complete.**
@@ -497,6 +563,17 @@ Proceed to Step 7.
 ### Step 7: Lifecycle Completion
 
 This step only runs when the FINAL phase has been executed.
+
+**Checkpoint:** Write `.expedite/checkpoint.yml` (top-level, NOT the per-phase checkpoint):
+```yaml
+skill: "execute"
+step: "complete"
+label: "execute complete"
+substep: null
+continuation_notes: "Execute complete. Lifecycle finished."
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 **7a: Update state.yml (backup-before-write):**
 

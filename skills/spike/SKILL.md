@@ -49,6 +49,17 @@ You are the Expedite spike orchestrator. Your job is to resolve tactical decisio
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 1
+label: "Prerequisite Check"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 **State Recovery Preamble**
 
 Look at the injected lifecycle state above. If the injection shows "No active lifecycle" (meaning state.yml is missing):
@@ -91,6 +102,17 @@ Then STOP. Do not proceed to any other step.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 2
+label: "Parse Phase Argument"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Extract the phase number from user input. Support flexible matching:
 
 - Bare number: "1", "2", "3"
@@ -126,6 +148,17 @@ Display: "Targeting phase: {slug}"
 3. Set `current_step` to `{skill: "spike", step: 3, label: "Read Plan Artifacts"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 3
+label: "Read Plan Artifacts"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 Read the following files:
 
@@ -165,6 +198,17 @@ Then STOP. Do not proceed.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 4
+label: "Extract Phase Definition"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 From PLAN.md, find the matching wave/epic heading by number (e.g., "## Wave 2:" or "## Epic 2:").
 
 Extract:
@@ -203,6 +247,28 @@ Phase {N}: {description}
 3. Set `current_step` to `{skill: "spike", step: 5, label: "Resolve Tactical Decisions"}`
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 5
+label: "Resolve Tactical Decisions"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+As each tactical decision is resolved, update the checkpoint with mid-step context. Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 5
+label: "Resolve Tactical Decisions"
+substep: "resolving_td_{N}"
+continuation_notes: "Resolved {X} of {Y} tactical decisions. Current: TD-{N}"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 For each tactical decision in the phase:
 
@@ -308,6 +374,17 @@ Proceed to Step 6.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 6
+label: "Generate Implementation Steps"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Generate ordered implementation steps based on:
 - The resolved tactical decisions (from Step 5)
 - The tasks/stories from the phase definition (from Step 4)
@@ -377,6 +454,18 @@ LOG_EOF
 1. Read `.expedite/state.yml`
 2. Copy to backup: `cp .expedite/state.yml .expedite/state.yml.bak` (via Bash)
 3. Set `current_step` to `{skill: "spike", step: 7, label: "G5 Structural Gate"}`
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 7
+label: "G5 Structural Gate"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 4. Append to `gate_history`:
    ```yaml
    - gate: "G5"
@@ -451,6 +540,17 @@ List the failing MUST criteria with specific details (which TD is unresolved, wh
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 8
+label: "Write SPIKE.md"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Create the output directory:
 
 ```bash
@@ -514,6 +614,17 @@ If verification fails, display the issue and re-write.
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
 
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: 9
+label: "Display Summary"
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
 Display the spike completion summary:
 
 ```
@@ -554,5 +665,16 @@ Run `/expedite:execute {phase_number}` to begin implementation of this phase.
 3. Set `current_step` to null
 4. Set `last_modified` to current timestamp
 5. Write the entire file back
+
+**Checkpoint:** Write `.expedite/checkpoint.yml`:
+```yaml
+skill: "spike"
+step: "complete"
+label: "spike complete"
+substep: null
+continuation_notes: "Spike complete. Next: /expedite:execute"
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
 
 NOTE: Do NOT write **phase transitions** to state.yml. Spike does not have a lifecycle phase (no `spike_in_progress` or `spike_complete`) -- it operates within `plan_complete` or `execute_in_progress`. The output file (SPIKE.md) is the only indicator of spike completion. This is deliberate: spike is optional and phase-scoped, so lifecycle-level state tracking would add unnecessary complexity. However, G5 gate outcomes ARE recorded in gate_history (Step 7) since gate outcomes are events, not phase transitions, and the status skill needs them for the complete G1-G5 gate chain display.
