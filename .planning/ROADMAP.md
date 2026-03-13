@@ -139,11 +139,11 @@ Plans:
   2. When compaction occurs, the PreCompact hook backs up checkpoint.yml to checkpoint.yml.pre-compact before compaction and writes session-summary.md
   3. User starts a new session and the skill's frontmatter includes session-summary.md, providing narrative context ("Resuming research, step 7: Dispatch web researchers. 3 of 5 dispatched.")
   4. session-summary.md is created at session end and loaded by all skill frontmatter as the primary orientation mechanism for next-session context
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 29-01: TBD
-- [ ] 29-02: TBD
+- [ ] 29-01-PLAN.md -- Stop and PreCompact hook scripts with session-summary.md generation and checkpoint backup
+- [ ] 29-02-PLAN.md -- Add session-summary.md frontmatter injection to all 7 skills
 
 ## Progress
 
