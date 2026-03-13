@@ -60,7 +60,7 @@ Perform these steps in order:
 - From SCOPE.md: look for a line matching `Lifecycle ID: {value}` and extract the value.
 - From other artifacts: lifecycle_id is not reliably available. Set to null.
 
-**e. Write minimal state.yml** using the Reconstructed state.yml Template below.
+**e. Write all 5 state files** using the Reconstructed State Files templates below.
 
 **f. Display inline notice:**
 ```
@@ -80,16 +80,20 @@ Then **STOP**. Do not proceed with any skill steps.
 
 ---
 
-## Reconstructed state.yml Template
+## Reconstructed State Files
 
-Write this exact structure to `.expedite/state.yml`, filling in the placeholders:
+Recovery now creates all 5 split state files. Write each file in order, filling in the placeholders.
+
+### state.yml (v2)
+
+Write this exact structure to `.expedite/state.yml`:
 
 ```yaml
-# Expedite Lifecycle State
+# Expedite Lifecycle State (v2)
 # Machine-readable. Complete-rewrite on every update.
 # WRITE PATTERN: (1) read current, (2) cp state.yml state.yml.bak, (3) modify in-memory, (4) write entire file
 # RECOVERED: state reconstructed from artifacts on {ISO 8601 UTC timestamp}
-version: "1"
+version: 2
 last_modified: "{ISO 8601 UTC timestamp}"
 
 # Lifecycle identity
@@ -100,34 +104,61 @@ description: null
 
 # Current position
 phase: "{inferred phase}"
-current_task: null
-current_step: null
-
-# Reserved for v2
-imported_from: null
-constraints: []
-
-# Research tracking
-research_round: 0
-
-# Questions -- not reconstructed (SCOPE.md has the canonical copy)
-questions: []
-
-# Gate history -- not reconstructed
-gate_history: []
-
-# Execution state -- not reconstructed
-tasks: []
-current_wave: null
+started_at: null
+phase_started_at: null
 ```
 
-**Fields explanation:**
-- `project_name`: Extracted from the artifact header (see Project Name Extraction).
-- `intent`: Extracted from SCOPE.md or SYNTHESIS.md when available, otherwise null.
-- `lifecycle_id`: Extracted from SCOPE.md when available, otherwise null.
-- `phase`: The inferred `_complete` phase from the artifact-to-phase mapping.
-- `research_round`: Defaults to 0. Not reconstructed. Safe because the research skill checks artifact existence, not round number, to determine resume point.
-- `questions`, `gate_history`, `tasks`: Empty arrays. Not reconstructed. Skills re-read artifacts as needed (SCOPE.md for questions, PLAN.md for tasks).
+### checkpoint.yml
+
+Write this exact structure to `.expedite/checkpoint.yml`:
+
+```yaml
+# Recovered checkpoint
+skill: null
+step: null
+label: null
+substep: null
+continuation_notes: "State recovered from artifacts. Resume position unknown."
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+This signals to skills that no checkpoint exists and they should use artifact-based resume as fallback.
+
+### questions.yml
+
+Write to `.expedite/questions.yml`. If the recovery source is SCOPE.md and it contains question tables, attempt to reconstruct questions from SCOPE.md's Decision Area question tables. Otherwise create an empty template:
+
+```yaml
+research_round: 0
+questions: []
+```
+
+### gates.yml
+
+Write this exact structure to `.expedite/gates.yml`:
+
+```yaml
+history: []
+```
+
+### tasks.yml
+
+Write to `.expedite/tasks.yml`. If the recovery source is PLAN.md, attempt to reconstruct tasks from the plan structure (extract task IDs, titles, and wave numbers). Otherwise create an empty template:
+
+```yaml
+current_wave: null
+current_task: null
+tasks: []
+```
+
+### Fields explanation
+
+- `state.yml`: Slimmed v2 format -- identity + phase only. No longer contains questions, gate_history, tasks, current_step, current_wave, current_task, research_round.
+- `checkpoint.yml`: All-null signals no checkpoint exists. Skills fall back to artifact-based resume.
+- `questions.yml`: Defaults to empty. Skills re-read SCOPE.md for canonical question data.
+- `gates.yml`: Defaults to empty history. Gate evaluations are not reconstructed.
+- `tasks.yml`: Defaults to empty. Execute skill re-reads PLAN.md for task data.
 
 ---
 
@@ -166,8 +197,9 @@ If `.expedite/log.yml` does not exist, skip logging. Do not create the log file.
 
 ## Post-Recovery Instructions
 
-After writing state.yml and displaying the notice:
+After writing all 5 state files and displaying the notice:
 
 1. **Re-read** `.expedite/state.yml` to get the recovered state values.
 2. **Use the recovered values** (not the original "No active lifecycle" injection) for all subsequent routing decisions in the skill's Step 1 case logic.
 3. The skill proceeds normally from this point -- no user confirmation required.
+4. All 5 files (state.yml, checkpoint.yml, questions.yml, gates.yml, tasks.yml) are created during recovery, even if some are empty templates. This ensures skills that inject these files via frontmatter will always find them.
