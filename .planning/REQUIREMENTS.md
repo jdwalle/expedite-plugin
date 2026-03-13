@@ -1,121 +1,138 @@
-# Requirements: Expedite v1.2
+# Requirements: Expedite v2.0
 
-**Defined:** 2026-03-11
+**Defined:** 2026-03-12
 **Core Value:** Developers can run a complete evidence-based lifecycle — from scoping questions through researched design to executable plan — without losing context, skipping steps, or making decisions without evidence.
 
-## v1.2 Requirements
+## v2.0 Requirements
 
-Requirements for v1.2 Infrastructure Hardening & Quality. Each maps to roadmap phases.
+Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap phases.
 
-### Resilience
+### State Management
 
-- [x] **RESL-01**: User's corrupted state.yml is automatically detected and recovered from .bak on any skill invocation
-- [x] **RESL-02**: User sees a warning message identifying what was recovered and the last known phase after auto-recovery
-- [x] **RESL-03**: User's state is reconstructed from artifacts (SCOPE.md, SYNTHESIS.md, DESIGN.md, PLAN.md) when both state.yml and .bak are corrupted
-- [x] **RESL-04**: User sees an unrecoverable error with clear instructions when no recovery source exists
-- [ ] **RESL-05**: Every state file write includes a `_write_complete` sentinel as the last field, and reads validate its presence _(deferred — write atomicity handled by Claude Code platform)_
+- [ ] **STATE-01**: User invokes any skill and only the state files relevant to that skill are loaded (scoped injection per consumption matrix)
+- [ ] **STATE-02**: User can inspect lifecycle state across 5 separate files: state.yml (~15 lines), checkpoint.yml, questions.yml, gates.yml, tasks.yml
+- [ ] **STATE-03**: session-summary.md is created at session end and loaded by all skill frontmatter
+- [ ] **STATE-04**: audit.log records override events (append-only, never loaded into LLM context)
 
-### Architecture
+### Hook Enforcement
 
-- [ ] **ARCH-01**: Codebase analyst subagent uses `explore` type instead of `general-purpose`, validated via empirical spike
-- [ ] **ARCH-02**: State is split into scoped files: state.yml (tracking ~15 lines), questions.yml, tasks.yml, gates.yml
-- [ ] **ARCH-03**: Each skill's `!cat` injection loads only the specific state files it needs (scoped injection)
-- [ ] **ARCH-04**: Each scoped state file uses the same backup-before-write protocol (.bak copy before every write)
-- [ ] **ARCH-05**: Active lifecycles with monolithic state.yml are migrated to split format on first access without data loss
-- [ ] **ARCH-06**: State recovery (RESL-01) works correctly with the split file layout
+- [ ] **HOOK-01**: User's invalid phase transition is blocked with a specific, actionable denial message
+- [ ] **HOOK-02**: User's attempt to advance to a `_complete` phase is blocked until the required gate has a passing result in gates.yml
+- [ ] **HOOK-03**: User's checkpoint step regression is blocked (step number cannot decrease without justification)
+- [ ] **HOOK-04**: User's gates.yml writes are validated for structure (valid gate ID, outcome enum, override_reason when overridden)
+- [ ] **HOOK-05**: User's non-state Write calls pass through without interception
+- [ ] **HOOK-06**: All hooks are Node.js command handlers with js-yaml as the only runtime dependency
+- [ ] **HOOK-07**: Hook-induced latency is under 300ms p99 per state write
 
-### Quality
+### Override Mechanism
 
-- [ ] **QUAL-01**: External verifier agent checks reasoning soundness of research synthesis (logical validity, contradiction handling, confidence calibration)
-- [ ] **QUAL-02**: Verifier findings are advisory in G2 gate display, not blocking (SHOULD criterion, not MUST)
-- [ ] **QUAL-03**: Verifier produces per-DA assessments in `reasoning-verification.yml` with severity ratings
-- [ ] **QUAL-04**: Verifier is annotation-only on research round 2+ to prevent infinite recycle loops
-- [ ] **QUAL-05**: Design skill surfaces competing alternatives with tradeoff analysis when SYNTHESIS.md evidence shows genuine tradeoffs (2+ viable approaches, no dominant option)
-- [ ] **QUAL-06**: Design skill proposes a single recommendation directly when evidence clearly favors one approach
-- [ ] **QUAL-07**: Plan skill notes alternative-considered DAs in task decomposition for context
+- [ ] **OVRD-01**: User's denied state write produces an actionable denial reason with explicit retry instructions
+- [ ] **OVRD-02**: User can override a gate by writing an override record to gates.yml, then retrying the state write
+- [ ] **OVRD-03**: gates.yml writes are not intercepted for gate passage checks (prevents override deadlock)
+- [ ] **OVRD-04**: After 3 denials for the same pattern, user sees a suggestion to intervene directly
+- [ ] **OVRD-05**: User can bypass all enforcement via `EXPEDITE_HOOKS_DISABLED=true` for debugging
+- [ ] **OVRD-06**: All skill preambles include an override protocol section before the LLM encounters a denial
 
-### Developer Workflow
+### Resume & Recovery
 
-- [ ] **DEVW-01**: Execute skill creates an atomic git commit after each verified task
-- [ ] **DEVW-02**: Commit message follows conventional format: `{type}(DA-{N}): {task_description}`
-- [ ] **DEVW-03**: Only files explicitly modified by the task are staged (never `git add .` or `git add -A`)
-- [ ] **DEVW-04**: User can opt out of auto-commits (per-invocation flag or per-lifecycle setting)
-- [ ] **DEVW-05**: Failed task verification does not auto-commit; user is prompted with options
-- [ ] **DEVW-06**: Git errors (merge conflicts, dirty worktree) pause execution with instructions, not auto-resolve
+- [ ] **RESM-01**: User resumes a skill and lands on the correct step based on checkpoint.yml (deterministic, not heuristic)
+- [ ] **RESM-02**: All skills write checkpoint.yml at every step transition with skill, step, label, substep, continuation_notes
+- [ ] **RESM-03**: substep and continuation_notes capture mid-step context (e.g., "3 of 5 researchers dispatched")
+- [ ] **RESM-04**: Artifact-existence checking is secondary fallback; checkpoint.yml is the primary resume mechanism
 
-### Maintainability
+### Session Handoff
 
-- [ ] **MAINT-01**: All skills exceeding 500 lines have self-contained content blocks extracted to `references/ref-*.md`
-- [ ] **MAINT-02**: Extracted content is loaded on-demand via Read tool reference, not injected at skill load time
-- [ ] **MAINT-03**: Step numbering and status skill lookup table remain unchanged after extraction
-- [ ] **MAINT-04**: Step 1 (prerequisite check) and state transition logic remain inline in every skill
+- [ ] **SESS-01**: Stop hook writes session-summary.md with phase, skill, step, accomplishments, next action
+- [ ] **SESS-02**: PreCompact hook backs up checkpoint.yml to checkpoint.yml.pre-compact before compaction
+- [ ] **SESS-03**: PreCompact hook writes session-summary.md before compaction
+- [ ] **SESS-04**: Each skill's frontmatter includes session-summary.md for next-session context
 
 ## Future Requirements
 
-Deferred to v1.3+.
+Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 
-### Resilience (v1.3)
+### Agent Formalization (M3)
 
-- **RESL-06**: Mid-skill state corruption is detected and recovered (currently only Step 1 checks)
+- **AGNT-01**: All agent prompt templates migrated to agents/*.md with full Claude Code subagent frontmatter
+- **AGNT-02**: Agent dispatch by name works with model tier and tool restrictions enforced
+- **AGNT-03**: Non-execute agents have EnterWorktree in disallowedTools
 
-### Architecture (v2)
+### Skill Thinning (M4)
 
-- **ARCH-07**: SessionStart hook for automatic context injection (blocked by 3 Claude Code platform bugs)
-- **ARCH-08**: Connected Flow import — cross-lifecycle artifact import with locked constraints
+- **THIN-01**: All skills under 200 lines (down from 500-860)
+- **THIN-02**: Business logic lives in agents, skills are step sequencers
 
-### Quality (v1.3)
+### Gate Evaluation (M5/M6)
 
-- **QUAL-08**: Verifier promoted from SHOULD to MUST gate criterion after calibration over 3+ lifecycles
+- **GATE-01**: G1, G2-structural, G4 run as deterministic Node.js scripts
+- **GATE-02**: G3, G5 use dual-layer evaluation (structural rubric + reasoning verifier agent)
+- **GATE-03**: External verifier agent checks research reasoning soundness
+
+### Worktree Isolation (M7)
+
+- **WKTR-01**: task-implementer agent runs in isolated worktree
+- **WKTR-02**: Per-task atomic git commits with DA traceability
+
+### Session Enhancement (M8)
+
+- **SENH-01**: SessionStart hook for automatic context injection (when platform bugs fixed)
+
+### Carried Forward from v1.2
+
+- **QUAL-05**: Design skill surfaces competing alternatives only when evidence shows genuine tradeoffs
+- **QUAL-06**: Design skill proposes single recommendation when evidence clearly favors one approach
+- **MAINT-01**: Skills under 500-line soft cap via content extraction to references/
 
 ## Out of Scope
 
 | Feature | Reason |
 |---------|--------|
-| Auto git push | Removes user control over when to share commits; push is a team-coordination action |
-| state.yml.bak rotation (multiple backups) | Over-engineering; single .bak covers common case; git history covers older states |
-| Unconditional alternative surfacing | Creates decision fatigue when evidence is clear; anti-feature per FEATURES.md |
-| Mandatory git integration | Some users want manual commit control; must be opt-out |
-| Verifier as MUST gate blocker (v1.2) | Needs calibration over real lifecycles before promotion; SHOULD prevents override-training |
-| Full state schema migration tooling | Complete-rewrite semantics mean schema changes apply on first write; migration is one-time |
+| Agent formalization (M3) | Future milestone — no dependency on M1-M2 |
+| Skill thinning (M4) | Future milestone — requires M3 first |
+| Gate evaluation logic (M5/M6) | Future milestone — hooks only check existing gate results |
+| Worktree isolation (M7) | Future milestone — requires M3 first |
+| SessionStart hook | 3 open Claude Code bugs (#16538, #13650, #11509) |
+| Cross-lifecycle artifact import | Novel feature, needs design research |
+| Agent Teams (mesh communication) | 3-4x token cost, pipeline fits hub-and-spoke |
+| TypeScript for hooks | Build step overhead not justified for solo developer |
+| Per-agent hooks | Plugin-level hooks sufficient initially |
+| Monolithic state.yml migration tooling | Complete-rewrite semantics handle schema changes on first write |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| RESL-01 | Phase 19 | Complete |
-| RESL-02 | Phase 19 | Complete |
-| RESL-03 | Phase 19 | Complete |
-| RESL-04 | Phase 19 | Complete |
-| RESL-05 | — | Deferred |
-| ARCH-01 | Phase 20 | Pending |
-| ARCH-02 | Phase 21 | Pending |
-| ARCH-03 | Phase 21 | Pending |
-| ARCH-04 | Phase 21 | Pending |
-| ARCH-05 | Phase 21 | Pending |
-| ARCH-06 | Phase 21 | Pending |
-| QUAL-01 | Phase 24 | Pending |
-| QUAL-02 | Phase 24 | Pending |
-| QUAL-03 | Phase 24 | Pending |
-| QUAL-04 | Phase 24 | Pending |
-| QUAL-05 | Phase 24 | Pending |
-| QUAL-06 | Phase 24 | Pending |
-| QUAL-07 | Phase 24 | Pending |
-| DEVW-01 | Phase 23 | Pending |
-| DEVW-02 | Phase 23 | Pending |
-| DEVW-03 | Phase 23 | Pending |
-| DEVW-04 | Phase 23 | Pending |
-| DEVW-05 | Phase 23 | Pending |
-| DEVW-06 | Phase 23 | Pending |
-| MAINT-01 | Phase 22 | Pending |
-| MAINT-02 | Phase 22 | Pending |
-| MAINT-03 | Phase 22 | Pending |
-| MAINT-04 | Phase 22 | Pending |
+| STATE-01 | TBD | Pending |
+| STATE-02 | TBD | Pending |
+| STATE-03 | TBD | Pending |
+| STATE-04 | TBD | Pending |
+| HOOK-01 | TBD | Pending |
+| HOOK-02 | TBD | Pending |
+| HOOK-03 | TBD | Pending |
+| HOOK-04 | TBD | Pending |
+| HOOK-05 | TBD | Pending |
+| HOOK-06 | TBD | Pending |
+| HOOK-07 | TBD | Pending |
+| OVRD-01 | TBD | Pending |
+| OVRD-02 | TBD | Pending |
+| OVRD-03 | TBD | Pending |
+| OVRD-04 | TBD | Pending |
+| OVRD-05 | TBD | Pending |
+| OVRD-06 | TBD | Pending |
+| RESM-01 | TBD | Pending |
+| RESM-02 | TBD | Pending |
+| RESM-03 | TBD | Pending |
+| RESM-04 | TBD | Pending |
+| SESS-01 | TBD | Pending |
+| SESS-02 | TBD | Pending |
+| SESS-03 | TBD | Pending |
+| SESS-04 | TBD | Pending |
 
 **Coverage:**
-- v1.2 requirements: 28 total
-- Mapped to phases: 28
-- Unmapped: 0
+- v2.0 requirements: 25 total
+- Mapped to phases: 0
+- Unmapped: 25
 
 ---
-*Requirements defined: 2026-03-11*
-*Last updated: 2026-03-11 after roadmap creation*
+*Requirements defined: 2026-03-12*
+*Last updated: 2026-03-12 after initial definition*
