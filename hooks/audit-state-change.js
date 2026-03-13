@@ -10,6 +10,7 @@
 // Exit codes:
 //   0 - Always (PostToolUse hooks must never block)
 // ============================================================================
+// STATE-04: audit.log is append-only and never loaded into LLM context.
 
 // Emergency bypass
 if (process.env.EXPEDITE_HOOKS_DISABLED === 'true' || process.env.EXPEDITE_HOOKS_DISABLED === '1') {
@@ -55,17 +56,34 @@ process.stdin.on('end', function () {
 
     var entry;
 
+    // Determine expedite directory early (needed by override detection)
+    var expediteDir = path.dirname(filePath);
+
     // Check for override-specific logging
     if (matchedFile === 'gates.yml' && content.indexOf('outcome: "overridden"') !== -1) {
-      // Extract gate and override_reason from content
+      // Extract gate, override_reason, and severity from content
       var gateMatch = content.match(/gate:\s*["']?([A-Z]\d+)["']?/);
       var reasonMatch = content.match(/override_reason:\s*["']?([^\n"']+)["']?/);
+      var severityMatch = content.match(/severity:\s*["']?(low|medium|high)["']?/);
+
+      // STATE-04: Look up current phase from state.yml for traceability
+      var yaml = require('js-yaml');
+      var currentPhase = 'unknown';
+      try {
+        var statePath = path.join(expediteDir, 'state.yml');
+        var stateRaw = fs.readFileSync(statePath, 'utf8');
+        var stateObj = yaml.load(stateRaw);
+        if (stateObj && stateObj.phase) currentPhase = stateObj.phase;
+      } catch (e) { /* fail open */ }
+
       entry = '---\n' +
         'event: override_write\n' +
         'timestamp: "' + timestamp + '"\n' +
         'file: "' + matchedFile + '"\n' +
         'gate: "' + (gateMatch ? gateMatch[1] : 'unknown') + '"\n' +
-        'override_reason: "' + (reasonMatch ? reasonMatch[1].trim() : 'not specified') + '"\n';
+        'override_reason: "' + (reasonMatch ? reasonMatch[1].trim() : 'not specified') + '"\n' +
+        'severity: "' + (severityMatch ? severityMatch[1] : 'unspecified') + '"\n' +
+        'current_phase: "' + currentPhase + '"\n';
     } else {
       entry = '---\n' +
         'event: state_write\n' +
@@ -74,7 +92,6 @@ process.stdin.on('end', function () {
     }
 
     // Determine audit log path: sibling of the state file
-    var expediteDir = path.dirname(filePath);
     var auditLogPath = path.join(expediteDir, 'audit.log');
 
     // Append to audit log
