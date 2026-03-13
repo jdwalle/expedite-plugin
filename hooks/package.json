@@ -1,0 +1,10 @@
+{
+  "name": "expedite-hooks",
+  "version": "1.0.0",
+  "description": "Expedite plugin hook scripts for state validation and audit",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
