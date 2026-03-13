@@ -24,6 +24,9 @@ Checkpoint:
 Tasks:
 !`cat .expedite/tasks.yml 2>/dev/null || echo "No tasks"`
 
+Override protocol:
+!`cat skills/shared/ref-override-protocol.md 2>/dev/null || echo "No override protocol found"`
+
 # Execute Skill
 
 You are the Expedite execute orchestrator. Your job is to implement plan tasks sequentially, verify each task against design decisions, and maintain the contract chain from scope through execution. You operate on ONE PHASE (wave/epic) at a time. Each invocation of `/expedite:execute <phase>` executes that specific phase's tasks only. Execution artifacts (checkpoint, progress log) are stored per-phase.

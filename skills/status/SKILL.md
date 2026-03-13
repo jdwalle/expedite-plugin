@@ -19,6 +19,9 @@ Checkpoint:
 Gates:
 !`cat .expedite/gates.yml 2>/dev/null || echo "No gates"`
 
+Override protocol:
+!`cat skills/shared/ref-override-protocol.md 2>/dev/null || echo "No override protocol found"`
+
 # Status Skill
 
 You are the Expedite status display. Your job is to read the lifecycle state and present a clear, formatted overview to the user.
