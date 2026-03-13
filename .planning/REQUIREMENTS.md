@@ -20,9 +20,9 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 - [ ] **HOOK-02**: User's attempt to advance to a `_complete` phase is blocked until the required gate has a passing result in gates.yml
 - [ ] **HOOK-03**: User's checkpoint step regression is blocked (step number cannot decrease without justification)
 - [ ] **HOOK-04**: User's gates.yml writes are validated for structure (valid gate ID, outcome enum, override_reason when overridden)
-- [ ] **HOOK-05**: User's non-state Write calls pass through without interception
-- [ ] **HOOK-06**: All hooks are Node.js command handlers with js-yaml as the only runtime dependency
-- [ ] **HOOK-07**: Hook-induced latency is under 300ms p99 per state write
+- [x] **HOOK-05**: User's non-state Write calls pass through without interception
+- [x] **HOOK-06**: All hooks are Node.js command handlers with js-yaml as the only runtime dependency
+- [x] **HOOK-07**: Hook-induced latency is under 300ms p99 per state write
 
 ### Override Mechanism
 
@@ -110,9 +110,9 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | HOOK-02 | Phase 26 | Pending |
 | HOOK-03 | Phase 26 | Pending |
 | HOOK-04 | Phase 26 | Pending |
-| HOOK-05 | Phase 25 | Pending |
-| HOOK-06 | Phase 25 | Pending |
-| HOOK-07 | Phase 25 | Pending |
+| HOOK-05 | Phase 25 | Complete |
+| HOOK-06 | Phase 25 | Complete |
+| HOOK-07 | Phase 25 | Complete |
 | OVRD-01 | Phase 27 | Pending |
 | OVRD-02 | Phase 27 | Pending |
 | OVRD-03 | Phase 27 | Pending |
