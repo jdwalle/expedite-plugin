@@ -3,6 +3,7 @@
 var validateFields = require('../validate').validateFields;
 
 var VALID_PHASES = [
+  'not_started',
   'scope_in_progress',
   'scope_complete',
   'research_in_progress',
@@ -11,7 +12,10 @@ var VALID_PHASES = [
   'design_complete',
   'plan_in_progress',
   'plan_complete',
+  'spike_in_progress',
+  'spike_complete',
   'execute_in_progress',
+  'execute_complete',
   'complete',
   'archived',
 ];
