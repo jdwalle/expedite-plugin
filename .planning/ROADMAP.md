@@ -96,8 +96,8 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 26-01: TBD
-- [ ] 26-02: TBD
+- [x] 26-01-PLAN.md -- FSM transition library, gate passage checker, VALID_PHASES update
+- [ ] 26-02-PLAN.md -- Integrate FSM and gate checks into validate-state-write hook
 
 ### Phase 27: Override Mechanism and Audit Trail
 **Goal**: Users can deliberately bypass enforcement when justified, with every override auditable and traceable -- the system preserves user agency without silent escape hatches
@@ -172,7 +172,7 @@ Phases execute in numeric order: 25 -> 26 -> 27 -> 28 -> 29
 | 18. Gate Enforcement | v1.1 | 2/2 | Complete | 2026-03-11 |
 | 19. State Recovery | v1.2 | 2/2 | Complete | 2026-03-12 |
 | 25. State Splitting + Hooks | 3/3 | Complete    | 2026-03-13 | - |
-| 26. Phase Transition Enforcement | v2.0 | 0/TBD | Not started | - |
+| 26. Phase Transition Enforcement | v2.0 | 1/2 | In progress | - |
 | 27. Override + Audit | v2.0 | 0/TBD | Not started | - |
 | 28. Checkpoint Resume | v2.0 | 0/TBD | Not started | - |
 | 29. Session Handoff | v2.0 | 0/TBD | Not started | - |

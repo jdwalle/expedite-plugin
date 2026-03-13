@@ -16,10 +16,10 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 
 ### Hook Enforcement
 
-- [ ] **HOOK-01**: User's invalid phase transition is blocked with a specific, actionable denial message
-- [ ] **HOOK-02**: User's attempt to advance to a `_complete` phase is blocked until the required gate has a passing result in gates.yml
+- [x] **HOOK-01**: User's invalid phase transition is blocked with a specific, actionable denial message
+- [x] **HOOK-02**: User's attempt to advance to a `_complete` phase is blocked until the required gate has a passing result in gates.yml
 - [ ] **HOOK-03**: User's checkpoint step regression is blocked (step number cannot decrease without justification)
-- [ ] **HOOK-04**: User's gates.yml writes are validated for structure (valid gate ID, outcome enum, override_reason when overridden)
+- [x] **HOOK-04**: User's gates.yml writes are validated for structure (valid gate ID, outcome enum, override_reason when overridden)
 - [x] **HOOK-05**: User's non-state Write calls pass through without interception
 - [x] **HOOK-06**: All hooks are Node.js command handlers with js-yaml as the only runtime dependency
 - [x] **HOOK-07**: Hook-induced latency is under 300ms p99 per state write
@@ -106,10 +106,10 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | STATE-02 | Phase 25 | Complete |
 | STATE-03 | Phase 29 | Pending |
 | STATE-04 | Phase 27 | Pending |
-| HOOK-01 | Phase 26 | Pending |
-| HOOK-02 | Phase 26 | Pending |
+| HOOK-01 | Phase 26 | Complete |
+| HOOK-02 | Phase 26 | Complete |
 | HOOK-03 | Phase 26 | Pending |
-| HOOK-04 | Phase 26 | Pending |
+| HOOK-04 | Phase 26 | Complete |
 | HOOK-05 | Phase 25 | Complete |
 | HOOK-06 | Phase 25 | Complete |
 | HOOK-07 | Phase 25 | Complete |
