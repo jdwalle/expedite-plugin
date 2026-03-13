@@ -1,5 +1,29 @@
 # Milestones
 
+## v1.2 Infrastructure Hardening & Quality (Shipped: 2026-03-12)
+
+**Phases completed:** 1 phase, 2 plans (of 6 planned phases)
+**Timeline:** 1 day (2026-03-12)
+**Requirements:** 4/28 satisfied (RESL-01 through RESL-04)
+**Git range:** 27210f4..565effc
+
+**Key accomplishments:**
+1. State recovery — automatic detection and recovery of missing/corrupted state.yml from lifecycle artifacts
+
+### Subsumed Phases
+Phases 20-24 were subsumed by v2.0 Agent Harness Foundation:
+- Phase 20 (Explore Subagent / ARCH-01) → M1 A1 validation
+- Phase 21 (State Splitting / ARCH-02-06) → M1 state splitting + hook enforcement
+- Phase 22 (Skill Line Limit / MAINT-01-04) → future M4
+- Phase 23 (Git Commits / DEVW-01-06) → future M7
+- Phase 24 (Verifier & Alternatives / QUAL-01-07) → future M5/M6
+
+### Known Gaps
+- RESL-05: Deferred — write atomicity handled by Claude Code platform
+- 23 requirements from phases 20-24 carried forward to v2.0+ scope
+
+---
+
 ## v1.1 Production Polish (Shipped: 2026-03-11)
 
 **Phases completed:** 5 phases, 11 plans

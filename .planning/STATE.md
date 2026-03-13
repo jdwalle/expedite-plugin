@@ -1,33 +1,31 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Infrastructure Hardening & Quality
-status: unknown
-last_updated: "2026-03-12T05:44:19.463Z"
+milestone: v2.0
+milestone_name: Agent Harness Foundation
+status: not_started
+last_updated: "2026-03-12T06:00:00.000Z"
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-11)
+See: .planning/PROJECT.md (updated 2026-03-12)
 
 **Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 19 complete. Next: Phase 20 - Explore Subagent
+**Current focus:** Defining requirements for v2.0 Agent Harness Foundation
 
 ## Current Position
 
-Phase: 19 (1 of 6 in v1.2) — State Recovery [COMPLETE]
-Plan: 2 of 2 complete
-Status: Phase 19 complete. Ready for Phase 20.
-Last activity: 2026-03-12 — Completed 19-02 (skill preamble wiring)
-
-Progress: [██░░░░░░░░] 17%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-12 — Milestone v2.0 started
 
 ## Performance Metrics
 
@@ -35,11 +33,7 @@ Progress: [██░░░░░░░░] 17%
 - v1.0: 32 plans across 13 phases in 11 days
 - v1.1: 11 plans across 5 phases in 2 days
 - v1.2: 2 plans across 1 phase in 1 day
-
-| Phase | Plan | Duration | Tasks | Files |
-|-------|------|----------|-------|-------|
-| 19 | 01 | 2min | 2 | 2 |
-| 19 | 02 | 2min | 2 | 7 |
+- v2.0: 0 plans across 0 phases (starting)
 
 ## Accumulated Context
 
@@ -48,13 +42,11 @@ Progress: [██░░░░░░░░] 17%
 Full decision log in PROJECT.md Key Decisions table.
 
 Recent decisions affecting current work:
-- v1.2 scope: 7 features, 28 requirements across 6 phases (19-24)
-- Phase ordering: State Recovery first (foundation), then Explore (trivial), then State Splitting (high blast radius), then Skill Line Limit (post-split extraction), then Git Commits and Verifier/Alternatives (quality features last)
-- Recovery protocol uses centralized reference in skills/shared/ref-state-recovery.md (established pattern)
-- Artifact scan order: PLAN.md > DESIGN.md > SYNTHESIS.md > SCOPE.md (reverse lifecycle)
-- Always infer _complete phases during recovery, never _in_progress
-- Scope skill no-artifacts -> Case A (fresh start); all other skills no-artifacts -> STOP with error
-- Recovery preamble placed between step tracking and Case routing in all lifecycle skills
+- v1.2 archived with Phase 19 only; phases 20-24 subsumed by agent harness architecture
+- Agent harness design informed by 8+ Claude Code plugin harnesses and 3 synthesized design proposals
+- A1 assumption confirmed: PreToolUse hooks fire on subagent writes (empirically validated 2026-03-12)
+- Hooks must go in .claude/settings.json (project settings), not plugin hooks.json, because plugin is not in enabledPlugins
+- Two-milestone approach: M1-M2 (foundation + validation), then M3-M8 (agents, gates, worktrees, handoff)
 
 ### Pending Todos
 
@@ -62,12 +54,12 @@ None.
 
 ### Blockers/Concerns
 
-- Phase 20 (Explore Subagent): `explore` type tool availability unverified; needs empirical spike
-- Phase 21 (State Splitting): Highest blast radius feature; touches all 7 skills; candidate for deferral if scope pressure appears
-- Phase 23 (Git Commits): Advisory vs auto-commit decision open; resolve during planning
+- A3 (Override round-trip): ~70-85% estimated reliability for "remember to retry" step — novel pattern, no ecosystem precedent
+- A2 (Hook latency): No benchmarks yet — qualitative estimates only (~100-200ms per hook)
+- Plugin not in enabledPlugins: hooks.json won't load from plugin directory; must use project settings
 
 ## Session Continuity
 
 Last session: 2026-03-12
-Stopped at: Completed 19-02-PLAN.md (skill preamble wiring). Phase 19 complete. Ready for Phase 20.
+Stopped at: Starting v2.0 milestone. Defining requirements.
 Resume file: None
