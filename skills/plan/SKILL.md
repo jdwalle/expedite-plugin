@@ -100,7 +100,7 @@ Proceed to Step 2. (Step 2 already reads override-context.md if it exists and fl
 
 **Case B2: Phase is "plan_in_progress" AND `--override` flag is NOT present**
 
-This is a resume scenario. The plan skill was running when the session ended.
+This is a resume scenario. Check the injected checkpoint above for deterministic resume.
 
 1. First, check gate_history for G3 recycle entries (entries where `gate: "G3"` and `outcome: "recycle"`).
 
@@ -115,23 +115,31 @@ This is a resume scenario. The plan skill was running when the session ended.
    1. Resume plan from where you left off
    2. Re-enter with --override: `/expedite:plan --override`
    ```
-   Wait for user response. If they choose resume, continue with the artifact check below. If they indicate --override, display: "Please re-invoke with the --override flag: `/expedite:plan --override`" then STOP.
+   Wait for user response. If they choose resume, continue with the checkpoint/artifact check below. If they indicate --override, display: "Please re-invoke with the --override flag: `/expedite:plan --override`" then STOP.
 
-   **If NO G3 recycle evidence:** This is a pure crash resume. Continue with the artifact check below.
+   **If NO G3 recycle evidence:** This is a pure crash resume. Continue with the checkpoint/artifact check below.
 
-2. Check for `.expedite/plan/PLAN.md`:
-   - If PLAN.md exists: Step 5 completed. Resume at Step 6 (revision cycle). Display: "Found in-progress plan with PLAN.md already generated. Resuming at revision cycle..."
-   - If PLAN.md does not exist: Resume at Step 2 (read artifacts, then generate). Display: "Found in-progress plan, but no PLAN.md yet. Resuming from artifact loading..."
+2. **Checkpoint-based resume (primary):**
+   If the injected checkpoint shows actual values AND `checkpoint.skill` is "plan":
+     a. Read `checkpoint.step` and `checkpoint.label`
+     b. Cross-reference: if state.yml says plan_complete but checkpoint says plan step N, state wins. Display: "Plan already complete." Then STOP.
+     c. Display:
+        ```
+        Found in-progress plan for "{project_name}".
 
-3. Display:
-```
-Found in-progress plan for "{project_name}".
+        Checkpoint: step {checkpoint.step} of 9 -- {checkpoint.label}
+        {If checkpoint.continuation_notes: "Context: {continuation_notes}"}
+        Resume point: Step {checkpoint.step}
+        ```
+     d. Proceed directly to Step {checkpoint.step}. Do NOT re-run Step 3 (state already plan_in_progress).
 
-Plan document: {exists/not yet generated}
-Resume point: Step {2 or 6}
-```
-
-4. Proceed directly to the resume step. Do NOT re-run Step 3 (state transition) since state is already plan_in_progress.
+   **Artifact-based fallback (secondary):**
+   If checkpoint is missing, all-null, or checkpoint.skill is not "plan":
+     Display: "Checkpoint unavailable. Using artifact heuristic for resume."
+     Check for `.expedite/plan/PLAN.md`:
+     - If PLAN.md exists: Step 5 completed. Resume at Step 6 (revision cycle). Display: "Found in-progress plan with PLAN.md already generated. Resuming at revision cycle..."
+     - If PLAN.md does not exist: Resume at Step 2 (read artifacts, then generate). Display: "Found in-progress plan, but no PLAN.md yet. Resuming from artifact loading..."
+     Proceed directly to the resume step. Do NOT re-run Step 3 (state transition) since state is already plan_in_progress.
 
 **Case C: Phase is anything else (not "design_complete", not matching Case B or B2 conditions)**
 

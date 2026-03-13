@@ -70,6 +70,8 @@ Look at the injected lifecycle state above. If the injection shows "No active li
 
 If the injection shows actual state content (not "No active lifecycle"), skip this preamble entirely and proceed to the Case routing below.
 
+**Checkpoint context:** If the injected checkpoint shows `checkpoint.skill: "spike"`, display: "Previous spike was interrupted at step {checkpoint.step}: {checkpoint.label}. {If continuation_notes: continuation_notes}" This is informational only -- spike always re-runs from the phase argument.
+
 **Case A: Phase is "plan_complete"**
 
 Display: "Starting spike..."

@@ -100,7 +100,7 @@ Proceed to Step 2. (Step 2 already reads override-context.md if it exists and fl
 
 **Case B2: Phase is "design_in_progress" AND `--override` flag is NOT present**
 
-This is a resume scenario. The design skill was running when the session ended.
+This is a resume scenario. Check the injected checkpoint above for deterministic resume.
 
 1. First, check gate_history for G2 recycle entries (entries where `gate: "G2"` and `outcome: "recycle"`).
 
@@ -115,30 +115,38 @@ This is a resume scenario. The design skill was running when the session ended.
    1. Resume design from where you left off
    2. Re-enter with --override: `/expedite:design --override`
    ```
-   Wait for user response. If they choose resume, continue with the artifact check below. If they indicate --override, display: "Please re-invoke with the --override flag: `/expedite:design --override`" then STOP.
+   Wait for user response. If they choose resume, continue with the checkpoint/artifact check below. If they indicate --override, display: "Please re-invoke with the --override flag: `/expedite:design --override`" then STOP.
 
-   **If NO G2 recycle evidence:** This is a pure crash resume. Continue with the artifact check below.
+   **If NO G2 recycle evidence:** This is a pure crash resume. Continue with the checkpoint/artifact check below.
 
-2. Check for `.expedite/design/DESIGN.md`:
-   - If DESIGN.md exists AND (intent is "engineering" OR `.expedite/design/HANDOFF.md` exists):
-     Step 6 completed. Resume at Step 7 (revision cycle).
-     Display: "Found in-progress design with DESIGN.md already generated. Resuming at revision cycle..."
-   - If DESIGN.md exists AND intent is "product" AND `.expedite/design/HANDOFF.md` does NOT exist:
-     Step 5 completed but Step 6 not yet done. Resume at Step 6 (HANDOFF.md generation).
-     Display: "Found in-progress design with DESIGN.md generated but HANDOFF.md missing. Resuming at HANDOFF.md generation..."
-   - If DESIGN.md does not exist:
-     Resume at Step 2 (read artifacts, then generate).
-     Display: "Found in-progress design, but no DESIGN.md yet. Resuming from artifact loading..."
+2. **Checkpoint-based resume (primary):**
+   If the injected checkpoint shows actual values AND `checkpoint.skill` is "design":
+     a. Read `checkpoint.step` and `checkpoint.label`
+     b. Cross-reference: if state.yml says design_complete but checkpoint says design step N, state wins -- treat as post-design. Display: "Design already complete." Then STOP.
+     c. Display:
+        ```
+        Found in-progress design for "{project_name}".
 
-3. Display:
-```
-Found in-progress design for "{project_name}".
+        Checkpoint: step {checkpoint.step} of 10 -- {checkpoint.label}
+        {If checkpoint.continuation_notes: "Context: {continuation_notes}"}
+        Resume point: Step {checkpoint.step}
+        ```
+     d. Proceed directly to Step {checkpoint.step}. Do NOT re-run Step 3 (state already design_in_progress).
 
-Design document: {exists/not yet generated}
-Resume point: Step {2, 6, or 7}
-```
-
-4. Proceed directly to the resume step. Do NOT re-run Step 3 (state transition) since state is already design_in_progress.
+   **Artifact-based fallback (secondary):**
+   If checkpoint is missing, all-null, or checkpoint.skill is not "design":
+     Display: "Checkpoint unavailable. Using artifact heuristic for resume."
+     Check for `.expedite/design/DESIGN.md`:
+     - If DESIGN.md exists AND (intent is "engineering" OR `.expedite/design/HANDOFF.md` exists):
+       Step 6 completed. Resume at Step 7 (revision cycle).
+       Display: "Found in-progress design with DESIGN.md already generated. Resuming at revision cycle..."
+     - If DESIGN.md exists AND intent is "product" AND `.expedite/design/HANDOFF.md` does NOT exist:
+       Step 5 completed but Step 6 not yet done. Resume at Step 6 (HANDOFF.md generation).
+       Display: "Found in-progress design with DESIGN.md generated but HANDOFF.md missing. Resuming at HANDOFF.md generation..."
+     - If DESIGN.md does not exist:
+       Resume at Step 2 (read artifacts, then generate).
+       Display: "Found in-progress design, but no DESIGN.md yet. Resuming from artifact loading..."
+     Proceed directly to the resume step. Do NOT re-run Step 3 (state transition) since state is already design_in_progress.
 
 **Case C: Phase is anything else (not "research_complete", not matching Case B or B2 conditions)**
 

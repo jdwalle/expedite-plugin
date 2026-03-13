@@ -83,9 +83,22 @@ This is a resume scenario.
 
 1. Parse the phase argument first (same logic as Step 2's argument parsing).
 2. Determine the slug for the requested phase.
-3. Check for `.expedite/plan/phases/{slug}/checkpoint.yml` (use Read, handle missing file gracefully).
-4. If checkpoint exists AND status is "paused" or "in_progress": display "Resuming execution of {Wave/Epic} {N} from checkpoint..." Proceed to Step 2 (to load all artifacts), then skip Step 3 (state already initialized) and go to Step 4 (resume logic).
-5. If no checkpoint for this phase: display "Starting execution of {Wave/Epic} {N}..." Proceed to Step 2.
+
+3. **Checkpoint-based resume (primary):**
+   If the injected checkpoint (top-level .expedite/checkpoint.yml) shows actual values AND `checkpoint.skill` is "execute":
+     a. Read `checkpoint.step` and `checkpoint.label`
+     b. If checkpoint.substep starts with "executing_task_": this was mid-task execution. Resume at Step 5 (Task Execution Loop) for the task indicated in substep. Use continuation_notes for context.
+     c. Otherwise: Resume at Step {checkpoint.step}.
+     d. Display: "Resuming execution of {Wave/Epic} {N} from checkpoint (step {checkpoint.step}: {checkpoint.label})."
+     e. If checkpoint.step is 5 (Task Execution Loop): Also read the per-phase checkpoint at `.expedite/plan/phases/{slug}/checkpoint.yml` for task-level resume context (current_task, tasks_completed).
+     f. Proceed to Step 2 (to load all artifacts), then skip Step 3 and go to the checkpoint step.
+
+   **Per-phase checkpoint fallback (secondary):**
+   If top-level checkpoint is missing, all-null, or checkpoint.skill is not "execute":
+     Display: "Top-level checkpoint unavailable. Using per-phase checkpoint for resume."
+     4. Check for `.expedite/plan/phases/{slug}/checkpoint.yml` (use Read, handle missing file gracefully).
+     5. If per-phase checkpoint exists AND status is "paused" or "in_progress": display "Resuming execution of {Wave/Epic} {N} from per-phase checkpoint..." Proceed to Step 2 (to load all artifacts), then skip Step 3 (state already initialized) and go to Step 4 (resume logic).
+     6. If no checkpoint for this phase: display "Starting execution of {Wave/Epic} {N}..." Proceed to Step 2.
 
 **Case C: Phase is anything else**
 
