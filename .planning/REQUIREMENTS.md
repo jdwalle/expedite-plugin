@@ -12,7 +12,7 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 - [x] **STATE-01**: User invokes any skill and only the state files relevant to that skill are loaded (scoped injection per consumption matrix)
 - [x] **STATE-02**: User can inspect lifecycle state across 5 separate files: state.yml (~15 lines), checkpoint.yml, questions.yml, gates.yml, tasks.yml
 - [ ] **STATE-03**: session-summary.md is created at session end and loaded by all skill frontmatter
-- [ ] **STATE-04**: audit.log records override events (append-only, never loaded into LLM context)
+- [x] **STATE-04**: audit.log records override events (append-only, never loaded into LLM context)
 
 ### Hook Enforcement
 
@@ -26,11 +26,11 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 
 ### Override Mechanism
 
-- [ ] **OVRD-01**: User's denied state write produces an actionable denial reason with explicit retry instructions
-- [ ] **OVRD-02**: User can override a gate by writing an override record to gates.yml, then retrying the state write
-- [ ] **OVRD-03**: gates.yml writes are not intercepted for gate passage checks (prevents override deadlock)
-- [ ] **OVRD-04**: After 3 denials for the same pattern, user sees a suggestion to intervene directly
-- [ ] **OVRD-05**: User can bypass all enforcement via `EXPEDITE_HOOKS_DISABLED=true` for debugging
+- [x] **OVRD-01**: User's denied state write produces an actionable denial reason with explicit retry instructions
+- [x] **OVRD-02**: User can override a gate by writing an override record to gates.yml, then retrying the state write
+- [x] **OVRD-03**: gates.yml writes are not intercepted for gate passage checks (prevents override deadlock)
+- [x] **OVRD-04**: After 3 denials for the same pattern, user sees a suggestion to intervene directly
+- [x] **OVRD-05**: User can bypass all enforcement via `EXPEDITE_HOOKS_DISABLED=true` for debugging
 - [ ] **OVRD-06**: All skill preambles include an override protocol section before the LLM encounters a denial
 
 ### Resume & Recovery
@@ -105,7 +105,7 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | STATE-01 | Phase 25 | Complete |
 | STATE-02 | Phase 25 | Complete |
 | STATE-03 | Phase 29 | Pending |
-| STATE-04 | Phase 27 | Pending |
+| STATE-04 | Phase 27 | Complete |
 | HOOK-01 | Phase 26 | Complete |
 | HOOK-02 | Phase 26 | Complete |
 | HOOK-03 | Phase 26 | Complete |
@@ -113,11 +113,11 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | HOOK-05 | Phase 25 | Complete |
 | HOOK-06 | Phase 25 | Complete |
 | HOOK-07 | Phase 25 | Complete |
-| OVRD-01 | Phase 27 | Pending |
-| OVRD-02 | Phase 27 | Pending |
-| OVRD-03 | Phase 27 | Pending |
-| OVRD-04 | Phase 27 | Pending |
-| OVRD-05 | Phase 27 | Pending |
+| OVRD-01 | Phase 27 | Complete |
+| OVRD-02 | Phase 27 | Complete |
+| OVRD-03 | Phase 27 | Complete |
+| OVRD-04 | Phase 27 | Complete |
+| OVRD-05 | Phase 27 | Complete |
 | OVRD-06 | Phase 27 | Pending |
 | RESM-01 | Phase 28 | Pending |
 | RESM-02 | Phase 28 | Pending |

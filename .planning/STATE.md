@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Agent Harness Foundation
 status: in_progress
-last_updated: "2026-03-13T06:36:30.820Z"
+last_updated: "2026-03-13T07:28:24.000Z"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 7
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-12)
 ## Current Position
 
 Phase: 27 of 29 (Override Mechanism and Audit Trail)
-Plan: 0 of ? (not yet planned)
-Status: Ready for planning
-Last activity: 2026-03-13 -- Completed Phase 26 (Phase Transition Enforcement)
+Plan: 1 of 2 complete
+Status: In progress
+Last activity: 2026-03-13 -- Completed 27-01 (Override mechanism and audit enrichment)
 
-Progress: [████░░░░░░] 40% (5/? plans)
+Progress: [██████░░░░] 60% (6/7 plans)
 
 ## Performance Metrics
 
@@ -35,7 +35,7 @@ Progress: [████░░░░░░] 40% (5/? plans)
 - v1.0: 32 plans across 13 phases in 11 days
 - v1.1: 11 plans across 5 phases in 2 days
 - v1.2: 2 plans across 1 phase in 1 day
-- v2.0: 5 plans across 5 phases (in progress)
+- v2.0: 6 plans across 5 phases (in progress)
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -44,6 +44,7 @@ Progress: [████░░░░░░] 40% (5/? plans)
 | 25 | 03 | 2min | 2 | 8 |
 | 26 | 01 | 2min | 2 | 3 |
 | 26 | 02 | 3min | 1 | 1 |
+| 27 | 01 | 3min | 2 | 3 |
 
 ## Accumulated Context
 
@@ -70,6 +71,9 @@ Recent decisions affecting current work:
 - Added execute_complete->complete and complete->archived transitions beyond PRODUCT-DESIGN.md table for full lifecycle coverage -- 26-01
 - Lazy-load fsm.js and gate-checks.js inside state-file branch to preserve non-state passthrough latency -- 26-02
 - Gate-phase validation only checks new history entries (beyond existing count) to avoid false positives on history rewrites -- 26-02
+- Denial counts stored in .expedite/.denial-counts.json (JSON, fail-open on I/O errors) -- 27-01
+- Gate denials include override record format with retry instruction; non-gate denials suggest EXPEDITE_HOOKS_DISABLED -- 27-01
+- Override records (outcome: overridden) bypass gate-phase validation to prevent deadlock -- 27-01
 
 ### Pending Todos
 
@@ -84,5 +88,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 26-02-PLAN.md (Hook integration -- Phase 26 complete)
+Stopped at: Completed 27-01-PLAN.md (Override mechanism, actionable denials, audit enrichment)
 Resume file: None
