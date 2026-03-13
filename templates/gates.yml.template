@@ -1,0 +1,6 @@
+# Expedite Gate History
+# Loaded by gate evaluation and status skills. Hook-validated on write.
+# WRITE PATTERN: complete-file rewrite
+# Gate entry schema: gate (G1-G5), timestamp, outcome (go|no-go|go-with-advisory|overridden), evaluator
+# If overridden: override_reason required
+history: []

@@ -1,0 +1,10 @@
+# Expedite Checkpoint State
+# Step-level tracking for deterministic resume. Written by skills at step boundaries.
+# WRITE PATTERN: complete-file rewrite
+skill: null
+step: null
+label: null
+substep: null
+continuation_notes: null
+inputs_hash: null
+updated_at: null

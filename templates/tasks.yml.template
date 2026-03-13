@@ -1,0 +1,6 @@
+# Expedite Execution Tasks
+# Loaded by execute skill only. Populated by plan skill.
+# WRITE PATTERN: complete-file rewrite
+current_wave: null
+current_task: null
+tasks: []

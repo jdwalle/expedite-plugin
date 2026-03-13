@@ -1,7 +1,7 @@
-# Expedite Lifecycle State
-# Machine-readable. Complete-rewrite on every update.
+# Expedite Lifecycle State (v2)
+# Identity and phase tracking only. Questions, gates, and tasks are in separate files.
 # WRITE PATTERN: (1) read current, (2) cp state.yml state.yml.bak, (3) modify in-memory, (4) write entire file
-version: "1"
+version: 2
 last_modified: null
 
 # Lifecycle identity
@@ -10,65 +10,7 @@ intent: null
 lifecycle_id: null
 description: null
 
-# Current position
-# Valid phases (forward-only transitions):
-#   scope_in_progress -> scope_complete
-#   scope_complete -> research_in_progress
-#   research_in_progress -> research_complete
-#   # Note: research_recycled is conceptual. Cross-session override re-entry
-#   # uses research_in_progress + --override + gate_history G2 recycle evidence.
-#   research_complete -> design_in_progress
-#   design_in_progress -> design_complete
-#   # Note: design_recycled is conceptual. Cross-session override re-entry
-#   # uses design_in_progress + --override + gate_history G3 recycle evidence.
-#   design_complete -> plan_in_progress
-#   plan_in_progress -> plan_complete
-#   # Note: plan_recycled is conceptual. Cross-session override re-entry
-#   # uses plan_in_progress + --override + gate_history G4 recycle evidence.
-#   plan_complete -> execute_in_progress
-#   execute_in_progress -> complete
-#   (any) -> archived
+# Current position (phase transitions enforced by PreToolUse hook)
 phase: "scope_in_progress"
-current_task: null
-# Current position within active skill (set on step entry, cleared on skill completion)
-# Sub-keys: skill (string), step (integer), label (string)
-# Example: {skill: "scope", step: 5, label: "Interactive Questioning (Round 2: Adaptive Refinement)"}
-current_step: null
-
-# Reserved for v2 -- cross-lifecycle import (IMPORT-01 through IMPORT-04)
-imported_from: null
-constraints: []
-
-# Research tracking
-research_round: 0
-
-# Questions (flat list -- each item is a flat object, max 2 nesting levels)
-questions: []
-# Question item schema:
-#   id: "q01"
-#   text: "How should X be implemented?"
-#   priority: "P0"           # P0 | P1 | P2
-#   decision_area: "area-name"
-#   source_hints: ["web", "codebase"]
-#   evidence_requirements: "what specific evidence would constitute a sufficient answer"
-#   status: "pending"        # pending | covered | partial | not_covered | unavailable_source
-#   source: "original"       # original | discovered-round-{N}
-#   gap_details: null        # references unmet evidence requirements when partial/not_covered
-#   evidence_files: []
-
-# Gate history (flat list -- each item is a flat object, max 2 nesting levels)
-gate_history: []
-# Gate history item schema:
-#   gate: "G1"
-#   timestamp: "2026-01-01T00:00:00Z"
-#   outcome: "go"            # go | go_advisory | hold | recycle | override
-#   must_passed: 0
-#   must_failed: 0
-#   should_passed: 0
-#   should_failed: 0
-#   notes: null
-#   overridden: false
-
-# Execution state (populated by plan skill)
-tasks: []
-current_wave: null
+started_at: null
+phase_started_at: null

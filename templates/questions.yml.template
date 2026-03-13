@@ -1,0 +1,6 @@
+# Expedite Research Questions
+# Loaded by scope and research skills only.
+# WRITE PATTERN: complete-file rewrite
+# Question schema: id, text, priority (P0|P1|P2), decision_area, source_hints, evidence_requirements, status (pending|covered|partial|not_covered|unavailable_source), source, gap_details, evidence_files
+research_round: 0
+questions: []
