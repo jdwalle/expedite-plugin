@@ -75,6 +75,7 @@ process.stdin.on('end', function () {
     var schema = require('./lib/state-schema');
     var fsm = require('./lib/fsm');
     var gateChecks = require('./lib/gate-checks');
+    var denialTracker = require('./lib/denial-tracker');
 
     var content = input.tool_input.content;
     var parsed;
@@ -111,7 +112,16 @@ process.stdin.on('end', function () {
 
           if (!transition.valid) {
             // HOOK-01: Block invalid transition with specific message
-            deny('State write blocked: ' + transition.error);
+            var fsmPattern = 'fsm:' + currentState.phase + ':' + parsed.phase;
+            var fsmCount = denialTracker.recordDenial(expediteDir, fsmPattern);
+            var fsmReason = 'State write blocked: ' + transition.error +
+              ' To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.';
+            if (fsmCount >= denialTracker.ESCALATION_THRESHOLD) {
+              fsmReason += '\n\nThis denial has occurred ' + fsmCount + ' times. ' +
+                'Consider manual intervention: edit .expedite/state.yml directly, ' +
+                'or set EXPEDITE_HOOKS_DISABLED=true to bypass all enforcement.';
+            }
+            deny(fsmReason);
             return;
           }
 
@@ -125,16 +135,38 @@ process.stdin.on('end', function () {
 
               if (!passage.passed) {
                 // HOOK-02: Block _complete advance without gate passage
-                deny('State write blocked: cannot advance to ' + parsed.phase +
-                     ' -- ' + transition.gate + ' has not passed. ' +
-                     passage.status + '. Run /expedite:gate to evaluate.');
+                var gatePattern = 'gate:' + transition.gate + ':' + parsed.phase;
+                var gateCount = denialTracker.recordDenial(expediteDir, gatePattern);
+                var gateReason = 'State write blocked: cannot advance to ' + parsed.phase +
+                  ' -- ' + transition.gate + ' has not passed. ' + passage.status + '.\n\n' +
+                  'To override: Write gates.yml with a new history entry: ' +
+                  '{gate: "' + transition.gate + '", timestamp: "<ISO 8601>", outcome: "overridden", ' +
+                  'override_reason: "<your justification>", severity: "<low|medium|high>"}. ' +
+                  'Then immediately retry this exact Write to state.yml.';
+                if (gateCount >= denialTracker.ESCALATION_THRESHOLD) {
+                  gateReason += '\n\nThis denial has occurred ' + gateCount + ' times. ' +
+                    'Consider manual intervention: edit .expedite/state.yml directly, ' +
+                    'or set EXPEDITE_HOOKS_DISABLED=true to bypass all enforcement.';
+                }
+                deny(gateReason);
                 return;
               }
             } catch (gatesErr) {
               // gates.yml doesn't exist or can't be read -- gate hasn't passed
-              deny('State write blocked: cannot advance to ' + parsed.phase +
-                   ' -- ' + transition.gate + ' has not passed. ' +
-                   'No gates.yml found. Run /expedite:gate to evaluate.');
+              var noGatePattern = 'gate:' + transition.gate + ':' + parsed.phase;
+              var noGateCount = denialTracker.recordDenial(expediteDir, noGatePattern);
+              var noGateReason = 'State write blocked: cannot advance to ' + parsed.phase +
+                ' -- ' + transition.gate + ' has not passed. No gates.yml found.\n\n' +
+                'To override: Write gates.yml with a new history entry: ' +
+                '{gate: "' + transition.gate + '", timestamp: "<ISO 8601>", outcome: "overridden", ' +
+                'override_reason: "<your justification>", severity: "<low|medium|high>"}. ' +
+                'Then immediately retry this exact Write to state.yml.';
+              if (noGateCount >= denialTracker.ESCALATION_THRESHOLD) {
+                noGateReason += '\n\nThis denial has occurred ' + noGateCount + ' times. ' +
+                  'Consider manual intervention: edit .expedite/state.yml directly, ' +
+                  'or set EXPEDITE_HOOKS_DISABLED=true to bypass all enforcement.';
+              }
+              deny(noGateReason);
               return;
             }
           }
@@ -161,9 +193,18 @@ process.stdin.on('end', function () {
 
             if (currentHash === proposedHash) {
               // HOOK-03: Block regression when inputs haven't changed
-              deny('Checkpoint write blocked: step regression from ' + currentCp.step +
-                   ' to ' + parsed.step + ' is not allowed when inputs_hash has not changed. ' +
-                   'If inputs have changed, update the inputs_hash field.');
+              var cpPattern = 'checkpoint:' + parsed.step;
+              var cpCount = denialTracker.recordDenial(expediteDir, cpPattern);
+              var cpReason = 'Checkpoint write blocked: step regression from ' + currentCp.step +
+                ' to ' + parsed.step + ' is not allowed when inputs_hash has not changed. ' +
+                'If inputs have changed, update the inputs_hash field.' +
+                ' To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.';
+              if (cpCount >= denialTracker.ESCALATION_THRESHOLD) {
+                cpReason += '\n\nThis denial has occurred ' + cpCount + ' times. ' +
+                  'Consider manual intervention: edit .expedite/state.yml directly, ' +
+                  'or set EXPEDITE_HOOKS_DISABLED=true to bypass all enforcement.';
+              }
+              deny(cpReason);
               return;
             }
             // inputs_hash differs -- allow regression (changed inputs justify re-execution)
@@ -198,9 +239,22 @@ process.stdin.on('end', function () {
           for (var gi = existingCount; gi < parsed.history.length; gi++) {
             var entry = parsed.history[gi];
             if (entry && entry.gate) {
+              // OVRD-03: Override records bypass gate-phase validation (prevents deadlock)
+              if (entry.outcome === 'overridden') {
+                continue;
+              }
               var phaseCheck = gateChecks.validateGateForPhase(entry.gate, stateObj.phase);
               if (!phaseCheck.valid) {
-                deny('Gate write blocked: ' + phaseCheck.error + '. Current phase: ' + stateObj.phase);
+                var gpPattern = 'gatephase:' + entry.gate + ':' + stateObj.phase;
+                var gpCount = denialTracker.recordDenial(expediteDir, gpPattern);
+                var gpReason = 'Gate write blocked: ' + phaseCheck.error + '. Current phase: ' + stateObj.phase +
+                  ' To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.';
+                if (gpCount >= denialTracker.ESCALATION_THRESHOLD) {
+                  gpReason += '\n\nThis denial has occurred ' + gpCount + ' times. ' +
+                    'Consider manual intervention: edit .expedite/state.yml directly, ' +
+                    'or set EXPEDITE_HOOKS_DISABLED=true to bypass all enforcement.';
+                }
+                deny(gpReason);
                 return;
               }
             }
