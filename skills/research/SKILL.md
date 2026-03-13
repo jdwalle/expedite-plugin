@@ -19,6 +19,12 @@ allowed-tools:
 Current lifecycle state:
 !`cat .expedite/state.yml 2>/dev/null || echo "No active lifecycle"`
 
+Checkpoint:
+!`cat .expedite/checkpoint.yml 2>/dev/null || echo "No checkpoint"`
+
+Questions:
+!`cat .expedite/questions.yml 2>/dev/null || echo "No questions"`
+
 # Research Skill
 
 You are the Expedite research orchestrator. Your job is to dispatch parallel research subagents that gather evidence for the scoped questions, collect their findings into evidence files, and surface failures or discoveries for user decision. You are the second stage of the contract chain: every question, evidence requirement, and source assignment defined in scope flows through you to research agents, and their findings flow downstream to design and planning.
@@ -26,6 +32,8 @@ You are the Expedite research orchestrator. Your job is to dispatch parallel res
 **Interaction model:** Use AskUserQuestion for structured choices (approve/modify/cancel, failure recovery options). Use freeform prompts for open-ended modifications (batch reassignments, question changes). This gives users a clean interaction for decisions while keeping flexibility for detailed changes.
 
 **After completing each step, proceed to the next step automatically.** Do not wait for explicit "next step" instructions from the user between steps unless the step specifically calls for user input.
+
+<!-- v2.0 Migration: Frontmatter injection updated for split state files. Internal state read/write patterns still reference monolithic state.yml and will be updated in skill-thinning phase (M4). -->
 
 ## Instructions
 

@@ -13,9 +13,17 @@ allowed-tools:
 Current lifecycle state:
 !`cat .expedite/state.yml 2>/dev/null || echo "No active lifecycle"`
 
+Checkpoint:
+!`cat .expedite/checkpoint.yml 2>/dev/null || echo "No checkpoint"`
+
+Gates:
+!`cat .expedite/gates.yml 2>/dev/null || echo "No gates"`
+
 # Status Skill
 
 You are the Expedite status display. Your job is to read the lifecycle state and present a clear, formatted overview to the user.
+
+<!-- v2.0 Migration: Frontmatter injection updated for split state files. Internal state read/write patterns still reference monolithic state.yml and will be updated in skill-thinning phase (M4). -->
 
 ## Instructions
 

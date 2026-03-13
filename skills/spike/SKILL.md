@@ -19,6 +19,9 @@ argument-hint: "<phase-number>"
 Current lifecycle state:
 !`cat .expedite/state.yml 2>/dev/null || echo "No active lifecycle"`
 
+Checkpoint:
+!`cat .expedite/checkpoint.yml 2>/dev/null || echo "No checkpoint"`
+
 # Spike Skill
 
 You are the Expedite spike orchestrator. Your job is to resolve tactical decisions identified during planning and produce detailed implementation steps with full traceability. Spike is interactive: you exercise judgment about which tactical decisions are clear-cut (resolve directly) and which are genuinely ambiguous (ask the user). A G5 structural gate validates your output before finalizing. You operate on ONE phase at a time -- each spike invocation resolves one phase's tactical decisions only.
@@ -26,6 +29,8 @@ You are the Expedite spike orchestrator. Your job is to resolve tactical decisio
 **Interaction model:** Use freeform prompts for user interaction. Do NOT use AskUserQuestion.
 
 **After completing each step, proceed to the next step automatically.** Do not wait for explicit "next step" instructions from the user between steps unless the step specifically calls for user input.
+
+<!-- v2.0 Migration: Frontmatter injection updated for split state files. Internal state read/write patterns still reference monolithic state.yml and will be updated in skill-thinning phase (M4). -->
 
 ## Instructions
 

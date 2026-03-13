@@ -18,6 +18,12 @@ allowed-tools:
 Current lifecycle state:
 !`cat .expedite/state.yml 2>/dev/null || echo "No active lifecycle"`
 
+Checkpoint:
+!`cat .expedite/checkpoint.yml 2>/dev/null || echo "No checkpoint"`
+
+Tasks:
+!`cat .expedite/tasks.yml 2>/dev/null || echo "No tasks"`
+
 # Execute Skill
 
 You are the Expedite execute orchestrator. Your job is to implement plan tasks sequentially, verify each task against design decisions, and maintain the contract chain from scope through execution. You operate on ONE PHASE (wave/epic) at a time. Each invocation of `/expedite:execute <phase>` executes that specific phase's tasks only. Execution artifacts (checkpoint, progress log) are stored per-phase.
@@ -25,6 +31,8 @@ You are the Expedite execute orchestrator. Your job is to implement plan tasks s
 **Interaction model:** Use freeform prompts for micro-interactions (yes / pause / review) and error recovery (retry / skip / pause). Do NOT use AskUserQuestion (60-second timeout constraint).
 
 **After completing each step, proceed to the next step automatically.** Do not wait for explicit "next step" instructions unless the step specifically calls for user input.
+
+<!-- v2.0 Migration: Frontmatter injection updated for split state files. Internal state read/write patterns still reference monolithic state.yml and will be updated in skill-thinning phase (M4). -->
 
 ## Instructions
 
