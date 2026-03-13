@@ -1,7 +1,7 @@
 # Requirements: Expedite v2.0
 
 **Defined:** 2026-03-12
-**Core Value:** Developers can run a complete evidence-based lifecycle — from scoping questions through researched design to executable plan — without losing context, skipping steps, or making decisions without evidence.
+**Core Value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
 
 ## v2.0 Requirements
 
@@ -87,10 +87,10 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 
 | Feature | Reason |
 |---------|--------|
-| Agent formalization (M3) | Future milestone — no dependency on M1-M2 |
-| Skill thinning (M4) | Future milestone — requires M3 first |
-| Gate evaluation logic (M5/M6) | Future milestone — hooks only check existing gate results |
-| Worktree isolation (M7) | Future milestone — requires M3 first |
+| Agent formalization (M3) | Future milestone -- no dependency on M1-M2 |
+| Skill thinning (M4) | Future milestone -- requires M3 first |
+| Gate evaluation logic (M5/M6) | Future milestone -- hooks only check existing gate results |
+| Worktree isolation (M7) | Future milestone -- requires M3 first |
 | SessionStart hook | 3 open Claude Code bugs (#16538, #13650, #11509) |
 | Cross-lifecycle artifact import | Novel feature, needs design research |
 | Agent Teams (mesh communication) | 3-4x token cost, pipeline fits hub-and-spoke |
@@ -102,37 +102,37 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| STATE-01 | TBD | Pending |
-| STATE-02 | TBD | Pending |
-| STATE-03 | TBD | Pending |
-| STATE-04 | TBD | Pending |
-| HOOK-01 | TBD | Pending |
-| HOOK-02 | TBD | Pending |
-| HOOK-03 | TBD | Pending |
-| HOOK-04 | TBD | Pending |
-| HOOK-05 | TBD | Pending |
-| HOOK-06 | TBD | Pending |
-| HOOK-07 | TBD | Pending |
-| OVRD-01 | TBD | Pending |
-| OVRD-02 | TBD | Pending |
-| OVRD-03 | TBD | Pending |
-| OVRD-04 | TBD | Pending |
-| OVRD-05 | TBD | Pending |
-| OVRD-06 | TBD | Pending |
-| RESM-01 | TBD | Pending |
-| RESM-02 | TBD | Pending |
-| RESM-03 | TBD | Pending |
-| RESM-04 | TBD | Pending |
-| SESS-01 | TBD | Pending |
-| SESS-02 | TBD | Pending |
-| SESS-03 | TBD | Pending |
-| SESS-04 | TBD | Pending |
+| STATE-01 | Phase 25 | Pending |
+| STATE-02 | Phase 25 | Pending |
+| STATE-03 | Phase 29 | Pending |
+| STATE-04 | Phase 27 | Pending |
+| HOOK-01 | Phase 26 | Pending |
+| HOOK-02 | Phase 26 | Pending |
+| HOOK-03 | Phase 26 | Pending |
+| HOOK-04 | Phase 26 | Pending |
+| HOOK-05 | Phase 25 | Pending |
+| HOOK-06 | Phase 25 | Pending |
+| HOOK-07 | Phase 25 | Pending |
+| OVRD-01 | Phase 27 | Pending |
+| OVRD-02 | Phase 27 | Pending |
+| OVRD-03 | Phase 27 | Pending |
+| OVRD-04 | Phase 27 | Pending |
+| OVRD-05 | Phase 27 | Pending |
+| OVRD-06 | Phase 27 | Pending |
+| RESM-01 | Phase 28 | Pending |
+| RESM-02 | Phase 28 | Pending |
+| RESM-03 | Phase 28 | Pending |
+| RESM-04 | Phase 28 | Pending |
+| SESS-01 | Phase 29 | Pending |
+| SESS-02 | Phase 29 | Pending |
+| SESS-03 | Phase 29 | Pending |
+| SESS-04 | Phase 29 | Pending |
 
 **Coverage:**
 - v2.0 requirements: 25 total
-- Mapped to phases: 0
-- Unmapped: 25
+- Mapped to phases: 25
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-12*
-*Last updated: 2026-03-12 after initial definition*
+*Last updated: 2026-03-12 after roadmap creation*
