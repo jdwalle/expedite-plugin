@@ -21,6 +21,26 @@
           }
         ]
       }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/pre-compact-save.js"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/session-stop.js"
+          }
+        ]
+      }
     ]
   }
 }
