@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Agent Harness Foundation
-status: not_started
-last_updated: "2026-03-12T08:00:00.000Z"
+status: in_progress
+last_updated: "2026-03-13T05:02:29.000Z"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 3
+  completed_plans: 1
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-12)
 ## Current Position
 
 Phase: 25 of 29 (State Splitting and Hook Infrastructure)
-Plan: --
-Status: Ready to plan
-Last activity: 2026-03-12 -- Roadmap created for v2.0 Agent Harness Foundation
+Plan: 1 of 3 complete
+Status: In progress
+Last activity: 2026-03-13 -- Completed 25-01 (State Schemas and Templates)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 7% (1/15 plans)
 
 ## Performance Metrics
 
@@ -35,7 +35,11 @@ Progress: [░░░░░░░░░░] 0%
 - v1.0: 32 plans across 13 phases in 11 days
 - v1.1: 11 plans across 5 phases in 2 days
 - v1.2: 2 plans across 1 phase in 1 day
-- v2.0: 0 plans across 5 phases (starting)
+- v2.0: 1 plan across 5 phases (in progress)
+
+| Phase | Plan | Duration | Tasks | Files |
+|-------|------|----------|-------|-------|
+| 25 | 01 | 3min | 3 | 8 |
 
 ## Accumulated Context
 
@@ -52,6 +56,9 @@ Recent decisions affecting current work:
 - Decision 20: Bundle state split + PreToolUse hook as first migration phase (co-dependent)
 - Node.js for all hook scripts (js-yaml, no build step) -- Decision 15
 - 5-file state split: state.yml, checkpoint.yml, questions.yml, gates.yml, tasks.yml -- Decision 7
+- state.yml retains intent/description (needed by all skills per consumption matrix) -- 25-01
+- Version bumped from string "1" to number 2 for split format signal -- 25-01
+- Checkpoint requiredWhenPopulated pattern: all-null valid, partial not -- 25-01
 
 ### Pending Todos
 
@@ -65,6 +72,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-12
-Stopped at: Roadmap created for v2.0. Ready to plan Phase 25.
+Last session: 2026-03-13
+Stopped at: Completed 25-01-PLAN.md (State Schemas and Templates)
 Resume file: None

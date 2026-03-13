@@ -10,7 +10,7 @@ Requirements for v2.0 Agent Harness Foundation (M1-M2). Each maps to roadmap pha
 ### State Management
 
 - [ ] **STATE-01**: User invokes any skill and only the state files relevant to that skill are loaded (scoped injection per consumption matrix)
-- [ ] **STATE-02**: User can inspect lifecycle state across 5 separate files: state.yml (~15 lines), checkpoint.yml, questions.yml, gates.yml, tasks.yml
+- [x] **STATE-02**: User can inspect lifecycle state across 5 separate files: state.yml (~15 lines), checkpoint.yml, questions.yml, gates.yml, tasks.yml
 - [ ] **STATE-03**: session-summary.md is created at session end and loaded by all skill frontmatter
 - [ ] **STATE-04**: audit.log records override events (append-only, never loaded into LLM context)
 
@@ -103,7 +103,7 @@ Deferred to v2.1+ (M3-M8 milestone after M1-M2 validation).
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | STATE-01 | Phase 25 | Pending |
-| STATE-02 | Phase 25 | Pending |
+| STATE-02 | Phase 25 | Complete |
 | STATE-03 | Phase 29 | Pending |
 | STATE-04 | Phase 27 | Pending |
 | HOOK-01 | Phase 26 | Pending |
