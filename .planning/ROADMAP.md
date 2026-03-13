@@ -171,7 +171,7 @@ Phases execute in numeric order: 25 -> 26 -> 27 -> 28 -> 29
 | 17. HANDOFF.md Activation | v1.1 | 3/3 | Complete | 2026-03-10 |
 | 18. Gate Enforcement | v1.1 | 2/2 | Complete | 2026-03-11 |
 | 19. State Recovery | v1.2 | 2/2 | Complete | 2026-03-12 |
-| 25. State Splitting + Hooks | 3/3 | Complete   | 2026-03-13 | - |
+| 25. State Splitting + Hooks | 3/3 | Complete    | 2026-03-13 | - |
 | 26. Phase Transition Enforcement | v2.0 | 0/TBD | Not started | - |
 | 27. Override + Audit | v2.0 | 0/TBD | Not started | - |
 | 28. Checkpoint Resume | v2.0 | 0/TBD | Not started | - |
