@@ -48,7 +48,17 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 
 ### Active
 
-(None — next milestone not yet scoped. Use `/gsd:new-milestone` to define.)
+<!-- Current scope: v3.0 Agent Harness Completion (M3-M7) -->
+
+- [ ] Agent formalization — 8-10 agents in `agents/*.md` with frontmatter (model, tools, maxTurns, system prompt)
+- [ ] Model tiering — Opus for synthesizer/architect/verifier, Sonnet for all others
+- [ ] Per-agent memory — research-synthesizer and gate-verifier get `memory: project`
+- [ ] Skill thinning — all skills refactored to step-sequencer + agent-dispatcher (target 100-200 lines)
+- [ ] Gate write path redirect — skills write gate results to `.expedite/gates.yml` (fixes INT-01/FLOW-01)
+- [ ] Structural gate enforcement — G1, G2-structural, G4 as Node.js scripts writing to gates.yml
+- [ ] Semantic gate dual-layer — G3, G5 + G2-semantic via gate-verifier agent with anti-rubber-stamp measures
+- [ ] Worktree isolation — task-implementer gets `isolation: worktree`
+- [ ] Per-task git workflow — atomic commits (DEVW-01), conventional format (DEVW-02), selective staging (DEVW-03), opt-out (DEVW-04), failed-task handling (DEVW-05), git error pausing (DEVW-06)
 
 ### Out of Scope
 
@@ -68,6 +78,20 @@ Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagent
 Total: 24 phases, 56 plans, 144 requirements across 4 milestones.
 Hook latency: p99 ~21ms (well under 300ms target).
 Known integration gap: skills write gate results to state.yml (old location), not gates.yml — deferred to M4 skill-thinning.
+
+## Current Milestone: v3.0 Agent Harness Completion
+
+**Goal:** Complete the agent harness architecture on top of the validated M1-M2 foundation — agent formalization (M3), skill thinning (M4), structural gate enforcement (M5), semantic gate dual-layer (M6), and worktree isolation + per-task git workflow (M7).
+
+**Target features:**
+- Agent formalization: 8-10 agents in `agents/*.md` with full frontmatter, model tiering, per-agent memory
+- Skill thinning: all skills refactored to step-sequencer + agent-dispatcher pattern (100-200 line target)
+- Structural gates: G1/G2-structural/G4 as deterministic Node.js scripts
+- Semantic gates: G3/G5 + G2-semantic via dual-layer gate-verifier agent
+- Worktree isolation + per-task atomic git commits with conventional format
+
+**Design spec:** `.planning/research/agent-harness-architecture/design/PRODUCT-DESIGN.md`
+**Risk register:** `.planning/research/agent-harness-architecture/design/CONFIDENCE-AUDIT.md`
 
 ## Constraints
 
@@ -112,4 +136,4 @@ Known integration gap: skills write gate results to state.yml (old location), no
 | Shared reference injection pattern | skills/shared/ref-*.md files injected via !cat in skill preambles | ✓ Good — DRY protocol injection |
 
 ---
-*Last updated: 2026-03-13 after v2.0 milestone*
+*Last updated: 2026-03-15 after v3.0 milestone start*
