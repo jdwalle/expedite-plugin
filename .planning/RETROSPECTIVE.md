@@ -94,6 +94,85 @@
 
 ---
 
+## Milestone: v1.2 — Infrastructure Hardening & Quality
+
+**Shipped:** 2026-03-12
+**Phases:** 1 | **Plans:** 2
+
+### What Was Built
+- State recovery: automatic detection and recovery of missing/corrupted state.yml from lifecycle artifacts
+
+### What Worked
+- Tight scope (1 phase, 2 plans) — shipped in a single session
+- Recovery protocol validates against all artifact types, not just state.yml
+- Decision to subsume phases 20-24 into v2.0 agent harness avoided redundant work
+
+### What Was Inefficient
+- 28 requirements scoped for 6 phases but only 1 phase shipped — rest carried forward to v2.0
+- Milestone audit revealed heavy requirement debt from subsumed phases
+
+### Patterns Established
+- Milestone can ship with subset of scoped phases when remaining work is subsumed by broader effort
+- Recovery protocol: detect corruption → scan artifacts → rebuild state → log recovery
+
+### Key Lessons
+1. Scope resets are healthy — subsuming 5 phases into a better-researched v2.0 architecture was correct
+2. Recovery protocols need all-file coverage from day one — state corruption affects the whole workflow
+
+### Cost Observations
+- Model mix: 100% opus
+- Total execution time: ~8 minutes across 2 plans
+- Notable: Smallest milestone — focused on a single resilience capability
+
+---
+
+## Milestone: v2.0 — Agent Harness Foundation
+
+**Shipped:** 2026-03-13
+**Phases:** 5 | **Plans:** 11
+
+### What Was Built
+- 5-file state split (state.yml, checkpoint.yml, questions.yml, gates.yml, tasks.yml) with schema validators and per-skill frontmatter injection
+- PreToolUse hook: FSM transition enforcement, gate passage checking, checkpoint regression guard, structural validation
+- Override mechanism: actionable denials with retry instructions, deadlock prevention, escalation after 3 denials, enriched audit trail
+- Checkpoint-based deterministic resume in all 6 skills with mid-step substep context
+- Session handoff: Stop + PreCompact hooks persist session-summary.md; all lifecycle skills inject session context
+
+### What Worked
+- Extensive pre-work research (8+ harness implementations analyzed, 3 design proposals synthesized) made execution decisions nearly pre-made
+- A1 assumption empirically validated before any code written — no wasted effort on wrong hook architecture
+- Layered enforcement approach (schema → FSM → gate → checkpoint → gate-phase) allows each concern to be tested independently
+- Fail-open design for hooks — enforcement is additive safety, never blocks development workflow
+- 1-day execution for 5 phases / 11 plans — fastest milestone relative to complexity
+
+### What Was Inefficient
+- ROADMAP.md checkboxes not updated during execution — 6 plans showed unchecked despite having SUMMARY.md files
+- SUMMARY.md files still lack one_liner frontmatter — third consecutive milestone with this known gap
+- Gate write path disconnect (skills→state.yml vs hooks→gates.yml) is a known integration gap that prevents normal gated transitions — override workaround needed
+- VALID_GATE_OUTCOMES schema missing 3 outcomes used by skills — will block M4 if not fixed first
+
+### Patterns Established
+- Non-state passthrough: hooks check file path before any YAML parsing for latency optimization
+- Shared reference injection: skills/shared/ref-*.md files injected via !cat in skill preambles
+- Checkpoint-at-every-step-boundary: skills write checkpoint.yml before and after every step transition
+- Cross-reference rule: state.yml phase always wins over checkpoint step (prevents impossible states)
+- Denial tracker with escalation: per-pattern JSON tracking with threshold-based suggestions
+
+### Key Lessons
+1. Validating architectural assumptions before coding (A1 hook behavior test) eliminates the biggest risk class — do this for every infrastructure milestone
+2. Fail-open hooks are the right default for developer tools — enforcement should help, never block
+3. Integration gaps between skill write patterns and hook read patterns must be resolved in the same milestone — deferring creates workaround debt
+4. 1-day milestone execution is achievable when research and design are thorough — the investment compounds
+5. ROADMAP.md checkbox maintenance is still falling through — needs automation or per-plan commit hook
+
+### Cost Observations
+- Model mix: 100% opus (quality profile throughout)
+- Average plan duration: 3.4 minutes
+- Total execution time: ~37 minutes across 11 plans
+- Notable: Most architecturally complex milestone yet, but research investment made execution fast. Phase 28-01 was the outlier at 11min (6 skills to instrument).
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -102,11 +181,15 @@
 |-----------|--------|-------|----------|------------|
 | v1.0 | 13 | 32 | 11 days | Initial build with 3 audit cycles |
 | v1.1 | 5 | 11 | 2 days | Production polish — patterns from v1.0 made execution mechanical |
+| v1.2 | 1 | 2 | 1 day | Scoped down — 5 phases subsumed by v2.0 architecture |
+| v2.0 | 5 | 11 | 1 day | Infrastructure milestone — extensive pre-research made execution fast |
 
 ### Top Lessons (Verified Across Milestones)
 
-1. Plan-first with verbatim specifications enables fast, accurate execution (v1.0, v1.1)
+1. Plan-first with verbatim specifications enables fast, accurate execution (v1.0, v1.1, v2.0)
 2. Human verification checkpoints at phase boundaries catch issues subagents miss (v1.0, v1.1)
-3. Audit-before-ship ensures zero-gap releases (v1.0, v1.1)
-4. Tracking doc maintenance should happen per-phase, not deferred — stale checkboxes are noise (v1.0 inefficiency, v1.1 confirmed)
-5. Established patterns compound — v1.1 was 7x faster per plan than v1.0 initial phases
+3. Audit-before-ship ensures zero-gap releases (v1.0, v1.1, v1.2, v2.0)
+4. Tracking doc maintenance should happen per-phase, not deferred — stale checkboxes are noise (v1.0, v1.1, v2.0 — still unfixed)
+5. Established patterns compound — later milestones execute faster despite increasing complexity (v1.0→v1.1→v2.0)
+6. Validate architectural assumptions before coding — eliminates biggest risk class (v2.0 A1 test)
+7. Thorough research investment pays back in execution speed — v2.0 was most complex but shipped in 1 day (v2.0)

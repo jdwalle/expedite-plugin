@@ -12,6 +12,9 @@ var VALID_GATE_OUTCOMES = [
   'go-with-advisory',
   'go_advisory',
   'overridden',
+  'recycle',
+  'override',
+  'hold',
 ];
 
 var schema = {

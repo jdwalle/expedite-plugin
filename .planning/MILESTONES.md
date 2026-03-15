@@ -1,5 +1,28 @@
 # Milestones
 
+## v2.0 Agent Harness Foundation (Shipped: 2026-03-13)
+
+**Phases completed:** 5 phases, 11 plans, 20 tasks
+**Timeline:** 1 day (2026-03-13)
+**Lines changed:** +7,183 / -589 across 55 files
+**JS LOC:** 1,358 (hooks infrastructure) | Skill markdown: 7,211
+**Requirements:** 25/25 satisfied
+**Git range:** aacd969..09b23bc
+
+**Key accomplishments:**
+1. Split monolithic state.yml into 5 scoped files with schema validators and per-skill frontmatter injection
+2. PreToolUse hook enforces FSM transitions, gate passage, checkpoint regression, and structural validation before writes reach disk
+3. Deny-override-retry flow with actionable denials, deadlock prevention, escalation after 3 attempts, and enriched audit trail
+4. Deterministic checkpoint-based resume in all 6 skills with mid-step substep context and artifact-existence as secondary fallback
+5. Stop and PreCompact hooks persist session-summary.md; all lifecycle skills inject session context for seamless cross-session continuity
+
+### Known Deferrals (to M4+)
+- INT-01: Gate write path disconnected — skills write gate results to state.yml.gate_history (old location), not gates.yml. Override flow works as workaround. Deferred to M4 skill-thinning.
+- INT-02: gates.yml VALID_GATE_OUTCOMES missing recycle/override/hold outcomes — must be added before M4 redirects gate writes.
+- 12 tech debt items across 5 phases (0 blockers, 10 low/info items)
+
+---
+
 ## v1.2 Infrastructure Hardening & Quality (Shipped: 2026-03-12)
 
 **Phases completed:** 1 phase, 2 plans (of 6 planned phases)

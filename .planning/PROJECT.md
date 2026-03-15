@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Expedite is a Claude Code plugin that orchestrates a 5-phase research-to-implementation lifecycle: Scope, Research, Design, Plan, Execute. It turns "research a problem, then build a solution" into a structured, repeatable workflow with 5 quality gates, parallel research agents, crash-resilient state management, dual-intent support for both product managers and engineers, step-level progress tracking, and DA readiness enforcement across all gates. The plugin lives at `~/.claude/plugins/expedite/` and is invoked via `/expedite:` commands.
+Expedite is a Claude Code plugin that orchestrates a 5-phase research-to-implementation lifecycle: Scope, Research, Design, Plan, Execute. It turns "research a problem, then build a solution" into a structured, repeatable workflow with 5 quality gates, parallel research agents, crash-resilient state management, dual-intent support for both product managers and engineers, step-level progress tracking, DA readiness enforcement across all gates, and a code-enforced agent harness with FSM-validated state transitions, checkpoint-based deterministic resume, and session handoff. The plugin lives at `~/.claude/plugins/expedite/` and is invoked via `/expedite:` commands.
 
 ## Core Value
 
@@ -37,19 +37,18 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 - ✓ HANDOFF.md generation, revision, and G3 gate validation for product-intent — v1.1
 - ✓ DA readiness enforcement: G2/G3 MUST criteria, G4/G5 SHOULD criteria — v1.1
 - ✓ State recovery: auto-detect missing/corrupted state.yml and recover from artifacts — v1.2
+- ✓ State splitting: 5 scoped files (state.yml, checkpoint.yml, questions.yml, gates.yml, tasks.yml) with per-skill injection — v2.0
+- ✓ PreToolUse hook enforcement: FSM phase transitions, schema validation, gate passage requirements — v2.0
+- ✓ PostToolUse audit hook: append-only override and state change trail — v2.0
+- ✓ PreCompact hook: checkpoint backup + session summary before compaction — v2.0
+- ✓ Stop hook: session summary persistence for session handoff — v2.0
+- ✓ Override mechanism: deny → write override to gates.yml → retry state write — v2.0
+- ✓ Checkpoint-based deterministic resume for all skills — v2.0
+- ✓ Session handoff via session-summary.md across session boundaries — v2.0
 
 ### Active
 
-<!-- Current scope for v2.0 — Agent Harness Foundation (M1-M2) -->
-
-- [ ] State splitting: 5 scoped files (state.yml, checkpoint.yml, questions.yml, gates.yml, tasks.yml) with per-skill injection
-- [ ] PreToolUse hook enforcement: FSM phase transitions, schema validation, gate passage requirements
-- [ ] PostToolUse audit hook: append-only override and state change trail
-- [ ] PreCompact hook: checkpoint backup + session summary before compaction
-- [ ] Stop hook: session summary persistence for session handoff
-- [ ] Override mechanism: deny → write override to gates.yml → retry state write
-- [ ] Checkpoint-based deterministic resume for all skills
-- [ ] Session handoff via session-summary.md across session boundaries
+(None — next milestone not yet scoped. Use `/gsd:new-milestone` to define.)
 
 ### Out of Scope
 
@@ -59,33 +58,16 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 - Mobile/web UI — pure CLI plugin
 - Multi-user collaboration — single-developer workflow
 - Numeric scoring for sufficiency — categorical model working well
-- Agent formalization (M3) — future milestone, no dependency on M1-M2
-- Skill thinning (M4) — future milestone, requires M3
-- Gate evaluation logic (M5/M6) — future milestone, hooks only check existing results
-- Worktree isolation (M7) — future milestone, requires M3
-- Per-task git commits — future milestone (M7), folded from v1.2 Phase 23
-
-## Current Milestone: v2.0 Agent Harness Foundation
-
-**Goal:** Evolve from prompt-driven orchestration to code-enforced agent harness — state splitting with hook validation, checkpoint-based deterministic resume, and override mechanism with audit trail.
-
-**Target features:**
-- State splitting into 5 scoped files with per-skill frontmatter injection
-- PreToolUse hook enforcement (FSM transitions, schema validation, gate passage)
-- Override mechanism (deny → gates.yml override → retry → hook allows)
-- Checkpoint-based deterministic resume for all skills
-- Session handoff via Stop/PreCompact hooks
-- Audit trail for overrides and significant state changes
+- TypeScript for hooks — build step overhead not justified for solo developer
 
 ## Context
 
-Shipped v1.2 with state recovery (Phase 19). Remaining v1.2 phases (20-24) subsumed by Agent Harness Architecture.
-Plugin source: 7 skill directories + 10 prompt templates + 3 inline references + state templates.
-Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagents, plugin.json auto-discovery).
-v1.0: 92 requirements across 13 phases. v1.1: 23 requirements across 5 phases. v1.2: 4 requirements across 1 phase.
-Total: 19 phases, 45 plans, 119 requirements across 3 milestones.
-Agent harness design: extensive research across 8+ Claude Code plugin harnesses, 3 design proposals synthesized into PRODUCT-DESIGN.md.
-A1 assumption (PreToolUse hooks fire on subagent writes) empirically confirmed 2026-03-12.
+Shipped v2.0 with agent harness foundation (Phases 25-29). 4 milestones complete: v1.0 (13 phases), v1.1 (5 phases), v1.2 (1 phase), v2.0 (5 phases).
+Plugin source: 7 skill directories + 10 prompt templates + 3 inline references + state templates + 6 hook scripts + 7 hook library modules.
+Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagents, plugin.json auto-discovery) + Node.js hooks (js-yaml).
+Total: 24 phases, 56 plans, 144 requirements across 4 milestones.
+Hook latency: p99 ~21ms (well under 300ms target).
+Known integration gap: skills write gate results to state.yml (old location), not gates.yml — deferred to M4 skill-thinning.
 
 ## Constraints
 
@@ -96,7 +78,7 @@ A1 assumption (PreToolUse hooks fire on subagent writes) empirically confirmed 2
 - **AskUserQuestion not in subagents**: Hard platform constraint (GitHub #12890)
 - **MCP tools require foreground execution**: Hard platform constraint (GitHub #13254, #19964)
 - **SessionStart hook bugs**: 3 open bugs (#16538, #13650, #11509) — fallback layers required
-- **State size**: state.yml under 100 lines target (soft limit)
+- **State size**: state.yml under 15 lines (split format), scoped files loaded per consumption matrix
 
 ## Key Decisions
 
@@ -120,9 +102,14 @@ A1 assumption (PreToolUse hooks fire on subagent writes) empirically confirmed 2
 | Step 7b dual-path revision propagation | Mirrored sections sync from DESIGN.md, HANDOFF-only sections edited directly | ✓ Good — correct semantics |
 | Three-branch Case B2 resume logic | Engineering/HANDOFF→Step 7, product/no HANDOFF→Step 6, no DESIGN.md→Step 2 | ✓ Good — covers all paths |
 | Archive v1.2 with Phase 19 only | Phases 20-24 subsumed by agent harness architecture — broader scope, same goals | ✓ Good — avoids redundant work |
-| Three-layer architecture (Enforcement + Orchestration + Execution) | All 3 design proposals converge. 4+ harness implementations validate pattern. | — Pending |
-| Node.js for all hook scripts (js-yaml, no build step) | Cross-platform, testable, reliable YAML parsing. Shell YAML parsing too fragile for enforcement. | — Pending |
-| Two-milestone agent harness approach | M1-M2 first (foundation + validation), M3-M8 only after empirical validation of A1/A2/A3 | — Pending |
+| Three-layer architecture (Enforcement + Orchestration + Execution) | All 3 design proposals converge. 4+ harness implementations validate pattern. | ✓ Good — enforcement layer shipped, orchestration layer (skills) working |
+| Node.js for all hook scripts (js-yaml, no build step) | Cross-platform, testable, reliable YAML parsing. Shell YAML parsing too fragile for enforcement. | ✓ Good — 6 hooks, p99 21ms, zero build complexity |
+| Two-milestone agent harness approach | M1-M2 first (foundation + validation), M3-M8 only after empirical validation of A1/A2/A3 | ✓ Good — A1 confirmed, A2 validated (21ms), A3 estimated 70-85% |
+| 5-file state split | Consumption matrix drives per-skill injection, reduces context load | ✓ Good — skills load only what they need |
+| Hooks fail-open on unexpected errors | Avoid blocking development workflow; enforcement is additive safety | ✓ Good — no workflow disruption |
+| Checkpoint-primary, artifact-fallback resume | Deterministic from checkpoint.yml; heuristic fallback only when checkpoint missing | ✓ Good — reliable resume in all 6 skills |
+| Override deadlock prevention | gates.yml writes bypass gate-passage checks; only schema-validated | ✓ Good — override flow never self-blocks |
+| Shared reference injection pattern | skills/shared/ref-*.md files injected via !cat in skill preambles | ✓ Good — DRY protocol injection |
 
 ---
-*Last updated: 2026-03-12 after v2.0 milestone started*
+*Last updated: 2026-03-13 after v2.0 milestone*

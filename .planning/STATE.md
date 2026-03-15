@@ -2,32 +2,30 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Agent Harness Foundation
-status: unknown
-last_updated: "2026-03-13T17:08:13.995Z"
+status: complete
+last_updated: "2026-03-13T23:00:00.000Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 13
-  completed_plans: 13
+  total_phases: 5
+  completed_phases: 5
+  total_plans: 11
+  completed_plans: 11
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-12)
+See: .planning/PROJECT.md (updated 2026-03-13)
 
-**Core value:** Developers can run a complete evidence-based lifecycle -- from scoping questions through researched design to executable plan -- without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 29 - Session Handoff
+**Core value:** Developers can run a complete evidence-based lifecycle — from scoping questions through researched design to executable plan — without losing context, skipping steps, or making decisions without evidence.
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 29 of 29 (Session Handoff)
-Plan: 2 of 2 complete
-Status: Complete
-Last activity: 2026-03-13 -- Completed 29-02 (Session handoff skill injection)
+Milestone: v2.0 Agent Harness Foundation — SHIPPED 2026-03-13
+All phases complete. Next step: `/gsd:new-milestone`
 
-Progress: [█████████████████████] 100% (12/12 plans)
+Progress: [█████████████████████] 100% (11/11 plans)
 
 ## Performance Metrics
 
@@ -35,7 +33,7 @@ Progress: [█████████████████████] 100%
 - v1.0: 32 plans across 13 phases in 11 days
 - v1.1: 11 plans across 5 phases in 2 days
 - v1.2: 2 plans across 1 phase in 1 day
-- v2.0: 12 plans across 5 phases
+- v2.0: 11 plans across 5 phases in 1 day
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
@@ -57,51 +55,18 @@ Progress: [█████████████████████] 100%
 
 Full decision log in PROJECT.md Key Decisions table.
 
-Recent decisions affecting current work:
-- v1.2 archived with Phase 19 only; phases 20-24 subsumed by agent harness architecture
-- Agent harness design informed by 8+ Claude Code plugin harnesses and 3 synthesized design proposals
-- A1 assumption confirmed: PreToolUse hooks fire on subagent writes (empirically validated 2026-03-12)
-- Hooks must go in .claude/settings.json (project settings), not plugin hooks.json, because plugin is not in enabledPlugins
-- Two-milestone approach: M1-M2 (foundation + validation), then M3-M8 (agents, gates, worktrees, handoff)
-- Decision 20: Bundle state split + PreToolUse hook as first migration phase (co-dependent)
-- Node.js for all hook scripts (js-yaml, no build step) -- Decision 15
-- 5-file state split: state.yml, checkpoint.yml, questions.yml, gates.yml, tasks.yml -- Decision 7
-- state.yml retains intent/description (needed by all skills per consumption matrix) -- 25-01
-- Version bumped from string "1" to number 2 for split format signal -- 25-01
-- Checkpoint requiredWhenPopulated pattern: all-null valid, partial not -- 25-01
-- Hooks fail-open on unexpected errors to avoid blocking development workflow -- 25-02
-- Non-state passthrough before YAML parsing for latency optimization (p99 ~21ms) -- 25-02
-- Frontmatter injection only for 25-03; internal state read/write deferred to M4 skill-thinning -- 25-03
-- Recovery protocol creates all 5 files unconditionally for frontmatter injection reliability -- 25-03
-- Added execute_complete->complete and complete->archived transitions beyond PRODUCT-DESIGN.md table for full lifecycle coverage -- 26-01
-- Lazy-load fsm.js and gate-checks.js inside state-file branch to preserve non-state passthrough latency -- 26-02
-- Gate-phase validation only checks new history entries (beyond existing count) to avoid false positives on history rewrites -- 26-02
-- Denial counts stored in .expedite/.denial-counts.json (JSON, fail-open on I/O errors) -- 27-01
-- Gate denials include override record format with retry instruction; non-gate denials suggest EXPEDITE_HOOKS_DISABLED -- 27-01
-- Override records (outcome: overridden) bypass gate-phase validation to prevent deadlock -- 27-01
-- Override protocol injected via !cat skills/shared/ref-override-protocol.md in all skill preambles -- 27-02
-- Checkpoint writes added AFTER existing state.yml writes (coexist until M4 skill-thinning) -- 28-01
-- Execute skill checkpoint writes target top-level .expedite/checkpoint.yml, NOT per-phase checkpoint -- 28-01
-- Checkpoint-based resume is primary; artifact-existence is secondary fallback when checkpoint missing or skill mismatches -- 28-02
-- Cross-reference rule: state.yml phase wins over checkpoint step in all skills -- 28-02
-- Execute uses dual-layer checkpoint: top-level for skill step resume, per-phase for task tracking -- 28-02
-- Spike shows checkpoint context informationally but always re-runs from phase argument -- 28-02
-- Shared helper hooks/lib/session-summary.js avoids duplication between Stop and PreCompact hooks -- 29-01
-- Critical state section (questions/tasks counts) is optional in session-summary.md -- 29-01
-- Session context injection uses silent fallback (no echo) for optional context; status skill excluded per consumption matrix -- 29-02
-
 ### Pending Todos
 
 None.
 
 ### Blockers/Concerns
 
-- A3 (Override round-trip): ~70-85% estimated reliability for "remember to retry" step -- novel pattern, no ecosystem precedent
-- A2 (Hook latency): Benchmarked at p99 ~21ms -- well under 300ms requirement (validated 2026-03-13)
-- Plugin not in enabledPlugins: hooks.json won't load from plugin directory; must use project settings
+- A3 (Override round-trip): ~70-85% estimated reliability — novel pattern, needs human validation in live sessions
+- INT-01: Gate write path disconnected (skills→state.yml, hooks→gates.yml) — deferred to M4
+- INT-02: VALID_GATE_OUTCOMES missing recycle/override/hold — must fix before M4
 
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 29-02-PLAN.md (Session handoff skill injection)
+Stopped at: Milestone v2.0 archived
 Resume file: None
