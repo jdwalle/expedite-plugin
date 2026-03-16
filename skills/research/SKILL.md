@@ -10,7 +10,7 @@ allowed-tools:
   - Bash
   - Glob
   - Grep
-  - Task
+  - Agent
   - AskUserQuestion
   - WebSearch
   - WebFetch
@@ -98,11 +98,11 @@ Display structured summary: batches dispatched/completed/failed, question status
 
 ### Step 12: Sufficiency Assessment
 
-<!-- TODO Phase 31: Convert sufficiency evaluator to named agent or inline logic -->
+Dispatch the `sufficiency-evaluator` agent via the Agent tool. Pass assembled context: project_name, intent, research_round. Apply intent lens. The agent reads evidence + scope itself and writes results to `.expedite/research/sufficiency-results.yml`.
 
-Dispatch sufficiency evaluator via Task(). Read template from `skills/research/references/prompt-sufficiency-evaluator.md` (Glob if needed). Fill placeholders (project_name, intent). Apply intent lens. The evaluator reads evidence + scope itself and writes results to `.expedite/research/sufficiency-results.yml`.
+After agent returns: verify `.expedite/research/sufficiency-results.yml` exists on disk. If missing, display error: "Agent sufficiency-evaluator did not produce expected output at .expedite/research/sufficiency-results.yml. Retry? (yes/skip)". If retry: re-dispatch once. If skip or second failure: fall back to manual assessment.
 
-After evaluator returns: verify sufficiency-results.yml exists on disk. If missing, display error and offer re-dispatch. Read results. Handle UNAVAILABLE-SOURCE questions (AskUserQuestion: accept gap/suggest alternative/override). Update state.yml with final statuses and gap_details. Display assessment summary table.
+Read results. Handle UNAVAILABLE-SOURCE questions (AskUserQuestion: accept gap/suggest alternative/override). Update state.yml with final statuses and gap_details. Display assessment summary table.
 
 ### Step 13: Dynamic Question Discovery
 
@@ -110,34 +110,18 @@ Read `.expedite/research/proposed-questions.yml`. If empty/missing, skip to Step
 
 ### Step 14: G2 Gate Evaluation
 
-Count-based gate from state.yml question statuses. No LLM judgment.
+Structural gate -- deterministic Node.js script. No LLM judgment.
 
-Compute: total_questions, covered_count, partial_count, not_covered_count, unavailable_count, p0 stats, DA readiness from SYNTHESIS.md.
+**Invoke gate script:**
+Run via Bash: `node gates/g2-structural.js "$(pwd)"`
 
-**MUST criteria:** M1: every question assessed. M2: majority COVERED. M3: all P0 COVERED or PARTIAL. M4: no unresolved UNAVAILABLE-SOURCE. M5: every DA readiness MET in SYNTHESIS.md.
+The script reads SYNTHESIS.md, SCOPE.md, and evidence files, evaluates structural criteria, writes the result to gates.yml, and prints JSON to stdout.
 
-**SHOULD criteria:** S1: all COVERED. S2: no PARTIAL. S3: all evidence requirements MET.
+**Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**Outcomes:** Go (all pass), Go-with-advisory (MUST pass, SHOULD fail), Recycle (any MUST fail).
+**Outcomes:** Go, Go-with-advisory, Recycle -- same routing as Step 15.
 
 Log gate outcome to log.yml. Display results table.
-
-**Record gate result to `.expedite/gates.yml`:**
-Read existing gates.yml (if any). Append to history array:
-```yaml
-history:
-  - gate: "G2"
-    timestamp: "{ISO 8601 UTC}"
-    outcome: "{go|go_advisory|recycle|override}"
-    evaluator: "research-skill"
-    must_passed: {N}
-    must_failed: {N}
-    should_passed: {N}
-    should_failed: {N}
-    notes: "{summary}"
-    overridden: false
-```
-If gates.yml does not exist, create it. If it exists, read first and APPEND to history (preserving G1 and any prior entries). Gate results are recorded ONLY in gates.yml (not state.yml).
 
 ### Step 15: Gate Outcome Handling
 

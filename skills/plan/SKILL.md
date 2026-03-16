@@ -105,30 +105,16 @@ Plan-specific revisions: reorder tasks, split/merge phases, reclassify TDs, adju
 
 ### Step 7: G4 Gate Evaluation
 
-Read PLAN.md and SCOPE.md. Structural gate -- deterministic checks, no LLM judgment.
+Structural gate -- deterministic Node.js script. No LLM judgment.
 
-**MUST criteria:** M1: every DA covered by at least one phase. M2: phase sizing within bounds (2-5 TDs, 3-8 tasks). M3: tactical decisions listed per phase (each classified). M4: acceptance criteria trace to design decisions (parenthetical DA ref). M5: PLAN.md exists, non-empty.
+**Invoke gate script:**
+Run via Bash: `node gates/g4-plan.js "$(pwd)"`
 
-**SHOULD criteria:** S1: logical wave/epic ordering. S2: effort/sizing present. S3: no orphan tasks. S4: override-affected DAs flagged (auto-PASS if no override). S5: task coverage reflects DA depth calibration.
+The script reads PLAN.md and SCOPE.md, evaluates structural criteria, writes the result to gates.yml, and prints JSON to stdout.
 
-Outcomes: Go (all pass), Go-with-advisory (MUST pass, SHOULD fail), Recycle (any MUST fail). Log to log.yml.
+**Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**Record gate result to `.expedite/gates.yml`:**
-Read existing gates.yml (if any). Append to history array:
-```yaml
-history:
-  - gate: "G4"
-    timestamp: "{ISO 8601 UTC}"
-    outcome: "{go|go_advisory|recycle|override}"
-    evaluator: "plan-skill"
-    must_passed: {N}
-    must_failed: {N}
-    should_passed: {N}
-    should_failed: {N}
-    notes: "{summary or null}"
-    overridden: false
-```
-If gates.yml does not exist, create it. If it exists, read first and APPEND to history (preserving prior entries). Gate results are recorded ONLY in gates.yml (not state.yml).
+**Outcomes:** Go, Go-with-advisory, Recycle -- same routing as Step 8. Log to log.yml.
 
 ### Step 8: Gate Outcome Handling
 

@@ -184,50 +184,19 @@ DA metadata (name, depth, readiness) lives ONLY in SCOPE.md, not state.yml. Disp
 
 ### Step 10: Gate G1 Evaluation
 
-Structural gate -- all checks deterministic. No LLM judgment.
+Structural gate -- deterministic Node.js script. No LLM judgment.
 
-**Read artifacts:** `.expedite/scope/SCOPE.md` and `.expedite/state.yml`.
+**Invoke gate script:**
+Run via Bash: `node gates/g1-scope.js "$(pwd)"`
 
-**MUST criteria (all must pass for Go):**
+The script reads SCOPE.md and state.yml, evaluates all structural criteria, writes the result to gates.yml, and prints JSON to stdout.
 
-| # | Criterion | Check |
-|---|-----------|-------|
-| M1 | SCOPE.md exists and non-empty | File exists with content |
-| M2 | At least 3 questions | Count state.yml questions array |
-| M3 | Intent declared | state.yml intent is "product" or "engineering" |
-| M4 | At least one success criterion | SCOPE.md has bullet in Success Criteria |
-| M5 | Every question has evidence_requirements | All non-null, non-empty |
-| M6 | Every DA has readiness+depth | SCOPE.md DA headings have depth, readiness lines |
-
-**SHOULD criteria (advisory, not blocking):**
-
-| # | Criterion | Check |
-|---|-----------|-------|
-| S1 | Questions have source_hints | Non-empty source_hints per question |
-| S2 | At least 2 decision areas | Count unique decision_area values |
-| S3 | No more than 15 questions | Count questions array |
+**Read script output:** Parse the JSON stdout. Extract `outcome`, `must_passed`, `must_failed`, `should_passed`, `should_failed`, and `failures` array.
 
 **Outcomes:**
-- All MUST + all SHOULD pass -> **"go"**: set phase "scope_complete", current_step null.
-- All MUST + some SHOULD fail -> **"go_advisory"**: set phase "scope_complete", current_step null. Display advisory.
-- Any MUST fail -> **"hold"**: do NOT set scope_complete. AskUserQuestion: "Fix now" / "Fix later".
-
-**Record gate result to `.expedite/gates.yml`:**
-Read existing gates.yml (if any). Append to history array:
-```yaml
-history:
-  - gate: "G1"
-    timestamp: "{ISO 8601 UTC}"
-    outcome: "{go|go_advisory|hold}"
-    evaluator: "scope-skill"
-    must_passed: {N}
-    must_failed: {N}
-    should_passed: {N}
-    should_failed: {N}
-    notes: null
-    overridden: false
-```
-If gates.yml does not exist, create it with this structure. If it exists, read it first and append to the history array.
+- `outcome: "go"` (all pass) -> set phase "scope_complete", current_step null.
+- `outcome: "go_advisory"` (MUST pass, SHOULD fail) -> set phase "scope_complete", current_step null. Display advisory from failures.
+- `outcome: "hold"` (any MUST fail) -> do NOT set scope_complete. Display each failure message. AskUserQuestion: "Fix now" / "Fix later".
 
 **Update state.yml** (backup-before-write): set current_step (step 10 if hold, null if pass), phase "scope_complete" if pass, last_modified. Gate results are recorded ONLY in gates.yml (not state.yml).
 
