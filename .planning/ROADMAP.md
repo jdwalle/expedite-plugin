@@ -90,10 +90,10 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
   3. A dispatched agent cannot use a tool listed in its `disallowedTools` (tool restriction test passes)
   4. research-synthesizer, design-architect, gate-verifier frontmatter shows `model: claude-opus-*`; all others show `model: claude-sonnet-*`
   5. research-synthesizer and gate-verifier frontmatter includes `memory: project`
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 30-01: Create 8 agent definition files with frontmatter
+- [ ] 30-01: Create 8 agent definition files with frontmatter (model tiering, tool restrictions, memory config, system prompts)
 - [ ] 30-02: Update skills to dispatch agents by name via Agent tool; validate tool restriction behavior
 
 ### Phase 31: Skill Thinning
