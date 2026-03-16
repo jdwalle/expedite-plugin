@@ -72,7 +72,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 **Milestone Goal:** Complete the agent harness on the validated M1-M2 foundation — formalizing agents, thinning skills, enforcing structural gates as Node.js scripts, adding dual-layer semantic gate verification, and enabling worktree isolation with per-task atomic git commits.
 
 - [x] **Phase 30: Agent Formalization** - Create 8 core agents with frontmatter, model tiering, and memory config (completed 2026-03-16)
-- [ ] **Phase 31: Skill Thinning** - Refactor all skills to step-sequencer + agent-dispatcher; fix gate write path
+- [x] **Phase 31: Skill Thinning** - Refactor all skills to step-sequencer + agent-dispatcher; fix gate write path (completed 2026-03-16)
 - [ ] **Phase 32: Structural Gates** - G1, G2-structural, G4 as deterministic Node.js gate scripts writing to gates.yml
 - [ ] **Phase 33: Verifier Validation** - Pre-build test of gate-verifier across quality range before semantic gate commitment
 - [ ] **Phase 34: Semantic Gates** - G3, G5, G2-semantic via dual-layer gate-verifier with anti-rubber-stamp measures
@@ -109,9 +109,9 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 31-01: Refactor scope and research skills to step-sequencer + agent-dispatcher; redirect gate writes
-- [ ] 31-02: Refactor design, plan, spike, execute skills to step-sequencer + agent-dispatcher
-- [ ] 31-03: End-to-end integration test: full lifecycle with gate write path and phase transition validation
+- [x] 31-01: Refactor scope and research skills to step-sequencer + agent-dispatcher; redirect gate writes
+- [x] 31-02: Refactor design, plan, spike, execute skills to step-sequencer + agent-dispatcher
+- [x] 31-03: End-to-end integration test: full lifecycle with gate write path and phase transition validation
 
 ### Phase 32: Structural Gates
 **Goal**: G1 (Scope), G2-structural (Research), and G4 (Plan) run as deterministic Node.js scripts that write structured results with actionable failure messages to `gates.yml`, and each script runs as part of the skill completion flow
@@ -204,7 +204,7 @@ Plans:
 | 28. Checkpoint Resume | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 29. Session Handoff | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 30. Agent Formalization | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
-| 31. Skill Thinning | 2/3 | In Progress|  | - |
+| 31. Skill Thinning | v3.0 | 3/3 | Complete | 2026-03-16 |
 | 32. Structural Gates | v3.0 | 0/2 | Not started | - |
 | 33. Verifier Validation | v3.0 | 0/1 | Not started | - |
 | 34. Semantic Gates | v3.0 | 0/3 | Not started | - |
