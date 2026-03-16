@@ -92,11 +92,20 @@ For each task from starting point:
 
 **5a: Display task.** Spiked: TD -> DA chain, files, implementation steps from SPIKE.md. Unspiked: DA reference, files, acceptance criteria from PLAN.md.
 
-**5b: Dispatch task-implementer agent.** Assemble task context: task definition (from SPIKE.md steps or PLAN.md criteria), file targets, acceptance criteria, design decision reference from DESIGN.md, execution mode (spiked/unspiked).
+**5b: Dispatch task-implementer agent (worktree-isolated).** Assemble task context: task definition (from SPIKE.md steps or PLAN.md criteria), file targets, acceptance criteria, design decision reference from DESIGN.md, execution mode (spiked/unspiked).
 
-Dispatch the `task-implementer` agent by name via the Agent tool.
+Dispatch the `task-implementer` agent by name via the Agent tool. The agent runs in an isolated git worktree (configured via `isolation: worktree` in agent frontmatter).
 
-**Validate agent output on return:** Check that files listed in task definition were modified (use Glob/stat). If expected files not modified: flag as potential failure, proceed to verification.
+**After agent returns -- worktree merge-back:**
+- The agent result includes the worktree branch name if changes were made.
+- If changes were made: merge the worktree branch back to the current branch via Bash:
+  ```bash
+  git merge {worktree_branch} --no-edit
+  ```
+  If the merge fails (conflict or error): do NOT auto-resolve. Display the error message and instructions: "Worktree merge conflict. Resolve manually, then type 'continue' to proceed or 'pause' to save checkpoint." Save checkpoint with substep `merge_conflict_{task_id}`. STOP and wait for user.
+- If no changes were made (worktree auto-cleaned): note "No changes from task-implementer" and proceed to verification.
+
+**Validate agent output on return:** After successful merge (or no-change), check that files listed in task definition were modified (use Glob/stat). If expected files not modified: flag as potential failure, proceed to verification.
 
 **5c: Per-task verification (inline, not agent).** Read `skills/execute/references/prompt-task-verifier.md` (Glob if needed). Apply inline: check each acceptance criterion pass/fail AND design decision alignment (YES/PARTIAL/NO). Check for disconnected criteria. Status: VERIFIED | PARTIAL | FAILED | NEEDS REVIEW.
 
