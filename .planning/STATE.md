@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Agent Harness Completion
 status: in_progress
-last_updated: "2026-03-16T01:34:00.000Z"
+last_updated: "2026-03-16T01:40:34.000Z"
 progress:
   total_phases: 2
   completed_phases: 2
   total_plans: 5
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-15)
 ## Current Position
 
 Phase: 31 — Skill Thinning (2 of 6)
-Plan: 1 of 3 complete
+Plan: 2 of 3 complete
 Status: Phase 31 in progress
-Last activity: 2026-03-16 — Completed 31-01 (Scope & Research Skill Thinning)
+Last activity: 2026-03-16 — Completed 31-02 (Remaining Skill Thinning)
 
-Progress: [###░░░░░░░] 25%
+Progress: [######░░░░] 50%
 
 ## Performance Metrics
 
@@ -53,6 +53,10 @@ Full decision log in PROJECT.md Key Decisions table.
 - [31-01] Gate results written to gates.yml with read-then-append semantics (not state.yml gate_history)
 - [31-01] Research skill step numbers preserved for resume/checkpoint backward compatibility
 - [31-01] Agent output validation added after every dispatch (verify artifact on disk before state update)
+- [31-02] Design/plan skills dispatch agents for generative work but keep revision cycles and gate evaluation inline
+- [31-02] Spike keeps interactive TD resolution inline; dispatches spike-researcher only for user-requested research
+- [31-02] Execute dispatches task-implementer per task but runs verification inline (gate function, not execution)
+- [31-02] All gates (G3-G5) now write to gates.yml, completing gate redirect across all 6 skills
 
 ### Pending Todos
 
@@ -71,9 +75,10 @@ None.
 | 30 | 01 | 7min | 2 | 8 |
 | 30 | 02 | 5min | 2 | 2 |
 | 31 | 01 | 4min | 2 | 2 |
+| 31 | 02 | 4min | 2 | 4 |
 
 ## Session Continuity
 
 Last session: 2026-03-16
-Stopped at: Completed 31-01-PLAN.md
+Stopped at: Completed 31-02-PLAN.md
 Resume file: None
