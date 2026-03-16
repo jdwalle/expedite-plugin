@@ -203,7 +203,7 @@ Plans:
 | 27. Override + Audit | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 28. Checkpoint Resume | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 29. Session Handoff | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 30. Agent Formalization | v3.0 | 2/2 | Complete | 2026-03-16 |
+| 30. Agent Formalization | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
 | 31. Skill Thinning | v3.0 | 0/3 | Not started | - |
 | 32. Structural Gates | v3.0 | 0/2 | Not started | - |
 | 33. Verifier Validation | v3.0 | 0/1 | Not started | - |
