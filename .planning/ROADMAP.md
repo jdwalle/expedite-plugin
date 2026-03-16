@@ -75,7 +75,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 - [x] **Phase 31: Skill Thinning** - Refactor all skills to step-sequencer + agent-dispatcher; fix gate write path (completed 2026-03-16)
 - [x] **Phase 32: Structural Gates** - G1, G2-structural, G4 as deterministic Node.js gate scripts writing to gates.yml (completed 2026-03-16)
 - [x] **Phase 33: Verifier Validation** - Pre-build test of gate-verifier across quality range before semantic gate commitment (completed 2026-03-16)
-- [ ] **Phase 34: Semantic Gates** - G3, G5, G2-semantic via dual-layer gate-verifier with anti-rubber-stamp measures
+- [x] **Phase 34: Semantic Gates** - G3, G5, G2-semantic via dual-layer gate-verifier with anti-rubber-stamp measures (completed 2026-03-16)
 - [ ] **Phase 35: Worktree and Git Workflow** - Worktree isolation for task-implementer and per-task atomic git commits
 
 ## Phase Details
@@ -207,5 +207,5 @@ Plans:
 | 31. Skill Thinning | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
 | 32. Structural Gates | 2/2 | Complete    | 2026-03-16 | - |
 | 33. Verifier Validation | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
-| 34. Semantic Gates | 1/3 | In Progress|  | - |
+| 34. Semantic Gates | 3/3 | Complete   | 2026-03-16 | - |
 | 35. Worktree and Git Workflow | v3.0 | 0/2 | Not started | - |

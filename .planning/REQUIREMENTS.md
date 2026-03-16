@@ -35,8 +35,8 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 - [x] **GATE-04**: Gate scripts write structured results to gates.yml with specific, actionable failure messages
 - [x] **GATE-05**: Each structural gate runs as part of skill completion flow — skill invokes gate script, script writes gates.yml, PreToolUse hook checks on phase transition
 - [x] **GATE-06**: G3 (Design) uses dual-layer evaluation — structural check then semantic verification via gate-verifier agent
-- [ ] **GATE-07**: G5 (Spike) uses dual-layer evaluation — structural check then semantic verification via gate-verifier agent
-- [ ] **GATE-08**: G2-semantic — verifier checks whether evidence sufficiency ratings are justified by cited evidence
+- [x] **GATE-07**: G5 (Spike) uses dual-layer evaluation — structural check then semantic verification via gate-verifier agent
+- [x] **GATE-08**: G2-semantic — verifier checks whether evidence sufficiency ratings are justified by cited evidence
 - [x] **GATE-09**: gate-verifier uses per-dimension scoring (evidence_support, internal_consistency, assumption_transparency, reasoning_completeness) with chain-of-thought evaluation
 - [x] **GATE-10**: Structural layer runs first; semantic layer only runs if structural passes
 - [x] **GATE-11**: Gate skill validates evaluation completeness after verifier returns (all dimensions scored, reasoning provided, valid outcome enum)
@@ -113,8 +113,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GATE-04 | Phase 32 | Complete |
 | GATE-05 | Phase 32 | Complete |
 | GATE-06 | Phase 34 | Complete |
-| GATE-07 | Phase 34 | Pending |
-| GATE-08 | Phase 34 | Pending |
+| GATE-07 | Phase 34 | Complete |
+| GATE-08 | Phase 34 | Complete |
 | GATE-09 | Phase 34 | Complete |
 | GATE-10 | Phase 34 | Complete |
 | GATE-11 | Phase 34 | Complete |
