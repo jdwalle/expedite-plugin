@@ -98,34 +98,62 @@ After all TDs: "All {X} tactical decisions resolved. Generating implementation s
 
 Generate ordered steps using resolved TDs, phase tasks, and design decisions. Each step has: number/title, traces-to (TD -> DA), files, numbered sub-steps. Self-check: every TD maps to a step, every task covered, all have traceability, file lists are specific paths.
 
-### Step 7: G5 Structural Gate
+### Step 7: G5 Gate Evaluation (Dual-Layer)
 
-Deterministic checks, no LLM judgment.
+**Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
-**MUST:** M1: every needs-spike TD resolved. M2: every step traces to TD or DA. M3: every resolution has rationale. M4: step count 3-8.
+**Invoke structural script:**
+Run via Bash: `node gates/g5-spike.js "$(pwd)" "{slug}"`
 
-**SHOULD:** S1: steps add spike-specific guidance. S2: full task coverage. S3: file lists are specific paths. S4: resolutions address specific ambiguity.
+The script reads SPIKE.md, PLAN.md, and SCOPE.md, evaluates structural criteria (TD coverage, rationale presence, implementation steps count), writes the structural result to gates.yml, and prints JSON to stdout.
 
-Log to log.yml.
+**Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**Record gate result to `.expedite/gates.yml`:**
-Read existing gates.yml (if any). Append to history array:
+**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Handle recycle: display issues, fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go-with-advisory.
+
+**If structural outcome is "go" or "go_advisory":** Proceed to Layer 2.
+
+**Layer 2: Semantic verification** -- gate-verifier agent dispatch.
+
+Dispatch the `gate-verifier` agent by name via the Agent tool. Pass:
+- `gate_id`: "G5"
+- `artifact_path`: ".expedite/plan/phases/{slug}/SPIKE.md"
+- `scope_path`: ".expedite/scope/SCOPE.md"
+- `context_paths`: ".expedite/design/DESIGN.md, .expedite/plan/PLAN.md"
+- `output_file`: ".expedite/plan/phases/{slug}/g5-verification.yml"
+
+**Validate verifier output on return:** Read `.expedite/plan/phases/{slug}/g5-verification.yml`. Verify completeness:
+1. File exists and is non-empty
+2. All 4 dimensions present: evidence_support, internal_consistency, assumption_transparency, reasoning_completeness
+3. Each dimension has numeric `score` between 1 and 5
+4. Each dimension has non-empty `reasoning` text
+5. `overall.outcome` is one of: "go", "go-with-advisory", "recycle"
+
+If validation fails: "Gate-verifier produced incomplete evaluation: {missing fields}. Re-run? (yes/skip)". On re-run: re-dispatch once. On skip or second failure: fall back to structural-only result with advisory note.
+
+**Determine combined outcome:** Use the gate-verifier's `overall.outcome` as the final gate outcome. Map: "go" -> go, "go-with-advisory" -> go_advisory, "recycle" -> recycle.
+
+**Record semantic gate result to `.expedite/gates.yml`:**
+Read existing gates.yml. Append to history array:
 ```yaml
 history:
   - gate: "G5"
     timestamp: "{ISO 8601 UTC}"
-    outcome: "{go|go_advisory|recycle|override}"
-    evaluator: "spike-skill"
-    must_passed: {N}
-    must_failed: {N}
-    should_passed: {N}
-    should_failed: {N}
-    notes: "Spike phase: {slug}"
+    outcome: "{go|go_advisory|recycle}"
+    evaluator: "gate-verifier"
+    semantic_scores:
+      evidence_support: {N}
+      internal_consistency: {N}
+      assumption_transparency: {N}
+      reasoning_completeness: {N}
+    notes: "Spike phase: {slug}. {verifier summary}"
     overridden: false
 ```
-If gates.yml does not exist, create it. If it exists, read first and APPEND to history (preserving prior entries). Gate results are recorded ONLY in gates.yml (not state.yml).
 
-**On Recycle:** Display issues. Fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go-with-advisory.
+Log gate outcome (both layers) to log.yml. Display: structural pass/fail summary, semantic dimension scores, overall outcome.
+
+**On Go:** Proceed to Step 8.
+**On Recycle (structural or semantic):** Display issues. Fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go-with-advisory.
 
 ### Step 8: Write SPIKE.md
 
