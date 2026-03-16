@@ -106,7 +106,7 @@ Plans:
   3. A gated phase transition (e.g., scope→research) works without requiring EXPEDITE_HOOKS_DISABLED or manual override
   4. After an agent completes, the skill writes state and checkpoint without any write occurring during agent execution
   5. Skills validate agent output on return — missing artifact or malformed structure surfaces an error, not silent continuation
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [x] 31-01: Refactor scope and research skills to step-sequencer + agent-dispatcher; redirect gate writes
@@ -137,7 +137,7 @@ Plans:
   1. gate-verifier is run against at least 5 artifacts of varying quality (strong, adequate, weak, borderline, fabricated)
   2. Verifier outcomes align with expected quality judgments — weak artifacts receive Recycle, strong artifacts receive Go
   3. Validation result is documented with a go/no-go decision: proceed with dual-layer or fall back to inline rubric
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [x] 33-01: Design and execute gate-verifier pre-build validation across quality range; document outcome
@@ -152,7 +152,7 @@ Plans:
   3. gate-verifier scores each evaluation across four dimensions: evidence_support, internal_consistency, assumption_transparency, reasoning_completeness — with chain-of-thought reasoning visible
   4. After gate-verifier returns, the invoking skill validates that all dimensions are scored, reasoning is present, and outcome is a valid enum value — surfacing an error if not
   5. A well-evidenced design document receives Go; a design with unsupported claims receives Recycle with specific dimension failures named
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 34-01: Implement G3 (design) dual-layer gate with gate-verifier integration
@@ -169,7 +169,7 @@ Plans:
   3. User can set an opt-out flag (per-invocation or per-lifecycle) to skip auto-commits; commits do not appear when opted out
   4. A task that fails verification does not auto-commit; the execute skill prompts the user with recovery options
   5. A git error (merge conflict, dirty worktree) pauses execution and shows instructions — the skill does not attempt auto-resolution
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
 - [ ] 35-01: Add worktree isolation to task-implementer; implement and test single-task worktree merge-back
