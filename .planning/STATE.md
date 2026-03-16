@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Agent Harness Completion
-status: in_progress
-last_updated: "2026-03-16T20:14:28Z"
+status: complete
+last_updated: "2026-03-16T20:19:34Z"
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 15
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Developers can run a complete evidence-based lifecycle — from scoping questions through researched design to executable plan — without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 35 — Worktree Git Workflow
+**Current focus:** v3.0 Milestone Complete
 
 ## Current Position
 
 Phase: 35 — Worktree Git Workflow (7 of 7)
-Plan: 1 of 2 complete
-Status: Completed 35-01 (worktree isolation + merge-back); 35-02 remaining
-Last activity: 2026-03-16 — Completed 35-01 (Worktree Isolation)
+Plan: 2 of 2 complete
+Status: Phase 35 complete; v3.0 milestone complete
+Last activity: 2026-03-16 — Completed 35-02 (Per-Task Git Commits)
 
-Progress: [#########-] 93%
+Progress: [##########] 100%
 
 ## Performance Metrics
 
@@ -76,6 +76,9 @@ Full decision log in PROJECT.md Key Decisions table.
 - [34-03] go_advisory is valid pass outcome (SHOULD failures are advisory-only, not blocking)
 - [35-01] Only task-implementer gets isolation: worktree; all other agents have EnterWorktree disallowed
 - [35-01] Merge conflicts pause execution with user instructions rather than auto-resolving
+- [35-02] Git commit protocol lives in reference file (ref-git-commit.md), not inline in skill -- keeps skill under 200 lines
+- [35-02] Verification gate requires user confirmation for FAILED/NEEDS REVIEW tasks before committing
+- [35-02] Git errors pause with user prompts; no destructive auto-resolution attempted
 
 ### Pending Todos
 
@@ -102,9 +105,10 @@ None.
 | 34 | 01 | 3min | 2 | 2 |
 | 34 | 03 | 4min | 2 | 1 |
 | 35 | 01 | 1min | 2 | 2 |
+| 35 | 02 | 3min | 2 | 2 |
 
 ## Session Continuity
 
 Last session: 2026-03-16
-Stopped at: Completed 35-01-PLAN.md (Worktree Isolation + Merge-back)
+Stopped at: Completed 35-02-PLAN.md (Per-Task Git Commits) -- v3.0 milestone complete
 Resume file: None

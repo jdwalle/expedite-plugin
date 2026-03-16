@@ -76,7 +76,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 - [x] **Phase 32: Structural Gates** - G1, G2-structural, G4 as deterministic Node.js gate scripts writing to gates.yml (completed 2026-03-16)
 - [x] **Phase 33: Verifier Validation** - Pre-build test of gate-verifier across quality range before semantic gate commitment (completed 2026-03-16)
 - [x] **Phase 34: Semantic Gates** - G3, G5, G2-semantic via dual-layer gate-verifier with anti-rubber-stamp measures (completed 2026-03-16)
-- [ ] **Phase 35: Worktree and Git Workflow** - Worktree isolation for task-implementer and per-task atomic git commits
+- [x] **Phase 35: Worktree and Git Workflow** - Worktree isolation for task-implementer and per-task atomic git commits (completed 2026-03-16)
 
 ## Phase Details
 
@@ -208,4 +208,4 @@ Plans:
 | 32. Structural Gates | 2/2 | Complete    | 2026-03-16 | - |
 | 33. Verifier Validation | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
 | 34. Semantic Gates | 3/3 | Complete    | 2026-03-16 | - |
-| 35. Worktree and Git Workflow | 1/2 | In Progress|  | - |
+| 35. Worktree and Git Workflow | 2/2 | Complete   | 2026-03-16 | - |

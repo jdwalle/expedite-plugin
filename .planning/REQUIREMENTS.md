@@ -50,12 +50,12 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 
 ### Developer Workflow
 
-- [ ] **DEVW-01**: Execute skill creates an atomic git commit after each verified task
-- [ ] **DEVW-02**: Commit message follows conventional format: `{type}(DA-{N}): {task_description}`
-- [ ] **DEVW-03**: Only files explicitly modified by the task are staged (never `git add .` or `git add -A`)
-- [ ] **DEVW-04**: User can opt out of auto-commits (per-invocation flag or per-lifecycle setting)
-- [ ] **DEVW-05**: Failed task verification does not auto-commit; user is prompted with options
-- [ ] **DEVW-06**: Git errors (merge conflicts, dirty worktree) pause execution with instructions, not auto-resolve
+- [x] **DEVW-01**: Execute skill creates an atomic git commit after each verified task
+- [x] **DEVW-02**: Commit message follows conventional format: `{type}(DA-{N}): {task_description}`
+- [x] **DEVW-03**: Only files explicitly modified by the task are staged (never `git add .` or `git add -A`)
+- [x] **DEVW-04**: User can opt out of auto-commits (per-invocation flag or per-lifecycle setting)
+- [x] **DEVW-05**: Failed task verification does not auto-commit; user is prompted with options
+- [x] **DEVW-06**: Git errors (merge conflicts, dirty worktree) pause execution with instructions, not auto-resolve
 
 ## Future Requirements
 
@@ -122,12 +122,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WKTR-01 | Phase 35 | Complete |
 | WKTR-02 | Phase 35 | Complete |
 | WKTR-03 | Phase 35 | Complete |
-| DEVW-01 | Phase 35 | Pending |
-| DEVW-02 | Phase 35 | Pending |
-| DEVW-03 | Phase 35 | Pending |
-| DEVW-04 | Phase 35 | Pending |
-| DEVW-05 | Phase 35 | Pending |
-| DEVW-06 | Phase 35 | Pending |
+| DEVW-01 | Phase 35 | Complete |
+| DEVW-02 | Phase 35 | Complete |
+| DEVW-03 | Phase 35 | Complete |
+| DEVW-04 | Phase 35 | Complete |
+| DEVW-05 | Phase 35 | Complete |
+| DEVW-06 | Phase 35 | Complete |
 
 **Coverage:**
 - v3.0 requirements: 35 total
