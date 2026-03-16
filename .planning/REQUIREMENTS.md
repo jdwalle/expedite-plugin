@@ -44,9 +44,9 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 
 ### Worktree Isolation
 
-- [ ] **WKTR-01**: task-implementer agent gets `isolation: worktree` in frontmatter
-- [ ] **WKTR-02**: Sequential merge from worktree to main branch after task completion
-- [ ] **WKTR-03**: Single-task worktree test verifies clean merge-back
+- [x] **WKTR-01**: task-implementer agent gets `isolation: worktree` in frontmatter
+- [x] **WKTR-02**: Sequential merge from worktree to main branch after task completion
+- [x] **WKTR-03**: Single-task worktree test verifies clean merge-back
 
 ### Developer Workflow
 
@@ -119,9 +119,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GATE-10 | Phase 34 | Complete |
 | GATE-11 | Phase 34 | Complete |
 | GATE-12 | Phase 33 | Complete |
-| WKTR-01 | Phase 35 | Pending |
-| WKTR-02 | Phase 35 | Pending |
-| WKTR-03 | Phase 35 | Pending |
+| WKTR-01 | Phase 35 | Complete |
+| WKTR-02 | Phase 35 | Complete |
+| WKTR-03 | Phase 35 | Complete |
 | DEVW-01 | Phase 35 | Pending |
 | DEVW-02 | Phase 35 | Pending |
 | DEVW-03 | Phase 35 | Pending |

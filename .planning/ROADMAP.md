@@ -208,4 +208,4 @@ Plans:
 | 32. Structural Gates | 2/2 | Complete    | 2026-03-16 | - |
 | 33. Verifier Validation | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
 | 34. Semantic Gates | 3/3 | Complete    | 2026-03-16 | - |
-| 35. Worktree and Git Workflow | v3.0 | 0/2 | Not started | - |
+| 35. Worktree and Git Workflow | 1/2 | In Progress|  | - |
