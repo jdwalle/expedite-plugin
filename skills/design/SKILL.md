@@ -105,40 +105,69 @@ Present design for review. Freeform loop:
 - **revise** -- parse feedback, apply changes, rewrite DESIGN.md (and HANDOFF.md if product intent sections affected). Re-validate DA coverage. Return to review prompt.
 - **proceed** / "looks good" / "lgtm" / "yes" -- proceed to Step 8.
 
-### Step 8: G3 Gate Evaluation
+### Step 8: G3 Gate Evaluation (Dual-Layer)
 
-Read DESIGN.md and SCOPE.md. Evaluate with anti-bias: "Evaluate as if someone else produced this."
+**Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
-**MUST criteria:** M1: every DA has design decision. M2: every decision references evidence. M3: correct format for intent (PRD/RFC). M4: DESIGN.md exists, non-empty. M5: evidence citations address DA readiness criteria.
+**Invoke structural script:**
+Run via Bash: `node gates/g3-design.js "$(pwd)"`
 
-**SHOULD criteria:** S1: trade-offs per DA. S2: confidence levels per DA. S3: open questions genuine. S4: HANDOFF.md exists (product only; auto-PASS for engineering).
+The script reads DESIGN.md, SCOPE.md, and state.yml, evaluates structural criteria (DA coverage, evidence citations, format, word counts), writes the structural result to gates.yml, and prints JSON to stdout.
 
-Outcomes: Go (all pass), Go-with-advisory (MUST pass, SHOULD fail), Recycle (any MUST fail). Log to log.yml.
+**Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**Record gate result to `.expedite/gates.yml`:**
-Read existing gates.yml (if any). Append to history array:
+**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Proceed directly to Step 9 with the structural recycle outcome. (This saves tokens by not invoking the verifier on structurally deficient artifacts.)
+
+**If structural outcome is "go" or "go_advisory":** Proceed to Layer 2.
+
+**Layer 2: Semantic verification** -- gate-verifier agent dispatch.
+
+Dispatch the `gate-verifier` agent by name via the Agent tool. Pass the following context with all placeholder values filled:
+- `gate_id`: "G3"
+- `artifact_path`: ".expedite/design/DESIGN.md"
+- `scope_path`: ".expedite/scope/SCOPE.md"
+- `context_paths`: ".expedite/research/SYNTHESIS.md"
+- `output_file`: ".expedite/design/g3-verification.yml"
+
+**Validate verifier output on return:** Read `.expedite/design/g3-verification.yml`. Verify completeness:
+1. File exists and is non-empty
+2. All 4 dimensions are present: evidence_support, internal_consistency, assumption_transparency, reasoning_completeness
+3. Each dimension has a numeric `score` between 1 and 5
+4. Each dimension has non-empty `reasoning` text
+5. `overall.outcome` is one of: "go", "go-with-advisory", "recycle"
+
+If validation fails (e.g., verifier hit maxTurns before finishing, or output is malformed): Display the specific validation failure. "Gate-verifier produced incomplete evaluation: {missing fields}. Re-run? (yes/skip)". On re-run: re-dispatch once. On skip or second failure: fall back to structural-only result with advisory note.
+
+**Determine combined outcome:** Use the gate-verifier's `overall.outcome` as the final gate outcome (the structural pass is a prerequisite, so if we reach here structural already passed). Map verifier outcomes to skill conventions: "go" -> go, "go-with-advisory" -> go_advisory, "recycle" -> recycle.
+
+**Record semantic gate result to `.expedite/gates.yml`:**
+Read existing gates.yml. Append to history array:
 ```yaml
 history:
   - gate: "G3"
     timestamp: "{ISO 8601 UTC}"
-    outcome: "{go|go_advisory|recycle|override}"
-    evaluator: "design-skill"
-    must_passed: {N}
-    must_failed: {N}
-    should_passed: {N}
-    should_failed: {N}
-    notes: "{summary or null}"
+    outcome: "{go|go_advisory|recycle}"
+    evaluator: "gate-verifier"
+    semantic_scores:
+      evidence_support: {N}
+      internal_consistency: {N}
+      assumption_transparency: {N}
+      reasoning_completeness: {N}
+    notes: "{verifier summary}"
     overridden: false
 ```
-If gates.yml does not exist, create it. If it exists, read first and APPEND to history (preserving prior entries). Gate results are recorded ONLY in gates.yml (not state.yml).
+
+Log gate outcome (both layers) to log.yml. Display results: structural pass/fail summary, then semantic dimension scores and overall outcome.
 
 ### Step 9: Gate Outcome Handling
 
-**Go** -- "G3 passed." -> Step 10.
+The outcome comes from Step 8's combined determination: structural recycle (Layer 1 failure) OR gate-verifier semantic outcome (Layer 2 result).
 
-**Go-with-advisory** -- Show SHOULD failures. "1. Proceed | 2. Revise". Proceed -> Step 10. Revise -> Step 7.
+**Go** -- "G3 passed (structural + semantic)." -> Step 10.
 
-**Recycle** -- Escalation by count (1st: informational, 2nd: suggest adjustment, 3rd+: recommend override). Revise -> Step 7. Override -> record in gates.yml (overridden: true), write `.expedite/design/override-context.md` with severity and affected DAs, log override -> Step 10.
+**Go-with-advisory** -- Show both structural SHOULD failures (if any) AND verifier dimension scores at 3. Include the verifier's advisory text. "1. Proceed | 2. Revise". Proceed -> Step 10. Revise -> Step 7.
+
+**Recycle** -- If from structural layer: show structural MUST failures. If from semantic layer: show the verifier's recycle_details and the specific dimensions that scored below 3. Escalation by count (1st: informational, 2nd: suggest adjustment, 3rd+: recommend override). Revise -> Step 7. Override -> record in gates.yml (overridden: true), write `.expedite/design/override-context.md` with severity and affected DAs, log override -> Step 10.
 
 ### Step 10: Design Completion
 
