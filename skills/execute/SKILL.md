@@ -76,7 +76,7 @@ Display loading summary: project, intent, phase, mode, task count.
 
 ### Step 3: Initialize Execute State
 
-Backup-before-write state.yml: set `phase: "execute_in_progress"` (only if currently plan_complete), `current_wave`, `current_task` (first task), populate `tasks` array for THIS PHASE ONLY (id, title, wave, status: "pending"), last_modified.
+Backup-before-write state.yml: set `phase: "execute_in_progress"` (only if currently plan_complete), `current_wave`, `current_task` (first task), populate `tasks` array for THIS PHASE ONLY (id, title, wave, status: "pending"), last_modified. Parse `--no-commit` flag from user invocation if present. Store as `no_commit: true` in execution context for Step 5c-git opt-out check.
 
 Log phase transition (only if phase changed). `mkdir -p .expedite/plan/phases/{slug}/`. Create per-phase checkpoint.yml. Write PROGRESS.md header via `cat >` (create-only; all subsequent writes use `cat >>` append via Bash).
 
@@ -109,9 +109,17 @@ Dispatch the `task-implementer` agent by name via the Agent tool. The agent runs
 
 **5c: Per-task verification (inline, not agent).** Read `skills/execute/references/prompt-task-verifier.md` (Glob if needed). Apply inline: check each acceptance criterion pass/fail AND design decision alignment (YES/PARTIAL/NO). Check for disconnected criteria. Status: VERIFIED | PARTIAL | FAILED | NEEDS REVIEW.
 
+**5c-git: Per-task git commit (optional).** Read `skills/execute/references/ref-git-commit.md` for the full protocol. In summary:
+1. Check opt-out: if `auto_commit: false` in state.yml or `--no-commit` was passed, skip entirely.
+2. Check verification status: VERIFIED/PARTIAL proceed; FAILED/NEEDS REVIEW prompt user (commit-anyway / skip / pause).
+3. Stage only task-specific files via `git add {file}` for each file in the task definition. Verify staged changes exist.
+4. Commit with message `{type}(DA-{N}): {task_description}` and extended body with traceability metadata.
+5. Capture commit hash via `git rev-parse --short HEAD` for PROGRESS.md logging.
+6. On any git error: display error, prompt (retry / skip / pause). Do NOT auto-resolve.
+
 **5d: Update state.** Update per-phase checkpoint.yml (current_task, last_completed, tasks_completed). Update state.yml (current_task, task status). Write top-level checkpoint with substep.
 
-**5e: Append to PROGRESS.md via Bash** (`cat >>`, NEVER Write tool). Record: task ID, status, TD/DA chain, files modified, verification result, contract chain, timestamp.
+**5e: Append to PROGRESS.md via Bash** (`cat >>`, NEVER Write tool). Record: task ID, status, TD/DA chain, files modified, verification result, contract chain, commit hash (if auto-commit was active and succeeded), timestamp.
 
 **5f: Micro-interaction.** Last task: skip prompt -> Step 6. Otherwise: "Continue? > yes / pause / review". yes -> next task. pause -> save checkpoint, STOP. review -> display PROGRESS.md, re-prompt.
 
