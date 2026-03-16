@@ -40,7 +40,7 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 - [ ] **GATE-09**: gate-verifier uses per-dimension scoring (evidence_support, internal_consistency, assumption_transparency, reasoning_completeness) with chain-of-thought evaluation
 - [ ] **GATE-10**: Structural layer runs first; semantic layer only runs if structural passes
 - [ ] **GATE-11**: Gate skill validates evaluation completeness after verifier returns (all dimensions scored, reasoning provided, valid outcome enum)
-- [ ] **GATE-12**: Pre-build validation tests gate-verifier on 5-6 artifacts spanning quality range before committing to dual-layer system
+- [x] **GATE-12**: Pre-build validation tests gate-verifier on 5-6 artifacts spanning quality range before committing to dual-layer system
 
 ### Worktree Isolation
 
@@ -118,7 +118,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GATE-09 | Phase 34 | Pending |
 | GATE-10 | Phase 34 | Pending |
 | GATE-11 | Phase 34 | Pending |
-| GATE-12 | Phase 33 | Pending |
+| GATE-12 | Phase 33 | Complete |
 | WKTR-01 | Phase 35 | Pending |
 | WKTR-02 | Phase 35 | Pending |
 | WKTR-03 | Phase 35 | Pending |

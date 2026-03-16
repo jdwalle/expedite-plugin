@@ -74,7 +74,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 - [x] **Phase 30: Agent Formalization** - Create 8 core agents with frontmatter, model tiering, and memory config (completed 2026-03-16)
 - [x] **Phase 31: Skill Thinning** - Refactor all skills to step-sequencer + agent-dispatcher; fix gate write path (completed 2026-03-16)
 - [x] **Phase 32: Structural Gates** - G1, G2-structural, G4 as deterministic Node.js gate scripts writing to gates.yml (completed 2026-03-16)
-- [ ] **Phase 33: Verifier Validation** - Pre-build test of gate-verifier across quality range before semantic gate commitment
+- [x] **Phase 33: Verifier Validation** - Pre-build test of gate-verifier across quality range before semantic gate commitment (completed 2026-03-16)
 - [ ] **Phase 34: Semantic Gates** - G3, G5, G2-semantic via dual-layer gate-verifier with anti-rubber-stamp measures
 - [ ] **Phase 35: Worktree and Git Workflow** - Worktree isolation for task-implementer and per-task atomic git commits
 
@@ -140,7 +140,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 33-01: Design and execute gate-verifier pre-build validation across quality range; document outcome
+- [x] 33-01: Design and execute gate-verifier pre-build validation across quality range; document outcome
 
 ### Phase 34: Semantic Gates
 **Goal**: G3 (Design), G5 (Spike), and G2-semantic (Research sufficiency) use dual-layer evaluation — structural check first, then semantic verification via gate-verifier agent with per-dimension scoring and completeness validation
@@ -206,6 +206,6 @@ Plans:
 | 30. Agent Formalization | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
 | 31. Skill Thinning | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
 | 32. Structural Gates | 2/2 | Complete    | 2026-03-16 | - |
-| 33. Verifier Validation | v3.0 | 0/1 | Not started | - |
+| 33. Verifier Validation | v3.0 | 1/1 | Complete | 2026-03-16 |
 | 34. Semantic Gates | v3.0 | 0/3 | Not started | - |
 | 35. Worktree and Git Workflow | v3.0 | 0/2 | Not started | - |
