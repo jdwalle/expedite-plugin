@@ -20,12 +20,12 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 
 ### Skill Thinning
 
-- [ ] **THIN-01**: All skills refactored to step-sequencer + agent-dispatcher pattern (under 200 lines, adjust to 400 if scope skill needs it)
-- [ ] **THIN-02**: Business logic lives in agents; skills retain step sequencing, state writes, checkpoint writes, agent dispatch, result validation
-- [ ] **THIN-03**: Gate results written to `.expedite/gates.yml` (fixes INT-01/FLOW-01 integration debt)
-- [ ] **THIN-04**: Gated phase transitions work end-to-end without override workaround or EXPEDITE_HOOKS_DISABLED
-- [ ] **THIN-05**: Skills validate agent output on return (artifact exists, basic structure check)
-- [ ] **THIN-06**: Skills write state/checkpoint after agent completion, never during agent execution
+- [x] **THIN-01**: All skills refactored to step-sequencer + agent-dispatcher pattern (under 200 lines, adjust to 400 if scope skill needs it)
+- [x] **THIN-02**: Business logic lives in agents; skills retain step sequencing, state writes, checkpoint writes, agent dispatch, result validation
+- [x] **THIN-03**: Gate results written to `.expedite/gates.yml` (fixes INT-01/FLOW-01 integration debt)
+- [x] **THIN-04**: Gated phase transitions work end-to-end without override workaround or EXPEDITE_HOOKS_DISABLED
+- [x] **THIN-05**: Skills validate agent output on return (artifact exists, basic structure check)
+- [x] **THIN-06**: Skills write state/checkpoint after agent completion, never during agent execution
 
 ### Gate Enforcement
 
@@ -101,12 +101,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AGNT-06 | Phase 30 | Complete |
 | AGNT-07 | Phase 30 | Complete |
 | AGNT-08 | Phase 30 | Complete |
-| THIN-01 | Phase 31 | Pending |
-| THIN-02 | Phase 31 | Pending |
-| THIN-03 | Phase 31 | Pending |
-| THIN-04 | Phase 31 | Pending |
-| THIN-05 | Phase 31 | Pending |
-| THIN-06 | Phase 31 | Pending |
+| THIN-01 | Phase 31 | Complete |
+| THIN-02 | Phase 31 | Complete |
+| THIN-03 | Phase 31 | Complete |
+| THIN-04 | Phase 31 | Complete |
+| THIN-05 | Phase 31 | Complete |
+| THIN-06 | Phase 31 | Complete |
 | GATE-01 | Phase 32 | Pending |
 | GATE-02 | Phase 32 | Pending |
 | GATE-03 | Phase 32 | Pending |

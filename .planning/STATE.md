@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Agent Harness Completion
-status: unknown
-last_updated: "2026-03-16T01:09:25.667Z"
+status: in_progress
+last_updated: "2026-03-16T01:34:00.000Z"
 progress:
   total_phases: 2
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 5
+  completed_plans: 5
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-15)
 ## Current Position
 
 Phase: 31 — Skill Thinning (2 of 6)
-Plan: 0 of 3 complete
-Status: Phase 30 complete, ready for Phase 31
-Last activity: 2026-03-16 — Completed 30-02 (Agent Dispatch Wiring)
+Plan: 1 of 3 complete
+Status: Phase 31 in progress
+Last activity: 2026-03-16 — Completed 31-01 (Scope & Research Skill Thinning)
 
-Progress: [##░░░░░░░░] 15%
+Progress: [###░░░░░░░] 25%
 
 ## Performance Metrics
 
@@ -49,6 +49,10 @@ Full decision log in PROJECT.md Key Decisions table.
 - [30-01] Added self_contained_reads sections to agents that will read their own upstream artifacts
 - [30-02] Sufficiency evaluator retains Task() dispatch with Phase 31 TODO comment (not yet a named agent)
 - [30-02] Integration testing deferred until plugin is in enabledPlugins; structural verification accepted
+- [31-01] Compressed step-tracking/checkpoint boilerplate to shared reference pattern at top of skill
+- [31-01] Gate results written to gates.yml with read-then-append semantics (not state.yml gate_history)
+- [31-01] Research skill step numbers preserved for resume/checkpoint backward compatibility
+- [31-01] Agent output validation added after every dispatch (verify artifact on disk before state update)
 
 ### Pending Todos
 
@@ -57,7 +61,7 @@ None.
 ### Blockers/Concerns
 
 - A3 (Override round-trip): ~70-85% estimated reliability — validate during early Phase 31 work
-- INT-01: Gate write path disconnected (skills→state.yml, hooks→gates.yml) — fix in Phase 31 (THIN-03/THIN-04)
+- INT-01: RESOLVED in 31-01 — Gate write path now goes to gates.yml for G1 and G2 (THIN-03/THIN-04 complete)
 - Phase 33 is a go/no-go gate: if gate-verifier fails pre-build validation, Phase 34 falls back to inline rubric
 
 ## Performance Metrics (v3.0)
@@ -66,9 +70,10 @@ None.
 |-------|------|----------|-------|-------|
 | 30 | 01 | 7min | 2 | 8 |
 | 30 | 02 | 5min | 2 | 2 |
+| 31 | 01 | 4min | 2 | 2 |
 
 ## Session Continuity
 
 Last session: 2026-03-16
-Stopped at: Completed 30-02-PLAN.md (Phase 30 complete)
+Stopped at: Completed 31-01-PLAN.md
 Resume file: None
