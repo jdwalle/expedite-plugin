@@ -10,6 +10,7 @@ disallowedTools:
   - WebSearch
   - WebFetch
 maxTurns: 50
+isolation: worktree
 ---
 
 <role>
