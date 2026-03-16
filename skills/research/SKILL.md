@@ -108,20 +108,61 @@ Read results. Handle UNAVAILABLE-SOURCE questions (AskUserQuestion: accept gap/s
 
 Read `.expedite/research/proposed-questions.yml`. If empty/missing, skip to Step 14. Deduplicate against existing questions (LLM semantic dedup, not string matching). Cap at 4. Present to user (freeform: approve all/specific/none/modify). Add approved questions to state.yml and SCOPE.md.
 
-### Step 14: G2 Gate Evaluation
+### Step 14: G2 Gate Evaluation (Dual-Layer)
 
-Structural gate -- deterministic Node.js script. No LLM judgment.
+**Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
-**Invoke gate script:**
+**Invoke structural script:**
 Run via Bash: `node gates/g2-structural.js "$(pwd)"`
 
 The script reads SYNTHESIS.md, SCOPE.md, and evidence files, evaluates structural criteria, writes the result to gates.yml, and prints JSON to stdout.
 
 **Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**Outcomes:** Go, Go-with-advisory, Recycle -- same routing as Step 15.
+**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Proceed to Step 15 with the structural recycle outcome.
 
-Log gate outcome to log.yml. Display results table.
+**If structural outcome is "go" or "go_advisory":** Proceed to Layer 2.
+
+**Layer 2: Semantic verification (G2-semantic)** -- gate-verifier agent dispatch.
+
+This is a focused check: are the evidence sufficiency ratings ("strong", "adequate", "insufficient") in the readiness assessment justified by the evidence actually cited? This is NOT a full 4-dimension design evaluation -- but the gate-verifier still scores all 4 dimensions, with evidence_support being the primary discriminator for G2-semantic.
+
+Dispatch the `gate-verifier` agent by name via the Agent tool. Pass:
+- `gate_id`: "G2-semantic"
+- `artifact_path`: ".expedite/research/SYNTHESIS.md"
+- `scope_path`: ".expedite/scope/SCOPE.md"
+- `context_paths`: ".expedite/research/sufficiency-results.yml" (if exists, else omit)
+- `output_file`: ".expedite/research/g2-semantic-verification.yml"
+
+**Validate verifier output on return:** Read `.expedite/research/g2-semantic-verification.yml`. Verify completeness:
+1. File exists and is non-empty
+2. All 4 dimensions present: evidence_support, internal_consistency, assumption_transparency, reasoning_completeness
+3. Each dimension has numeric `score` between 1 and 5
+4. Each dimension has non-empty `reasoning` text
+5. `overall.outcome` is one of: "go", "go-with-advisory", "recycle"
+
+If validation fails: "Gate-verifier produced incomplete evaluation: {missing fields}. Re-run? (yes/skip)". On re-run: re-dispatch once. On skip or second failure: fall back to structural-only result with advisory note.
+
+**Determine combined outcome:** Use the gate-verifier's `overall.outcome` as the final gate outcome. Map: "go" -> go, "go-with-advisory" -> go_advisory, "recycle" -> recycle.
+
+**Record semantic gate result to `.expedite/gates.yml`:**
+Read existing gates.yml. Append to history array:
+```yaml
+history:
+  - gate: "G2"
+    timestamp: "{ISO 8601 UTC}"
+    outcome: "{go|go_advisory|recycle}"
+    evaluator: "gate-verifier"
+    semantic_scores:
+      evidence_support: {N}
+      internal_consistency: {N}
+      assumption_transparency: {N}
+      reasoning_completeness: {N}
+    notes: "G2-semantic: readiness assessment quality check. {verifier summary}"
+    overridden: false
+```
+
+Log gate outcome (both layers) to log.yml. Display: structural pass/fail, semantic dimension scores, overall outcome.
 
 ### Step 15: Gate Outcome Handling
 
