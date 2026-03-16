@@ -123,11 +123,11 @@ Plans:
   3. Running `node gates/g4-plan.js` checks PLAN.md existence, phased breakdown, agent assignments, and dependency chain
   4. Completing a skill (scope, research, plan) automatically invokes its gate script before the PreToolUse hook checks phase transition
   5. A gate failure produces a message that tells the user exactly which section or field is missing — not just "gate failed"
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 32-01: Implement G1 (scope) and G4 (plan) gate scripts
-- [ ] 32-02: Implement G2-structural gate script; wire all three into skill completion flow
+- [ ] 32-01: Create shared gate utilities, G1 (scope) gate script, and G4 (plan) gate script
+- [ ] 32-02: Create G2-structural gate script; wire all three gate scripts into skill completion flows
 
 ### Phase 33: Verifier Validation
 **Goal**: The gate-verifier agent is validated against 5-6 artifacts spanning a quality range before the dual-layer semantic gate system is built, confirming it can distinguish good from weak work and will not rubber-stamp everything
