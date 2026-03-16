@@ -1,0 +1,91 @@
+gate_evaluation:
+  gate_id: "G3"
+  artifact: ".planning/phases/33-verifier-validation/fixtures/strong-design.md"
+  evaluated_at: "2026-03-16T15:40:00Z"
+
+  dimensions:
+    evidence_support:
+      score: 5
+      reasoning: |
+        Every design decision explicitly cites specific research findings from scope-context.md by reference number.
+        Decision 1 (CRDT): Cites F1 (convergence), F3 (offline), F4 (peer-to-peer), F5 (memory). All four findings
+        are present and accurately quoted from scope-context.md DA-1. Decision 2 (WebSocket): Cites F2 (RTT), F15
+        (connection sharing). Both verified in DA-3 and DA-1. Decision 3 (Conflict): Cites F6, F7, F8, F9, F10 --
+        all present in DA-2 research findings with accurate data points (e.g., F8's 8-15ms, F9's 60% reduction).
+        Decision 4 (Presence): Cites F11, F12, F13, F14, F15 -- all verified in DA-3. No fabricated citations found.
+        The Architecture Summary table traces each component to specific findings. Every claim has a traceable evidence
+        chain back to the scope document.
+      weakness: |
+        In Decision 1, the claim "sub-50ms for typical documents per F1" (line 64) slightly extrapolates from F1's
+        O(n log n) complexity claim into a concrete latency number that F1 does not directly state. F1 describes
+        convergence complexity, not absolute merge latency. This is a minor inference gap, not a fabrication, but
+        a rigorous reviewer would note the distinction between complexity class and wall-clock time.
+
+    internal_consistency:
+      score: 5
+      reasoning: |
+        Terminology is consistent throughout: "CRDT" (never switching between "CRDT" and "conflict-free replicated
+        data type"), "Yjs" always capitalized correctly, "paragraph-level" hyphenated consistently. The document
+        structure follows a declared pattern for each decision: Evidence Basis -> Trade-offs Considered -> Decision
+        -> Assumptions. All four decisions follow this pattern exactly. No contradictions found between sections:
+        Decision 1 selects CRDT/eventual consistency, and Decision 3's conflict detection builds on top of CRDT
+        semantics without contradicting it. The 200ms latency target is referenced consistently across decisions
+        (explicitly in overview, Decision 2 line 39, Decision 3 line 64). The risk register aligns with the
+        assumptions stated in each decision section.
+      weakness: |
+        Decision 2 introduces "HTTP long-polling as fallback" (line 53) which is not discussed in the Evidence Basis
+        section of that decision. The evidence section covers WebSocket, WebTransport, and SSE, but long-polling
+        appears only in the decision statement and assumption. A reader might expect the fallback option to have
+        its own evidence basis, given the document's otherwise rigorous evidence-first structure.
+
+    assumption_transparency:
+      score: 5
+      reasoning: |
+        Every decision section includes an explicit Assumptions subsection with confidence levels (High/Medium/Low).
+        Confidence levels are honestly calibrated: High confidence for well-established facts (e.g., enterprise
+        WebSocket support, paragraph boundaries), Medium for things needing production validation (tombstone GC,
+        conflict detection scaling), and Low for genuine unknowns (browser memory limits, user understanding of
+        conflict visualization, adaptive timeout needs). The Low confidence items are particularly notable: they
+        acknowledge real risks rather than inflating confidence. Each assumption includes context for why that
+        confidence level was assigned. The risk register in the final section further surfaces potential failure modes.
+      weakness: |
+        There is a hidden assumption that the document model is block-based (enabling unambiguous paragraph
+        boundaries), stated in Decision 3 assumptions as "[High confidence]" (line 88). However, the document
+        model itself is never described anywhere in the design. If a reader doesn't share the assumption that
+        the document model uses block-level elements, the High confidence rating could be misleading. The design
+        takes the document model as a given without specifying it.
+
+    reasoning_completeness:
+      score: 4
+      reasoning: |
+        Each decision provides a clear reasoning chain: evidence -> analysis -> trade-offs -> decision -> rationale.
+        Alternatives are discussed with specific reasons for rejection (OT rejected for scaling, hybrid rejected for
+        complexity, WebTransport rejected for browser support, SSE rejected for half-duplex). Trade-offs are
+        articulated with quantitative analysis where possible (e.g., memory overhead calculated as 2x * 500KB
+        in Decision 1, bandwidth reduction of 83% in Decision 4). The decisions are actionable: a downstream
+        implementer could start building from this design. However, some reasoning chains could go one step deeper.
+      weakness: |
+        Decision 4 includes a typing indicator (line 96: "include a simple typing indicator (boolean) as a
+        low-cost addition") but the research findings show typing indicators at only 45% importance (F13),
+        below the viewport at 34% which was explicitly excluded. The reasoning for including typing but excluding
+        viewport is "low-cost addition" without quantifying what "low-cost" means in bandwidth terms or explaining
+        why a 45% importance item is included when a 34% item is excluded. The threshold logic is implicit rather
+        than explicit. Additionally, the "500ms visual indicator" for formatting overrides (line 84) has no evidence
+        basis cited -- it appears to be an arbitrary design choice.
+
+  overall:
+    outcome: "go"
+    summary: |
+      This is a high-quality design document. All four dimensions score at 4 or above. Every design decision
+      traces to specific research findings with accurate citations. The document maintains consistent structure
+      and terminology. Assumptions are transparently stated with honestly calibrated confidence levels. Reasoning
+      is thorough with alternatives considered and trade-offs quantified. Minor weaknesses exist (extrapolated
+      latency claim, undocumented fallback transport evidence, hidden document model assumption, implicit typing
+      indicator threshold) but none affect the soundness of the core design decisions.
+    advisory: |
+      1. Document the block-based document model assumption explicitly, ideally with a brief section or reference.
+      2. Add evidence basis for the HTTP long-polling fallback choice in Decision 2.
+      3. Clarify the threshold logic for including typing indicators but excluding viewport data.
+      4. Provide evidence basis for the 500ms formatting conflict indicator duration.
+    recycle_details: |
+      N/A

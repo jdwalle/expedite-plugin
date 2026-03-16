@@ -1,0 +1,137 @@
+gate_evaluation:
+  gate_id: "G2"
+  artifact: ".planning/phases/33-verifier-validation/fixtures/fabricated-synthesis.md"
+  evaluated_at: "2026-03-16T15:48:00Z"
+
+  dimensions:
+    evidence_support:
+      score: 1
+      reasoning: |
+        This synthesis has critically inflated evidence ratings. The core job of a research synthesis is to
+        accurately report whether evidence exists for each question. This document systematically overstates
+        the evidence quality:
+
+        DA-1 Q1 (line 13): Rates COVERED but evidence description is entirely vague: "Multiple industry
+        sources confirm," "strong corroboration across academic and industry evidence," "benchmarks showing
+        superior convergence characteristics." No specific findings are cited by number (F1-F5 are available
+        in scope-context.md but none are referenced). "The research leaves no doubt" is an unjustified
+        absolute claim.
+
+        DA-1 Q2 (line 21): Rates COVERED. "Multiple sources validate" and "industry experts widely agree"
+        are appeals to unnamed authority. "Strong corroboration from production deployments at scale" (line 23)
+        cites no specific deployments or data. The actual scope evidence (F3) is specific and could be cited
+        but is not.
+
+        DA-1 Q3 (line 29): Rates COVERED. "WebSocket is the clear winner based on multiple performance
+        benchmarks" -- which benchmarks? None cited. "The evidence strongly supports WebSocket as the only
+        viable option" -- the scope research (F2) explicitly discusses WebTransport as viable with limited
+        browser support, contradicting the "only viable option" claim.
+
+        DA-2 Q1 (line 39): Rates COVERED. "Analysis of Google Docs, Notion, and Figma confirms that
+        paragraph-level detection is the industry consensus" -- the scope research does not establish
+        "industry consensus"; it describes different approaches by different companies (F6: Google uses
+        character-level OT, F7: Figma uses CRDT markers). Calling this "consensus" misrepresents the evidence.
+
+        DA-2 Q2 (line 45): Rates PARTIAL -- this is the only honest rating. Acknowledges implementation
+        details need further work. Cites the Figma 4.2/5 figure.
+
+        DA-2 Q3 (line 53): Rates COVERED. "Multiple industry sources confirm this is the standard resolution
+        strategy" -- which sources? Not cited. The scope has F10 which provides specific data.
+
+        DA-3 Q1-Q3 (lines 61-81): All rated COVERED with superlative language ("thorough and conclusive,"
+        "exceptionally strong," "comprehensively covers") but no specific finding citations.
+
+        Pattern: 8 of 9 questions rated COVERED, but the evidence descriptions rely on "multiple sources,"
+        "strong corroboration," and "comprehensive evidence" without citing any specific findings (F1-F15).
+        The actual scope-context.md contains 15 specific, citable findings. A honest synthesis would reference
+        them by number. This synthesis uses authority language as a substitute for evidence traceability.
+      weakness: |
+        Systematic failure to cite specific findings. The scope-context.md contains F1-F15 with specific data
+        points. This synthesis references none of them by number in any COVERED rating. Instead, every rating
+        relies on vague appeals to "multiple industry sources" and "strong corroboration." The ratings are
+        unjustified by the evidence descriptions provided.
+
+    internal_consistency:
+      score: 3
+      reasoning: |
+        The document follows a consistent structure: each question has a Rating, followed by 2-3 paragraphs
+        of evidence description. The summary table (lines 85-90) accurately reflects the ratings given in
+        each section (8 COVERED, 1 PARTIAL, 0 NOT COVERED). The readiness decision logically follows from
+        the summary (8/9 covered = ready). Terminology is consistent throughout. However, there is a subtle
+        inconsistency: DA-2 Q2 (line 45) is rated PARTIAL and acknowledges gaps, while DA-2 Q1 (line 39)
+        is rated COVERED and claims the "evidence base is comprehensive and leaves no significant questions
+        unanswered" -- yet Q1 and Q2 are closely related (detection approach and visualization approach are
+        two aspects of the same UX problem). If visualization details need more work (Q2), it's inconsistent
+        to claim the detection approach evidence "leaves no significant questions unanswered" (Q1).
+      weakness: |
+        DA-2 Q1 (line 41) claims "no significant questions unanswered" about conflict detection while
+        DA-2 Q2 (line 47) acknowledges that "specific design parameters" for conflict visualization
+        "need further UX work." These are closely related: you cannot fully answer "how to handle
+        semantic conflicts" without answering "how to visualize them."
+
+    assumption_transparency:
+      score: 2
+      reasoning: |
+        The document has no explicit assumptions section. More critically, the synthesis makes a significant
+        hidden assumption: it assumes that vague evidence descriptions ("multiple sources confirm") represent
+        adequate research depth. The overall readiness assessment (line 94) declares "READY TO PROCEED"
+        without acknowledging any risk that the evidence might be thinner than the ratings suggest. The
+        Evidence Quality Notes section (line 100) claims "strong corroboration across sources" and "Academic
+        research, industry case studies, and production deployment data converge" -- but none of these
+        source types are specifically cited in any individual question assessment. The document assumes its
+        own evidence characterizations are accurate without providing the reader any way to verify. The
+        only transparency point is DA-2 Q2's PARTIAL rating, which honestly acknowledges a gap. Every
+        other rating presents certainty that is not supported by the evidence descriptions.
+      weakness: |
+        Lines 100-102 (Evidence Quality Notes): Claims "Academic research, industry case studies, and
+        production deployment data converge on consistent conclusions" but none of these source categories
+        are specifically cited or verifiable in any individual question assessment. This is a meta-claim
+        about evidence quality that is itself unsupported.
+
+    reasoning_completeness:
+      score: 2
+      reasoning: |
+        The synthesis lacks substantive analysis. Each question assessment follows the same pattern:
+        (1) assert the evidence is strong with vague language, (2) conclude the question is COVERED.
+        There is no reasoning chain showing: what specific evidence exists -> what it demonstrates ->
+        what gaps remain -> therefore what rating is justified. The assessments read as conclusions
+        without supporting analysis. For example, DA-1 Q1 (lines 13-15) jumps from "Multiple industry
+        sources confirm" directly to "The research leaves no doubt" without explaining what the sources
+        found, what comparisons were made, or what the benchmark results showed. The readiness decision
+        (line 94) follows mechanically from the ratings table without any qualitative assessment of
+        whether the COVERED ratings represent genuinely deep evidence or surface-level familiarity.
+        DA-2 Q2's PARTIAL rating is the exception: it provides specific reasoning about what is known
+        vs unknown. If all questions used that level of analysis, the synthesis would be more credible.
+      weakness: |
+        DA-1 Q1 (lines 13-15): The reasoning is circular -- it claims the evidence is strong as the
+        reason the question is covered, without describing what the evidence actually contains. Compare
+        with DA-2 Q2 (lines 47-49) which provides specific reasoning about what is known (Figma model)
+        vs what needs more work (design parameters). DA-1 Q1 should follow DA-2 Q2's level of specificity.
+
+  overall:
+    outcome: "recycle"
+    summary: |
+      This research synthesis systematically inflates evidence sufficiency ratings. Evidence support scores 1
+      because no specific research findings (F1-F15) are cited despite being available in scope-context.md,
+      and vague authority language ("multiple sources," "strong corroboration") substitutes for actual evidence
+      traceability. Assumption transparency scores 2 because the document assumes its own characterizations
+      are accurate without providing verifiable references. Reasoning completeness scores 2 because assessments
+      are conclusions without supporting analysis. The only credible section is DA-2 Q2 (PARTIAL), which
+      provides honest gap acknowledgment. The synthesis must be rewritten with specific evidence citations
+      and honest ratings that match the actual evidence depth.
+    advisory: |
+      N/A
+    recycle_details: |
+      1. EVIDENCE CITATIONS: Every COVERED rating must cite specific findings (F1-F15) from scope-context.md
+         that support the rating. Replace "multiple industry sources" with specific finding references.
+      2. RATING CALIBRATION: Re-evaluate each rating against the evidence actually cited. Questions where
+         evidence is described in vague terms should be rated PARTIAL, not COVERED. A COVERED rating requires
+         specific, verifiable evidence that directly answers the question.
+      3. REASONING DEPTH: For each question, provide a reasoning chain: what specific evidence exists -> what
+         it demonstrates -> what gaps remain -> rating justification. Follow the model of DA-2 Q2's analysis.
+      4. CONSISTENCY CHECK: DA-2 Q1 and Q2 should have consistent reasoning -- if visualization specifics
+         need more work (Q2 PARTIAL), the closely-related detection approach should acknowledge related gaps.
+      5. HONEST GAPS: Remove superlative language ("no doubt," "comprehensive," "exceptionally strong,"
+         "thorough and conclusive") unless backed by cited evidence. Report confidence honestly.
+      6. META-CLAIMS: The Evidence Quality Notes section should be evidence-based, not a restatement of
+         the synthesis's own conclusions. Cite specific examples of corroboration.

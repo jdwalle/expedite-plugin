@@ -1,0 +1,98 @@
+gate_evaluation:
+  gate_id: "G3"
+  artifact: ".planning/phases/33-verifier-validation/fixtures/adequate-design.md"
+  evaluated_at: "2026-03-16T15:42:00Z"
+
+  dimensions:
+    evidence_support:
+      score: 3
+      reasoning: |
+        Most decisions cite specific research findings, but there are notable gaps. Decision 1 cites F1 (convergence)
+        and F3 (offline) specifically, and F6 for OT context. Decision 2 cites F2 and F15 by number. Decision 3
+        cites F7, F8, F9, F10. Decision 4 cites F11, F12, F13, F14. So far, evidence is present. However, Decision 1
+        opens with "Research showed that CRDT-based approaches handle concurrent edits more efficiently" (line 11)
+        before providing the specific F1 citation -- the vague "research showed" phrasing is a weaker evidence
+        pattern than citing F1 directly. More significantly, Decision 2 line 38 states "The system assumes that
+        network latency between the client and server will remain under 200ms" -- this is a critical operational
+        assumption embedded in the decision text without evidence support. The document does not cite any finding
+        supporting this 200ms network latency assumption, and it is different from the 200ms edit propagation target
+        in the scope. Overall, most claims are supported but a few use vague citation patterns and one critical
+        assumption lacks evidence.
+      weakness: |
+        Decision 1, line 11: "Research showed that CRDT-based approaches handle concurrent edits more efficiently"
+        uses a vague "research showed" formulation before the specific F1 cite. Decision 2, line 38: the 200ms
+        network latency assumption is stated without any evidence citation, yet it is a load-bearing assumption
+        for the sync SLA. This crosses from "vague citation" into "unsupported claim" territory.
+
+    internal_consistency:
+      score: 4
+      reasoning: |
+        The document is mostly consistent. It follows a repeating structure: Rationale -> Alternatives (sometimes)
+        -> Decision -> Assumptions. Terminology is generally consistent: "CRDT," "Yjs," "WebSocket" used correctly
+        throughout. The 50+ user target is referenced consistently. No direct contradictions between decisions.
+        The architecture summary table aligns with the decisions made. However, there is a minor terminology
+        inconsistency: the document uses both "sync" (line 11, 13, 32) and "synchronization" (line 7, 21) in
+        contexts where the meaning is identical. While this is common in practice, it creates slight ambiguity
+        about whether these refer to different concepts. The document structure is not perfectly consistent:
+        Decisions 1 and 3 have "Alternatives" subsections while Decisions 2 and 4 do not.
+      weakness: |
+        Structural inconsistency: Decisions 1 and 3 include "Alternatives" subsections (lines 15-17, 54-56)
+        while Decisions 2 and 4 omit them entirely. Decision 2 mentions WebTransport and SSE in the rationale
+        but does not separate them into an Alternatives section. This creates an uneven reading experience and
+        suggests some decisions received more rigorous alternative analysis than others.
+
+    assumption_transparency:
+      score: 3
+      reasoning: |
+        Assumptions are stated in each decision section, which is good. However, the confidence levels use
+        abbreviated labels ([High], [Medium]) instead of the full format, and some decisions have very few
+        assumptions listed. Decision 1 has 2 assumptions. Decision 2 has 1. Decision 3 has 1. Decision 4 has 2.
+        More critically, there is a hidden assumption: Decision 2, line 38 states the system assumes sub-200ms
+        network latency but this is embedded in the decision text, not in the Assumptions subsection. This is
+        an operational assumption that could invalidate the design if network conditions are worse. Decision 4
+        says "Timeout after disconnect" (line 78) without specifying the actual timeout duration -- the scope
+        research finding F14 specifies 3 seconds, but the design omits this specific value, hiding the assumption
+        about what "reasonable" means. Overall, most assumptions are visible but there are hidden ones that could
+        matter.
+      weakness: |
+        Decision 2, line 38: "The system assumes that network latency between the client and server will remain
+        under 200ms" is embedded in the decision narrative rather than listed as an explicit assumption with a
+        confidence level. This is a critical operational constraint that should be surfaced prominently.
+        Decision 4, line 78: "Timeout after disconnect" with no specific duration hides the timeout value
+        assumption -- the reader must check the scope to learn it should be 3 seconds.
+
+    reasoning_completeness:
+      score: 3
+      reasoning: |
+        Reasoning is adequate but has gaps. Decision 1 provides a clear rationale (convergence + offline + scaling)
+        and mentions alternatives (OT, hybrid) with brief reasons for rejection. Decision 2's reasoning is thin:
+        WebTransport and SSE are mentioned as alternatives but dismissed in single sentences without trade-off
+        analysis. Decision 3 provides adequate reasoning with Figma as a model and latency analysis, plus
+        alternatives considered. Decision 4 provides solid reasoning for data selection and throttling, but the
+        timeout decision is vague ("reasonable timeout period"). The risk register is minimal: 3 entries with
+        one-line mitigations, no likelihood/impact assessment. A downstream implementer could build from this
+        design but would need to fill in several gaps (fallback transport details, timeout values, compression
+        strategy). Trade-offs are mentioned for some decisions but not fully analyzed.
+      weakness: |
+        Decision 2: The trade-off between WebSocket and alternatives is compressed to "WebTransport was considered
+        but browser support is limited. SSE only supports one-way communication" (lines 34-35). There is no
+        analysis of what happens when WebSocket is unavailable, what the fallback path looks like, or what
+        degraded performance characteristics are acceptable. The risk register acknowledges "WebSocket blocked"
+        but the mitigation is just "Add fallback transport" with no detail.
+
+  overall:
+    outcome: "go-with-advisory"
+    summary: |
+      The design document is competent and makes sound decisions backed by evidence for the core architectural
+      choices. However, two dimensions score at 3 (evidence_support and reasoning_completeness) due to vague
+      citation patterns, a hidden network latency assumption, incomplete trade-off analysis for the transport
+      decision, and missing specifics on timeout behavior. The design is workable but has gaps that should be
+      addressed to prevent downstream ambiguity.
+    advisory: |
+      1. Replace "Research showed" with specific finding citations throughout (Decision 1, line 11).
+      2. Move the 200ms network latency assumption to an explicit Assumptions section with confidence level.
+      3. Specify the exact disconnect timeout duration (3 seconds per F14) rather than "reasonable."
+      4. Expand Decision 2's alternative analysis: document the fallback transport with expected degraded performance.
+      5. Add likelihood/impact columns to the risk register for prioritization.
+    recycle_details: |
+      N/A
