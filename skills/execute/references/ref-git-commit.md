@@ -74,7 +74,7 @@ Include the commit hash in the PROGRESS.md append (Step 5e) for traceability.
 If `git commit` fails for any reason (no staged changes after filtering, hook failure, lock file):
 - Display the full git error output
 - Display: "Git commit failed for task {task_id}. Options: retry / skip / pause"
-- Do NOT attempt auto-resolution (no `git reset`, no force flags, no stash)
+- Do NOT attempt to fix the error automatically (no destructive git commands, no forced operations, no stash manipulation)
 - retry: re-run the git add + git commit sequence
 - skip: skip commit, continue to Step 5d
 - pause: save checkpoint with substep `git_error_{task_id}`, STOP
