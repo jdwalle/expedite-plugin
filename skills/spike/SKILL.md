@@ -329,14 +329,8 @@ If user says **research**:
 1. Read `skills/spike/references/prompt-spike-researcher.md` (use Glob with `**/prompt-spike-researcher.md` if the direct path fails)
 2. Fill placeholders: `{{project_name}}`, `{{intent}}`, `{{tactical_decision}}`, `{{alternatives}}`, `{{da_reference}}`, `{{output_path}}` (output to `.expedite/plan/phases/{slug}/spike-research-td-{N}.md`)
 3. Create the output directory: `mkdir -p .expedite/plan/phases/{slug}/`
-4. Dispatch via Task() with the filled prompt:
-   ```
-   Task(
-     prompt: {assembled_prompt},
-     description: "Spike research: TD-{N} -- {tactical_decision}",
-     subagent_type: "general-purpose"
-   )
-   ```
+4. Dispatch the `spike-researcher` agent via the Agent tool. Pass the assembled context prompt.
+   The agent's model, tool restrictions, and maxTurns are defined in its frontmatter at agents/spike-researcher.md.
 5. Log agent completion:
    ```bash
    cat >> .expedite/log.yml << 'LOG_EOF'
@@ -353,7 +347,7 @@ If user says **research**:
 6. Read the returned summary and present to user for confirmation:
    ```
    Research complete for TD-{N}:
-   {condensed summary from Task() return}
+   {condensed summary from Agent tool return}
 
    Accept this recommendation? (yes / override with your own decision)
    ```

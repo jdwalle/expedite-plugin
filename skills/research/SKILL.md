@@ -584,15 +584,12 @@ updated_at: "{ISO 8601 UTC timestamp}"
 
 Display: "Dispatching {N} research agents in parallel..."
 
-For each batch, issue a Task() call **simultaneously** (all dispatched in parallel):
+For each batch, dispatch the appropriate agent via the Agent tool **simultaneously** (all dispatched in parallel). Determine the agent name from the batch source:
+- `"web"` source -> dispatch the `web-researcher` agent
+- `"codebase"` source -> dispatch the `codebase-researcher` agent
 
-```
-Task(
-  prompt: {assembled_prompt},
-  description: "Research {source} batch ({batch_id}): {comma-separated question ids}",
-  subagent_type: "general-purpose"
-)
-```
+Dispatch the {agent-name} agent via the Agent tool. Pass the assembled context prompt.
+The agent's model, tool restrictions, and maxTurns are defined in its frontmatter at agents/{agent-name}.md.
 
 **Concurrency limit:** Maximum 3 concurrent agents. If more than 3 batches exist, dispatch the first 3 and queue remaining batches. After any agent completes, dispatch the next queued batch immediately.
 
@@ -602,7 +599,7 @@ Task(
 Batch {N} complete ({source}) -- Evidence for {question_ids} written to evidence-{batch_id}.md ({remaining} remaining)
 ```
 
-**Failure handling:** If an agent fails (Task() returns error or agent reports critical failure), surface the failure to user with options:
+**Failure handling:** If an agent fails (Agent tool returns error or agent reports critical failure), surface the failure to user with options:
 
 ```
 Agent failure in Batch {N} ({source}):
@@ -627,7 +624,7 @@ affected_questions: ["{affected question IDs}"]
 LOG_EOF
 ```
 
-- **If user retries:** Re-dispatch the same Task() with the same assembled prompt. Maximum 1 retry per batch -- if the retry also fails, only the "Skip" option remains.
+- **If user retries:** Re-dispatch the same agent via the Agent tool with the same assembled prompt. Maximum 1 retry per batch -- if the retry also fails, only the "Skip" option remains.
 - **If user skips:** Mark those questions as `"not_covered"` in state.yml using the backup-before-write pattern (read, backup, modify, write).
 
 Continue until all batches are complete or user has addressed all failures. Then proceed to Step 10.
@@ -638,7 +635,7 @@ After ALL agents have completed (or been skipped/failed), collect and process re
 
 For each completed batch:
 
-1. **Read the agent's condensed return summary** (the ~500 token summary returned by Task(), NOT the full evidence file). This avoids context bloat -- the detailed findings are already written to the evidence files on disk.
+1. **Read the agent's condensed return summary** (the ~500 token summary returned by the Agent tool, NOT the full evidence file). This avoids context bloat -- the detailed findings are already written to the evidence files on disk.
 
 2. **Extract per-question results** from the summary:
    - Per-question status: Did the agent find evidence meeting the requirements? Infer from the GAPS section of the return summary.
@@ -785,6 +782,8 @@ continuation_notes: "Sufficiency evaluator dispatched, awaiting results"
 inputs_hash: null
 updated_at: "{ISO 8601 UTC timestamp}"
 ```
+
+<!-- TODO Phase 31: Convert sufficiency evaluator to named agent or inline logic -->
 
 Dispatch the sufficiency evaluator as a Task() subagent. The evaluator reads all evidence files and scope artifacts in its own fresh context — keeping evidence content out of the orchestrator's context.
 
@@ -1089,9 +1088,9 @@ inputs_hash: null
 updated_at: "{ISO 8601 UTC timestamp}"
 ```
 
-Read the synthesizer template from `skills/research/references/prompt-research-synthesizer.md` (use Glob with `**/prompt-research-synthesizer.md` if the direct path fails). This template HAS frontmatter (`model: opus`, `subagent_type: general-purpose`) — it runs as a Task() subagent.
+Read the synthesizer template from `skills/research/references/prompt-research-synthesizer.md` (use Glob with `**/prompt-research-synthesizer.md` if the direct path fails).
 
-Fill template placeholders: `{{project_name}}`, `{{intent}}`, `{{research_round}}` from state.yml. `{{evidence_dir}}` = ".expedite/research". `{{scope_file}}` = ".expedite/scope/SCOPE.md". `{{output_file}}` = ".expedite/research/SYNTHESIS.md". `{{timestamp}}` = current ISO 8601 UTC. The subagent reads evidence files and scope itself (per its `<self_contained_reads>` instructions) — do NOT read or assemble evidence content into the prompt.
+Fill template placeholders: `{{project_name}}`, `{{intent}}`, `{{research_round}}` from state.yml. `{{evidence_dir}}` = ".expedite/research". `{{scope_file}}` = ".expedite/scope/SCOPE.md". `{{output_file}}` = ".expedite/research/SYNTHESIS.md". `{{timestamp}}` = current ISO 8601 UTC. The agent reads evidence files and scope itself (per its `<self_contained_reads>` instructions) — do NOT read or assemble evidence content into the prompt.
 
 Apply intent lens (keep matching `<if_intent_*>` blocks, remove other).
 
@@ -1099,7 +1098,10 @@ Apply intent lens (keep matching `<if_intent_*>` blocks, remove other).
 
 **If override-context.md exists:** Read it and inject as `<override_context>` — instruct synthesizer to prominently flag overridden gaps in DA sections and a `## Override Advisory` section.
 
-Dispatch via Task(). After completion, verify `.expedite/research/SYNTHESIS.md` exists. If missing, offer re-dispatch via AskUserQuestion. If present, display confirmation with file size.
+Dispatch the `research-synthesizer` agent via the Agent tool. Pass the assembled context prompt.
+The agent's model, tool restrictions, and maxTurns are defined in its frontmatter at agents/research-synthesizer.md.
+
+After completion, verify `.expedite/research/SYNTHESIS.md` exists. If missing, offer re-dispatch via AskUserQuestion. If present, display confirmation with file size.
 
 Proceed to Step 18.
 
