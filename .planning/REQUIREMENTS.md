@@ -30,10 +30,10 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 ### Gate Enforcement
 
 - [x] **GATE-01**: G1 (Scope) runs as deterministic Node.js script checking SCOPE.md existence, required sections (problem, goals, constraints, decision areas), minimum word counts
-- [ ] **GATE-02**: G2-structural runs as deterministic Node.js script checking synthesis file existence, category files referenced in SCOPE.md, DA synthesis sections, READINESS.md with per-DA status (no DA has status "INSUFFICIENT")
+- [x] **GATE-02**: G2-structural runs as deterministic Node.js script checking synthesis file existence, category files referenced in SCOPE.md, DA synthesis sections, READINESS.md with per-DA status (no DA has status "INSUFFICIENT")
 - [x] **GATE-03**: G4 (Plan) runs as deterministic Node.js script checking PLAN.md existence, phased breakdown, tasks with assigned agents, dependency chain
 - [x] **GATE-04**: Gate scripts write structured results to gates.yml with specific, actionable failure messages
-- [ ] **GATE-05**: Each structural gate runs as part of skill completion flow — skill invokes gate script, script writes gates.yml, PreToolUse hook checks on phase transition
+- [x] **GATE-05**: Each structural gate runs as part of skill completion flow — skill invokes gate script, script writes gates.yml, PreToolUse hook checks on phase transition
 - [ ] **GATE-06**: G3 (Design) uses dual-layer evaluation — structural check then semantic verification via gate-verifier agent
 - [ ] **GATE-07**: G5 (Spike) uses dual-layer evaluation — structural check then semantic verification via gate-verifier agent
 - [ ] **GATE-08**: G2-semantic — verifier checks whether evidence sufficiency ratings are justified by cited evidence
@@ -108,10 +108,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | THIN-05 | Phase 31 | Complete |
 | THIN-06 | Phase 31 | Complete |
 | GATE-01 | Phase 32 | Complete |
-| GATE-02 | Phase 32 | Pending |
+| GATE-02 | Phase 32 | Complete |
 | GATE-03 | Phase 32 | Complete |
 | GATE-04 | Phase 32 | Complete |
-| GATE-05 | Phase 32 | Pending |
+| GATE-05 | Phase 32 | Complete |
 | GATE-06 | Phase 34 | Pending |
 | GATE-07 | Phase 34 | Pending |
 | GATE-08 | Phase 34 | Pending |

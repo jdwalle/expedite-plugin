@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Agent Harness Completion
 status: unknown
-last_updated: "2026-03-16T04:05:00.000Z"
+last_updated: "2026-03-16T04:11:01.000Z"
 progress:
   total_phases: 3
   completed_phases: 3
   total_plans: 7
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-15)
 ## Current Position
 
 Phase: 32 — Structural Gates (3 of 6)
-Plan: 1 of 2 complete
-Status: Executing Phase 32 — completed 32-01 (G1/G4 Gate Scripts)
-Last activity: 2026-03-16 — Completed 32-01 (G1/G4 Gate Scripts)
+Plan: 2 of 2 complete
+Status: Phase 32 complete — all structural gates created and wired into skills
+Last activity: 2026-03-16 — Completed 32-02 (G2 Gate + Skill Wiring)
 
-Progress: [######░░░░] 67%
+Progress: [########░░] 78%
 
 ## Performance Metrics
 
@@ -62,6 +62,9 @@ Full decision log in PROJECT.md Key Decisions table.
 - [32-01] Reused js-yaml from hooks/node_modules via path.join(__dirname) for CWD-independent require
 - [32-01] G1 uses 'hold' as fail outcome, G4 uses 'recycle' per existing skill conventions
 - [32-01] M5 vacuous pass when no questions (M2 catches count); M6 auto-pass when tasks.yml absent
+- [32-02] G2 uses 'recycle' as hold outcome per research skill convention (matching G4)
+- [32-02] M5 vacuous pass when both SYNTHESIS.md and sufficiency-results.yml missing (M1 catches real issue)
+- [32-02] Inline gate criteria replaced with script invocation in all three skills; outcome handling preserved
 
 ### Pending Todos
 
@@ -83,9 +86,10 @@ None.
 | 31 | 02 | 4min | 2 | 4 |
 | 31 | 03 | 3min | 2 | 1 |
 | 32 | 01 | 4min | 2 | 3 |
+| 32 | 02 | 3min | 2 | 4 |
 
 ## Session Continuity
 
 Last session: 2026-03-16
-Stopped at: Completed 32-01-PLAN.md (G1/G4 Gate Scripts)
+Stopped at: Completed 32-02-PLAN.md (G2 Gate + Skill Wiring)
 Resume file: None
