@@ -71,7 +71,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 
 **Milestone Goal:** Complete the agent harness on the validated M1-M2 foundation — formalizing agents, thinning skills, enforcing structural gates as Node.js scripts, adding dual-layer semantic gate verification, and enabling worktree isolation with per-task atomic git commits.
 
-- [ ] **Phase 30: Agent Formalization** - Create 8 core agents with frontmatter, model tiering, and memory config
+- [x] **Phase 30: Agent Formalization** - Create 8 core agents with frontmatter, model tiering, and memory config (completed 2026-03-16)
 - [ ] **Phase 31: Skill Thinning** - Refactor all skills to step-sequencer + agent-dispatcher; fix gate write path
 - [ ] **Phase 32: Structural Gates** - G1, G2-structural, G4 as deterministic Node.js gate scripts writing to gates.yml
 - [ ] **Phase 33: Verifier Validation** - Pre-build test of gate-verifier across quality range before semantic gate commitment
@@ -93,8 +93,8 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 **Plans**: 2 plans
 
 Plans:
-- [ ] 30-01: Create 8 agent definition files with frontmatter (model tiering, tool restrictions, memory config, system prompts)
-- [ ] 30-02: Update skills to dispatch agents by name via Agent tool; validate tool restriction behavior
+- [x] 30-01: Create 8 agent definition files with frontmatter (model tiering, tool restrictions, memory config, system prompts)
+- [x] 30-02: Update skills to dispatch agents by name via Agent tool; validate tool restriction behavior
 
 ### Phase 31: Skill Thinning
 **Goal**: All skills refactored to the step-sequencer + agent-dispatcher pattern (under 200 lines each, up to 400 for scope), gate results written to `.expedite/gates.yml` fixing the INT-01/FLOW-01 integration debt, and gated phase transitions work end-to-end without override workaround
@@ -203,7 +203,7 @@ Plans:
 | 27. Override + Audit | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 28. Checkpoint Resume | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 29. Session Handoff | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 30. Agent Formalization | 1/2 | In Progress|  | - |
+| 30. Agent Formalization | v3.0 | 2/2 | Complete | 2026-03-16 |
 | 31. Skill Thinning | v3.0 | 0/3 | Not started | - |
 | 32. Structural Gates | v3.0 | 0/2 | Not started | - |
 | 33. Verifier Validation | v3.0 | 0/1 | Not started | - |

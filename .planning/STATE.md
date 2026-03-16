@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Agent Harness Completion
 status: active
-last_updated: "2026-03-16T00:34:00.000Z"
+last_updated: "2026-03-16T01:11:00Z"
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 13
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-15)
 
 **Core value:** Developers can run a complete evidence-based lifecycle — from scoping questions through researched design to executable plan — without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Phase 30 — Agent Formalization
+**Current focus:** Phase 31 — Skill Thinning
 
 ## Current Position
 
-Phase: 30 — Agent Formalization (1 of 6)
-Plan: 1 of 2 complete
-Status: Executing Phase 30
-Last activity: 2026-03-16 — Completed 30-01 (Agent Definition Files)
+Phase: 31 — Skill Thinning (2 of 6)
+Plan: 0 of 3 complete
+Status: Phase 30 complete, ready for Phase 31
+Last activity: 2026-03-16 — Completed 30-02 (Agent Dispatch Wiring)
 
-Progress: [#░░░░░░░░░] 8%
+Progress: [##░░░░░░░░] 15%
 
 ## Performance Metrics
 
@@ -47,6 +47,8 @@ Full decision log in PROJECT.md Key Decisions table.
 - [30-01] gate-verifier created as new agent with 4-dimension scoring and anti-rubber-stamp protocol
 - [30-01] task-implementer created as new prompt derived from execute skill Step 5 logic (not direct template extract)
 - [30-01] Added self_contained_reads sections to agents that will read their own upstream artifacts
+- [30-02] Sufficiency evaluator retains Task() dispatch with Phase 31 TODO comment (not yet a named agent)
+- [30-02] Integration testing deferred until plugin is in enabledPlugins; structural verification accepted
 
 ### Pending Todos
 
@@ -63,9 +65,10 @@ None.
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 30 | 01 | 7min | 2 | 8 |
+| 30 | 02 | 5min | 2 | 2 |
 
 ## Session Continuity
 
 Last session: 2026-03-16
-Stopped at: Completed 30-01-PLAN.md
+Stopped at: Completed 30-02-PLAN.md (Phase 30 complete)
 Resume file: None

@@ -10,13 +10,13 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 ### Agent Formalization
 
 - [x] **AGNT-01**: Each agent exists as `agents/{name}.md` with frontmatter (model, description, tools/disallowedTools, maxTurns, system prompt)
-- [ ] **AGNT-02**: Skills dispatch agents by name via the Agent tool and receive structured results
+- [x] **AGNT-02**: Skills dispatch agents by name via the Agent tool and receive structured results
 - [x] **AGNT-03**: All non-execute agents include EnterWorktree in disallowedTools
 - [x] **AGNT-04**: 8 core agents created: web-researcher, codebase-researcher, research-synthesizer, design-architect, plan-decomposer, spike-researcher, task-implementer, gate-verifier
 - [x] **AGNT-05**: Premium-tier agents (research-synthesizer, design-architect, gate-verifier) use Opus model
 - [x] **AGNT-06**: Balanced-tier agents (web-researcher, codebase-researcher, plan-decomposer, spike-researcher, task-implementer) use Sonnet model
 - [x] **AGNT-07**: research-synthesizer and gate-verifier have `memory: project` in frontmatter
-- [ ] **AGNT-08**: Tool restriction test confirms dispatched agent cannot use a restricted tool
+- [x] **AGNT-08**: Tool restriction test confirms dispatched agent cannot use a restricted tool
 
 ### Skill Thinning
 
@@ -94,13 +94,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | AGNT-01 | Phase 30 | Complete |
-| AGNT-02 | Phase 30 | Pending |
+| AGNT-02 | Phase 30 | Complete |
 | AGNT-03 | Phase 30 | Complete |
 | AGNT-04 | Phase 30 | Complete |
 | AGNT-05 | Phase 30 | Complete |
 | AGNT-06 | Phase 30 | Complete |
 | AGNT-07 | Phase 30 | Complete |
-| AGNT-08 | Phase 30 | Pending |
+| AGNT-08 | Phase 30 | Complete |
 | THIN-01 | Phase 31 | Pending |
 | THIN-02 | Phase 31 | Pending |
 | THIN-03 | Phase 31 | Pending |
