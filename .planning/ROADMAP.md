@@ -6,7 +6,7 @@
 - ✅ **v1.1 Production Polish** -- Phases 14-18 (shipped 2026-03-11)
 - ✅ **v1.2 Infrastructure Hardening & Quality** -- Phase 19 (shipped 2026-03-12)
 - ✅ **v2.0 Agent Harness Foundation** -- Phases 25-29 (shipped 2026-03-13)
-- 🚧 **v3.0 Agent Harness Completion** -- Phases 30-35 (in progress)
+- 🚧 **v3.0 Agent Harness Completion** -- Phases 30-37 (in progress)
 
 ## Phases
 
@@ -77,6 +77,8 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 - [x] **Phase 33: Verifier Validation** - Pre-build test of gate-verifier across quality range before semantic gate commitment (completed 2026-03-16)
 - [x] **Phase 34: Semantic Gates** - G3, G5, G2-semantic via dual-layer gate-verifier with anti-rubber-stamp measures (completed 2026-03-16)
 - [x] **Phase 35: Worktree and Git Workflow** - Worktree isolation for task-implementer and per-task atomic git commits (completed 2026-03-16)
+- [ ] **Phase 36: Spike G5 Integration Fix** - Fix 3 interrelated breaks preventing spike → G5 → execute flow (gap closure)
+- [ ] **Phase 37: Reference & Roadmap Cleanup** - Remove orphaned reference files, fix stale gate_history refs, correct roadmap checkboxes (gap closure)
 
 ## Phase Details
 
@@ -175,6 +177,36 @@ Plans:
 - [ ] 35-01: Add worktree isolation to task-implementer; implement and test single-task worktree merge-back
 - [ ] 35-02: Implement per-task git commit flow in execute skill (conventional format, selective staging, opt-out, error handling)
 
+### Phase 36: Spike G5 Integration Fix
+**Goal**: The spike → G5 gate → execute flow works end-to-end: spike skill writes SPIKE.md before G5 evaluation, G5 gate writes are permitted during the correct lifecycle phase, and a completed spike transitions cleanly to execute_in_progress
+**Depends on**: Phase 34, Phase 31
+**Requirements**: GATE-07, THIN-04
+**Gap Closure:** Closes BREAK-1, BREAK-2, BREAK-3, GATE-07 (unsatisfied), THIN-04 (partial) from v3.0 audit
+**Success Criteria** (what must be TRUE):
+  1. Spike skill writes SPIKE.md to disk before invoking `node gates/g5-spike.js` — G5 structural gate finds and evaluates the artifact
+  2. G5 gate result writes to `gates.yml` succeed during the lifecycle phase where spike actually operates (no HOOK-04 block)
+  3. After spike completion, the FSM permits transition to `execute_in_progress` — the user can proceed to `/expedite:execute` without override
+  4. The fix uses a single coherent design direction (either spike writes its own phase transitions or FSM/hooks accommodate spike-as-pass-through)
+**Plans**: 1 plan
+
+Plans:
+- [ ] 36-01: Fix spike step ordering, gate-phase map, and FSM transition for G5 end-to-end flow
+
+### Phase 37: Reference & Roadmap Cleanup
+**Goal**: Remove orphaned pre-formalization reference files, fix stale gate_history references to use gates.yml, correct unchecked roadmap plan checkboxes, and clean up the TODO comment in research SKILL.md
+**Depends on**: Phase 36
+**Requirements**: None (tech debt / hygiene)
+**Gap Closure:** Closes STALE-1, ORPHAN-1, roadmap checkbox tech debt from v3.0 audit
+**Success Criteria** (what must be TRUE):
+  1. No `skills/*/references/` file exists that is not referenced by its parent SKILL.md or an agent definition
+  2. `ref-recycle-escalation.md` references `gates.yml` (not `gate_history` in state.yml)
+  3. ROADMAP.md plan checkboxes for Phases 32, 34, 35 are checked `[x]`
+  4. No TODO comments remain in skill SKILL.md files referencing pre-formalization patterns
+**Plans**: 1 plan
+
+Plans:
+- [ ] 37-01: Delete orphaned reference files, fix stale refs, correct roadmap checkboxes, remove TODO
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -209,3 +241,5 @@ Plans:
 | 33. Verifier Validation | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
 | 34. Semantic Gates | 3/3 | Complete    | 2026-03-16 | - |
 | 35. Worktree and Git Workflow | 2/2 | Complete    | 2026-03-16 | - |
+| 36. Spike G5 Integration Fix | v3.0 | 0/1 | Planned | - |
+| 37. Reference & Roadmap Cleanup | v3.0 | 0/1 | Planned | - |
