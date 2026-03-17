@@ -98,7 +98,11 @@ After all TDs: "All {X} tactical decisions resolved. Generating implementation s
 
 Generate ordered steps using resolved TDs, phase tasks, and design decisions. Each step has: number/title, traces-to (TD -> DA), files, numbered sub-steps. Self-check: every TD maps to a step, every task covered, all have traceability, file lists are specific paths.
 
-### Step 7: G5 Gate Evaluation (Dual-Layer)
+### Step 7: Write SPIKE.md
+
+`mkdir -p .expedite/plan/phases/{slug}/`. Check for existing SPIKE.md (prompt overwrite). Write spike output: header (phase, TD counts, G5 status), TD resolutions (classification, resolution, rationale, method, evidence), implementation steps (traces-to, files, sub-steps). Verify file exists and has content.
+
+### Step 8: G5 Gate Evaluation (Dual-Layer)
 
 **Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
@@ -152,12 +156,8 @@ history:
 
 Log gate outcome (both layers) to log.yml. Display: structural pass/fail summary, semantic dimension scores, overall outcome.
 
-**On Go:** Proceed to Step 8.
+**On Go:** Proceed to Step 9.
 **On Recycle (structural or semantic):** Display issues. Fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go-with-advisory.
-
-### Step 8: Write SPIKE.md
-
-`mkdir -p .expedite/plan/phases/{slug}/`. Check for existing SPIKE.md (prompt overwrite). Write spike output: header (phase, TD counts, G5 status), TD resolutions (classification, resolution, rationale, method, evidence), implementation steps (traces-to, files, sub-steps). Verify file exists and has content.
 
 ### Step 9: Display Summary
 
