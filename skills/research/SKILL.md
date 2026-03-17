@@ -108,7 +108,13 @@ Read results. Handle UNAVAILABLE-SOURCE questions (AskUserQuestion: accept gap/s
 
 Read `.expedite/research/proposed-questions.yml`. If empty/missing, skip to Step 14. Deduplicate against existing questions (LLM semantic dedup, not string matching). Cap at 4. Present to user (freeform: approve all/specific/none/modify). Add approved questions to state.yml and SCOPE.md.
 
-### Step 14: G2 Gate Evaluation (Dual-Layer)
+### Step 14: Synthesis Generation
+
+Dispatch the `research-synthesizer` agent via the Agent tool. Pass assembled context: project_name, intent, research_round, evidence_dir, scope_file, output_file (.expedite/research/SYNTHESIS.md), timestamp. Apply intent lens. If go-with-advisory: inject advisory context. If override: inject override context.
+
+After agent returns: verify `.expedite/research/SYNTHESIS.md` exists on disk. If missing, display error: "Agent research-synthesizer did not produce expected output at .expedite/research/SYNTHESIS.md. Retry? (yes/skip)". If present, display confirmation with file size.
+
+### Step 15: G2 Gate Evaluation (Dual-Layer)
 
 **Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
@@ -119,7 +125,7 @@ The script reads SYNTHESIS.md, SCOPE.md, and evidence files, evaluates structura
 
 **Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Proceed to Step 15 with the structural recycle outcome.
+**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Proceed to Step 16 with the structural recycle outcome.
 
 **If structural outcome is "go" or "go_advisory":** Proceed to Layer 2.
 
@@ -164,25 +170,19 @@ history:
 
 Log gate outcome (both layers) to log.yml. Display: structural pass/fail, semantic dimension scores, overall outcome.
 
-### Step 15: Gate Outcome Handling
+### Step 16: Gate Outcome Handling
 
-**Go** -> "G2 gate passed. Research sufficient for design." -> Step 17.
+**Go** -> "G2 gate passed. Research sufficient for design." -> Step 18.
 
-**Go-with-advisory** -> Show SHOULD failures. Freeform: "1. Proceed with advisory | 2. Run gap-fill." Proceed -> Step 17. Gap-fill -> treat as Recycle -> Step 16.
+**Go-with-advisory** -> Show SHOULD failures. Freeform: "1. Proceed with advisory | 2. Run gap-fill." Proceed -> Step 18. Gap-fill -> treat as Recycle -> Step 17.
 
-**Recycle** -> Read `skills/research/references/ref-recycle-escalation.md` (Glob if needed). Show gaps. User: approve gap-fill -> Step 16 / adjust+re-gate -> Step 14 / override -> write override to gates.yml per ref-override-protocol.md, then Step 17.
+**Recycle** -> Read `skills/research/references/ref-recycle-escalation.md` (Glob if needed). Show gaps. User: approve gap-fill -> Step 17 / adjust+re-gate -> Step 15 / override -> write override to gates.yml per ref-override-protocol.md, then Step 18.
 
 **Override handling:** Record override in gates.yml (outcome: "overridden", override_reason, severity). Write `.expedite/research/override-context.md`. Log override to log.yml.
 
-### Step 16: Gap-Fill Dispatch
+### Step 17: Gap-Fill Dispatch
 
 Filter deficient questions (partial/not_covered/pending). Increment research_round. `mkdir -p .expedite/research/round-{N}/`. Read `skills/research/references/ref-gapfill-dispatch.md` (Glob if needed). Re-batch by DA. Dispatch gap-fill agents using Step 5 pattern with narrowed question set and additive supplement output paths. After completion: return to Step 12 for re-assessment.
-
-### Step 17: Synthesis Generation
-
-Dispatch the `research-synthesizer` agent via the Agent tool. Pass assembled context: project_name, intent, research_round, evidence_dir, scope_file, output_file (.expedite/research/SYNTHESIS.md), timestamp. Apply intent lens. If go-with-advisory: inject advisory context. If override: inject override context.
-
-After agent returns: verify `.expedite/research/SYNTHESIS.md` exists on disk. If missing, display error: "Agent research-synthesizer did not produce expected output at .expedite/research/SYNTHESIS.md. Retry? (yes/skip)". If present, display confirmation with file size.
 
 ### Step 18: Research Completion
 

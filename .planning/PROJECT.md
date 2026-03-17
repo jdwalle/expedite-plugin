@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Expedite is a Claude Code plugin that orchestrates a 5-phase research-to-implementation lifecycle: Scope, Research, Design, Plan, Execute. It turns "research a problem, then build a solution" into a structured, repeatable workflow with 5 quality gates, parallel research agents, crash-resilient state management, dual-intent support for both product managers and engineers, step-level progress tracking, DA readiness enforcement across all gates, and a code-enforced agent harness with FSM-validated state transitions, checkpoint-based deterministic resume, and session handoff. The plugin lives at `~/.claude/plugins/expedite/` and is invoked via `/expedite:` commands.
+Expedite is a Claude Code plugin that orchestrates a 5-phase research-to-implementation lifecycle: Scope, Research, Design, Plan, Execute. It turns "research a problem, then build a solution" into a structured, repeatable workflow with 5 quality gates (3 structural + 2 dual-layer semantic), 8 formalized agents with model tiering, thinned step-sequencer skills dispatching agents by name, crash-resilient state management, dual-intent support for both product managers and engineers, step-level progress tracking, DA readiness enforcement across all gates, a code-enforced agent harness with FSM-validated state transitions, checkpoint-based deterministic resume, session handoff, worktree-isolated task execution, and per-task atomic git commits. The plugin lives at `~/.claude/plugins/expedite/` and is invoked via `/expedite:` commands.
 
 ## Core Value
 
@@ -45,20 +45,19 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 - ✓ Override mechanism: deny → write override to gates.yml → retry state write — v2.0
 - ✓ Checkpoint-based deterministic resume for all skills — v2.0
 - ✓ Session handoff via session-summary.md across session boundaries — v2.0
+- ✓ Agent formalization — 8 agents in `agents/*.md` with frontmatter (model, tools, maxTurns, system prompt) — v3.0
+- ✓ Model tiering — Opus for synthesizer/architect/verifier, Sonnet for all others — v3.0
+- ✓ Per-agent memory — research-synthesizer and gate-verifier get `memory: project` — v3.0
+- ✓ Skill thinning — all skills refactored to step-sequencer + agent-dispatcher (100-255 lines) — v3.0
+- ✓ Gate write path redirect — skills write gate results to `.expedite/gates.yml` (fixed INT-01/FLOW-01) — v3.0
+- ✓ Structural gate enforcement — G1, G2-structural, G4 as Node.js scripts writing to gates.yml — v3.0
+- ✓ Semantic gate dual-layer — G3, G5 + G2-semantic via gate-verifier agent with anti-rubber-stamp measures — v3.0
+- ✓ Worktree isolation — task-implementer runs in isolated git worktree with merge-back — v3.0
+- ✓ Per-task git workflow — atomic commits, conventional format, selective staging, opt-out, failed-task handling, git error pausing — v3.0
 
 ### Active
 
-<!-- Current scope: v3.0 Agent Harness Completion (M3-M7) -->
-
-- [ ] Agent formalization — 8-10 agents in `agents/*.md` with frontmatter (model, tools, maxTurns, system prompt)
-- [ ] Model tiering — Opus for synthesizer/architect/verifier, Sonnet for all others
-- [ ] Per-agent memory — research-synthesizer and gate-verifier get `memory: project`
-- [ ] Skill thinning — all skills refactored to step-sequencer + agent-dispatcher (target 100-200 lines)
-- [ ] Gate write path redirect — skills write gate results to `.expedite/gates.yml` (fixes INT-01/FLOW-01)
-- [ ] Structural gate enforcement — G1, G2-structural, G4 as Node.js scripts writing to gates.yml
-- [ ] Semantic gate dual-layer — G3, G5 + G2-semantic via gate-verifier agent with anti-rubber-stamp measures
-- [ ] Worktree isolation — task-implementer gets `isolation: worktree`
-- [ ] Per-task git workflow — atomic commits (DEVW-01), conventional format (DEVW-02), selective staging (DEVW-03), opt-out (DEVW-04), failed-task handling (DEVW-05), git error pausing (DEVW-06)
+(None — planning next milestone)
 
 ### Out of Scope
 
@@ -69,29 +68,18 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 - Multi-user collaboration — single-developer workflow
 - Numeric scoring for sufficiency — categorical model working well
 - TypeScript for hooks — build step overhead not justified for solo developer
+- Agent Teams (mesh communication) — 3-4x token cost; pipeline fits hub-and-spoke
+- Fine-tuned evaluator models — structured rubrics capture 75-80% of benefit
 
 ## Context
 
-Shipped v2.0 with agent harness foundation (Phases 25-29). 4 milestones complete: v1.0 (13 phases), v1.1 (5 phases), v1.2 (1 phase), v2.0 (5 phases).
-Plugin source: 7 skill directories + 10 prompt templates + 3 inline references + state templates + 6 hook scripts + 7 hook library modules.
-Tech stack: Claude Code plugin platform (SKILL.md orchestrators, Task() subagents, plugin.json auto-discovery) + Node.js hooks (js-yaml).
-Total: 24 phases, 56 plans, 144 requirements across 4 milestones.
+Shipped v3.0 with agent harness completion (Phases 30-37). 5 milestones complete: v1.0 (13 phases), v1.1 (5 phases), v1.2 (1 phase), v2.0 (5 phases), v3.0 (8 phases).
+Plugin source: 7 skill directories + 8 agent definitions + 5 gate scripts + 10 prompt templates + 3 inline references + state templates + 6 hook scripts + 7 hook library modules.
+Tech stack: Claude Code plugin platform (SKILL.md step-sequencers, Agent() dispatch by name, plugin.json auto-discovery) + Node.js hooks/gates (js-yaml).
+Total: 32 phases, 71 plans, 179 requirements across 5 milestones.
+Codebase: ~20,010 LOC (JS/MD/JSON/YML plugin source).
 Hook latency: p99 ~21ms (well under 300ms target).
-Known integration gap: skills write gate results to state.yml (old location), not gates.yml — deferred to M4 skill-thinning.
-
-## Current Milestone: v3.0 Agent Harness Completion
-
-**Goal:** Complete the agent harness architecture on top of the validated M1-M2 foundation — agent formalization (M3), skill thinning (M4), structural gate enforcement (M5), semantic gate dual-layer (M6), and worktree isolation + per-task git workflow (M7).
-
-**Target features:**
-- Agent formalization: 8-10 agents in `agents/*.md` with full frontmatter, model tiering, per-agent memory
-- Skill thinning: all skills refactored to step-sequencer + agent-dispatcher pattern (100-200 line target)
-- Structural gates: G1/G2-structural/G4 as deterministic Node.js scripts
-- Semantic gates: G3/G5 + G2-semantic via dual-layer gate-verifier agent
-- Worktree isolation + per-task atomic git commits with conventional format
-
-**Design spec:** `.planning/research/agent-harness-architecture/design/PRODUCT-DESIGN.md`
-**Risk register:** `.planning/research/agent-harness-architecture/design/CONFIDENCE-AUDIT.md`
+7 tech debt items carried forward (live runtime tests pending, schema naming mismatch).
 
 ## Constraints
 
@@ -134,6 +122,14 @@ Known integration gap: skills write gate results to state.yml (old location), no
 | Checkpoint-primary, artifact-fallback resume | Deterministic from checkpoint.yml; heuristic fallback only when checkpoint missing | ✓ Good — reliable resume in all 6 skills |
 | Override deadlock prevention | gates.yml writes bypass gate-passage checks; only schema-validated | ✓ Good — override flow never self-blocks |
 | Shared reference injection pattern | skills/shared/ref-*.md files injected via !cat in skill preambles | ✓ Good — DRY protocol injection |
+| Step-sequencer + agent-dispatcher skill pattern | Skills are thin orchestrators (100-255 lines); agents own business logic | ✓ Good — maintainable, testable |
+| Gate-verifier pre-build validation before dual-layer commitment | Tested 5 artifacts across quality range; GO decision confirmed | ✓ Good — evidence_support most discriminating dimension |
+| Structural-first, semantic-second gate evaluation | Structural recycle blocks semantic dispatch (saves tokens) | ✓ Good — fast feedback on structural issues |
+| 4-dimension semantic scoring (evidence, consistency, assumptions, completeness) | Anti-rubber-stamp: chain-of-thought reasoning required per dimension | ✓ Good — weak artifacts correctly recycled |
+| Worktree isolation only for task-implementer | All other agents have EnterWorktree in disallowedTools | ✓ Good — minimal blast radius |
+| Git commit protocol in reference file (not inline) | Keeps execute skill under 200 lines | ✓ Good — separation of concerns |
+| Merge conflicts pause (never auto-resolve) | Destructive auto-resolution too risky for user code | ✓ Good — safe default |
+| Spike writes own phase transitions | spike_in_progress/spike_complete enables G5 gate and clean handoff to execute | ✓ Good — fixed BREAK-1/2/3 |
 
 ---
-*Last updated: 2026-03-15 after v3.0 milestone start*
+*Last updated: 2026-03-17 after v3.0 milestone*

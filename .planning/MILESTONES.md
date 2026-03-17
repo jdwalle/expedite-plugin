@@ -1,5 +1,33 @@
 # Milestones
 
+## v3.0 Agent Harness Completion (Shipped: 2026-03-17)
+
+**Phases completed:** 8 phases, 15 plans, 29 tasks
+**Timeline:** 2 days (2026-03-15 → 2026-03-17)
+**Lines changed:** +10,919 / -4,885 across 79 files
+**Codebase:** ~20,010 LOC (JS/MD/JSON/YML plugin source)
+**Requirements:** 35/35 satisfied
+**Git range:** 7597083..9c83211
+
+**Key accomplishments:**
+1. 8 formalized agents with model tiering (3 Opus, 5 Sonnet), tool restrictions, and anti-rubber-stamp gate-verifier
+2. All 6 skills thinned to step-sequencer + agent-dispatcher pattern (100-255 lines each), gate writes redirected to gates.yml
+3. 3 structural gate scripts (G1/G2/G4) as deterministic Node.js checks with actionable failure messages
+4. Dual-layer semantic gates (G3/G5/G2-semantic) — structural check first, then gate-verifier agent with 4-dimension scoring
+5. Worktree isolation for task-implementer with merge-back, plus per-task atomic git commits with conventional format
+6. Gap closure — fixed spike G5 integration flow, removed orphaned files, corrected stale references
+
+### Tech Debt (7 items)
+- AGNT-08: Tool restriction live test pending (plugin not in enabledPlugins)
+- Model tier runtime verification pending (frontmatter correct, runtime unconfirmed)
+- Sufficiency evaluator uses Task() dispatch instead of named Agent
+- `semantic_scores` vs `semantic_evaluation` naming mismatch in gates.yml schema
+- WKTR-03: Worktree merge-back needs live test
+- DEVW-01/02/03: Per-task commit behavior needs live test
+- DEVW-04: --no-commit opt-out needs live test
+
+---
+
 ## v2.0 Agent Harness Foundation (Shipped: 2026-03-13)
 
 **Phases completed:** 5 phases, 11 plans, 20 tasks

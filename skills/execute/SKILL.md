@@ -58,7 +58,7 @@ updated_at: "{ISO 8601 UTC timestamp}"
 
 **State Recovery Preamble:** If "No active lifecycle": follow `skills/shared/ref-state-recovery.md`. Recovery fails -> "Run /expedite:scope." STOP.
 
-**Case A: `phase: "plan_complete"`** -- Fresh start. "Starting execution..." Proceed to Step 2.
+**Case A: `phase: "plan_complete"` or `phase: "spike_complete"`** -- Fresh start. "Starting execution..." Proceed to Step 2.
 
 **Case B: `phase: "execute_in_progress"`** -- Resume. Parse phase argument. Checkpoint-based resume: if checkpoint.skill is "execute" and substep starts with "executing_task_", resume at Step 5 for that task. Otherwise resume at checkpoint.step. Also read per-phase checkpoint at `.expedite/plan/phases/{slug}/checkpoint.yml` for task-level context. Proceed to Step 2 to load artifacts, then skip Step 3.
 
@@ -76,7 +76,7 @@ Display loading summary: project, intent, phase, mode, task count.
 
 ### Step 3: Initialize Execute State
 
-Backup-before-write state.yml: set `phase: "execute_in_progress"` (only if currently plan_complete), `current_wave`, `current_task` (first task), populate `tasks` array for THIS PHASE ONLY (id, title, wave, status: "pending"), last_modified. Parse `--no-commit` flag from user invocation if present. Store as `no_commit: true` in execution context for Step 5c-git opt-out check.
+Backup-before-write state.yml: set `phase: "execute_in_progress"` (only if currently plan_complete or spike_complete), `current_wave`, `current_task` (first task), populate `tasks` array for THIS PHASE ONLY (id, title, wave, status: "pending"), last_modified. Parse `--no-commit` flag from user invocation if present. Store as `no_commit: true` in execution context for Step 5c-git opt-out check.
 
 Log phase transition (only if phase changed). `mkdir -p .expedite/plan/phases/{slug}/`. Create per-phase checkpoint.yml. Write PROGRESS.md header via `cat >` (create-only; all subsequent writes use `cat >>` append via Bash).
 

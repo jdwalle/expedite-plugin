@@ -78,7 +78,8 @@ Assemble context for the design-architect agent:
 - scope_file: `.expedite/scope/SCOPE.md`
 - synthesis_file: `.expedite/research/SYNTHESIS.md`
 - override_context: `.expedite/research/override-context.md` (if exists)
-- output_path: `.expedite/design/DESIGN.md`
+- design_output_file: `.expedite/design/DESIGN.md`
+- handoff_output_file: `.expedite/design/HANDOFF.md` (include only if intent is "product")
 
 Dispatch the `design-architect` agent by name via the Agent tool. Pass the assembled context prompt with all placeholder values filled.
 
@@ -93,11 +94,11 @@ If validation fails: display specific error. "Agent design-architect did not pro
 
 Read back DESIGN.md. Verify: each DA section has Decision, Evidence, Trade-offs, Confidence subsections. Count matches SCOPE.md. If DA count mismatch, display warning: "WARNING: {N} DAs not addressed." If any subsections missing, display and offer agent re-dispatch.
 
-### Step 6: Generate HANDOFF.md (Product Intent Only)
+### Step 6: Validate HANDOFF.md (Product Intent Only)
 
 If intent is "engineering": skip. "No HANDOFF.md needed." -> Step 7.
 
-If intent is "product": Generate HANDOFF.md as distillation of DESIGN.md. 9 sections (Problem Statement, Key Decisions, Scope Boundaries, Success Metrics, User Flows, Acceptance Criteria, Assumptions/Constraints, Suggested Engineering Questions, Priority Ranking). Each 100-200 words, cross-references DESIGN.md. Write to `.expedite/design/HANDOFF.md`. Validate HANDOFF.md shorter than DESIGN.md.
+If intent is "product": Verify `.expedite/design/HANDOFF.md` exists and is non-empty (the design-architect agent produces it). If missing: display "Agent did not produce HANDOFF.md. Generating from DESIGN.md..." and generate as distillation of DESIGN.md with 9 sections (Problem Statement, Key Decisions, Scope Boundaries, Success Metrics, User Flows, Acceptance Criteria, Assumptions/Constraints, Suggested Engineering Questions, Priority Ranking). Each 100-200 words, cross-references DESIGN.md. Write to `.expedite/design/HANDOFF.md`. Validate HANDOFF.md shorter than DESIGN.md.
 
 ### Step 7: Revision Cycle
 

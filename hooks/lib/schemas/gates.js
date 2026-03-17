@@ -37,7 +37,7 @@ var schema = {
       notes: { type: 'string', nullable: true },
       overridden: { type: 'boolean', nullable: true },
       structural_checks: { type: 'object', nullable: true },
-      semantic_evaluation: { type: 'object', nullable: true },
+      semantic_scores: { type: 'object', nullable: true },
     },
   },
 };

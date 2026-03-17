@@ -128,4 +128,4 @@ The script reads PLAN.md and SCOPE.md, evaluates structural criteria, writes the
 
 Update state.yml: `phase: "plan_complete"`, current_step null. Write completion checkpoint. Log phase transition. Do NOT populate tasks array or current_wave (execute skill does that).
 
-Display summary: project, intent, artifacts, gate results, plan stats (waves/epics, tasks, TDs), contract chain. "Next: `/expedite:spike <phase>` or `/expedite:execute <phase>`." STOP.
+Display summary: project, intent, artifacts, gate results, plan stats (waves/epics, tasks, TDs), contract chain. "Next: `/expedite:spike <phase>` to resolve tactical decisions before execution." STOP.
