@@ -78,7 +78,7 @@ Full details: `.planning/milestones/v2.0-ROADMAP.md`
 - [x] **Phase 34: Semantic Gates** - G3, G5, G2-semantic via dual-layer gate-verifier with anti-rubber-stamp measures (completed 2026-03-16)
 - [x] **Phase 35: Worktree and Git Workflow** - Worktree isolation for task-implementer and per-task atomic git commits (completed 2026-03-16)
 - [x] **Phase 36: Spike G5 Integration Fix** - Fix 3 interrelated breaks preventing spike → G5 → execute flow (gap closure) (completed 2026-03-17)
-- [ ] **Phase 37: Reference & Roadmap Cleanup** - Remove orphaned reference files, fix stale gate_history refs, correct roadmap checkboxes (gap closure)
+- [x] **Phase 37: Reference & Roadmap Cleanup** - Remove orphaned reference files, fix stale gate_history refs, correct roadmap checkboxes (gap closure) (completed 2026-03-17)
 
 ## Phase Details
 
@@ -205,7 +205,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 37-01: Delete orphaned reference files, fix stale refs, correct roadmap checkboxes, remove TODO
+- [x] 37-01: Delete orphaned reference files, fix stale refs, correct roadmap checkboxes, remove TODO
 
 ## Progress
 
@@ -242,4 +242,4 @@ Plans:
 | 34. Semantic Gates | v3.0 | 3/3 | Complete | 2026-03-16 |
 | 35. Worktree and Git Workflow | v3.0 | 2/2 | Complete | 2026-03-16 |
 | 36. Spike G5 Integration Fix | v3.0 | 1/1 | Complete | 2026-03-17 |
-| 37. Reference & Roadmap Cleanup | v3.0 | 0/1 | Planned | - |
+| 37. Reference & Roadmap Cleanup | v3.0 | 1/1 | Complete | 2026-03-17 |
