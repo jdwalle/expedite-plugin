@@ -190,7 +190,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 36-01: Fix spike step ordering, gate-phase map, and FSM transition for G5 end-to-end flow
+- [ ] 36-01: Fix spike step ordering and add phase transition writes for G5 end-to-end flow
 
 ### Phase 37: Reference & Roadmap Cleanup
 **Goal**: Remove orphaned pre-formalization reference files, fix stale gate_history references to use gates.yml, correct unchecked roadmap plan checkboxes, and clean up the TODO comment in research SKILL.md
