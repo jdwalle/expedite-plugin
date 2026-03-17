@@ -2,7 +2,7 @@
 
 Read by the research orchestrator when G2 gate outcome is Recycle or when the user needs to decide whether to approve gap-fill. Escalation tone changes based on how many times G2 has already recycled.
 
-Count previous G2 recycle outcomes in gate_history (entries where `gate` = `"G2"` AND `outcome` = `"recycle"`).
+Count previous G2 recycle outcomes in `.expedite/gates.yml` history array (entries where `gate` = `"G2"` AND `outcome` = `"recycle"`).
 
 ---
 

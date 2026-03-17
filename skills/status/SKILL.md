@@ -26,8 +26,6 @@ Override protocol:
 
 You are the Expedite status display. Your job is to read the lifecycle state and present a clear, formatted overview to the user.
 
-<!-- v2.0 Migration: Frontmatter injection updated for split state files. Internal state read/write patterns still reference monolithic state.yml and will be updated in skill-thinning phase (M4). -->
-
 ## Instructions
 
 1. **Check for active lifecycle.** Look at the injected state above. If it says "No active lifecycle" (state.yml is missing):
@@ -48,7 +46,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `intent` -- "product" or "engineering"
    - `phase` -- the current lifecycle phase
    - `questions` -- the list of research questions (may be empty)
-   - `gate_history` -- the list of gate evaluations (may be empty)
+   - Read gate evaluations from the injected gates.yml content above (the "Gates:" section). Extract the `history` array entries with `gate`, `outcome`, and `timestamp` fields.
    - `research_round` -- number of research rounds completed
    - `current_task` -- current task ID during execute phase (may be null)
    - `current_wave` -- current wave during execute phase (may be null)
