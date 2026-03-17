@@ -57,8 +57,8 @@ updated_at: "{ISO 8601 UTC timestamp}"
 
 If checkpoint shows `skill: "spike"`: display informational resume context (spike always re-runs from phase argument).
 
-**Case A: `phase: "plan_complete"`** -- "Starting spike..." Proceed to Step 2.
-**Case B: `phase: "execute_in_progress"`** -- "Spiking during execution..." (valid). Proceed to Step 2.
+**Case A: `phase: "plan_complete"`** -- "Starting spike..." Write state.yml setting `phase: "spike_in_progress"` using backup-before-write (read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, update phase to `spike_in_progress`, update `last_modified`, write back). This uses the existing FSM transition plan_complete -> spike_in_progress (no gate required). Proceed to Step 2.
+**Case B: `phase: "execute_in_progress"`** -- "Spiking during execution..." (valid). Phase stays execute_in_progress (re-spike during execution). Proceed to Step 2.
 **Case C: Any other** -- "Error: Plan not complete. Run `/expedite:plan`." STOP.
 
 ### Step 2: Parse Phase Argument
@@ -161,6 +161,6 @@ Log gate outcome (both layers) to log.yml. Display: structural pass/fail summary
 
 ### Step 9: Display Summary
 
-Display: phase, project, G5 status, artifacts, TD breakdown (resolved-from-design / clear-cut / user / researched), step count. Clear current_step to null. Write completion checkpoint. "Next: `/expedite:execute {N}`." STOP.
+Display: phase, project, G5 status, artifacts, TD breakdown (resolved-from-design / clear-cut / user / researched), step count. Clear current_step to null. Write completion checkpoint. If original phase was plan_complete (Case A from Step 1): write state.yml setting `phase: "spike_complete"` using backup-before-write (read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, update phase to `spike_complete`, update `last_modified`, write back). The spike_in_progress -> spike_complete transition requires G5 passage per the FSM; by Step 9, G5 has already been evaluated and passed (Step 8), so the hook will allow this write. "Next: `/expedite:execute {N}`." STOP.
 
-NOTE: Spike does NOT write phase transitions (no spike_in_progress/spike_complete phases). It operates within plan_complete or execute_in_progress. Gate outcomes are recorded in gates.yml.
+NOTE: Spike writes spike_in_progress at Step 1 and spike_complete at Step 9 (Case A only). When re-spiking during execution (Case B), phase stays execute_in_progress.
