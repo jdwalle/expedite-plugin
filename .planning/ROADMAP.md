@@ -241,5 +241,5 @@ Plans:
 | 33. Verifier Validation | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
 | 34. Semantic Gates | 3/3 | Complete    | 2026-03-16 | - |
 | 35. Worktree and Git Workflow | 2/2 | Complete    | 2026-03-16 | - |
-| 36. Spike G5 Integration Fix | 1/1 | Complete   | 2026-03-17 | - |
+| 36. Spike G5 Integration Fix | 1/1 | Complete    | 2026-03-17 | - |
 | 37. Reference & Roadmap Cleanup | v3.0 | 0/1 | Planned | - |
