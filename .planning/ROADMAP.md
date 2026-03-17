@@ -128,8 +128,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 32-01: Create shared gate utilities, G1 (scope) gate script, and G4 (plan) gate script
-- [ ] 32-02: Create G2-structural gate script; wire all three gate scripts into skill completion flows
+- [x] 32-01: Create shared gate utilities, G1 (scope) gate script, and G4 (plan) gate script
+- [x] 32-02: Create G2-structural gate script; wire all three gate scripts into skill completion flows
 
 ### Phase 33: Verifier Validation
 **Goal**: The gate-verifier agent is validated against 5-6 artifacts spanning a quality range before the dual-layer semantic gate system is built, confirming it can distinguish good from weak work and will not rubber-stamp everything
@@ -157,9 +157,9 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 34-01: Implement G3 (design) dual-layer gate with gate-verifier integration
-- [ ] 34-02: Implement G5 (spike) dual-layer gate and G2-semantic verifier integration
-- [ ] 34-03: End-to-end semantic gate validation across all three gates
+- [x] 34-01: Implement G3 (design) dual-layer gate with gate-verifier integration
+- [x] 34-02: Implement G5 (spike) dual-layer gate and G2-semantic verifier integration
+- [x] 34-03: End-to-end semantic gate validation across all three gates
 
 ### Phase 35: Worktree and Git Workflow
 **Goal**: The task-implementer agent runs in worktree isolation with sequential merge-back, and the execute skill creates atomic conventional-format git commits after each verified task — with opt-out, failed-task protection, and git error pausing
@@ -174,8 +174,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 35-01: Add worktree isolation to task-implementer; implement and test single-task worktree merge-back
-- [ ] 35-02: Implement per-task git commit flow in execute skill (conventional format, selective staging, opt-out, error handling)
+- [x] 35-01: Add worktree isolation to task-implementer; implement and test single-task worktree merge-back
+- [x] 35-02: Implement per-task git commit flow in execute skill (conventional format, selective staging, opt-out, error handling)
 
 ### Phase 36: Spike G5 Integration Fix
 **Goal**: The spike → G5 gate → execute flow works end-to-end: spike skill writes SPIKE.md before G5 evaluation, G5 gate writes are permitted during the correct lifecycle phase, and a completed spike transitions cleanly to execute_in_progress
@@ -190,7 +190,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 36-01: Fix spike step ordering and add phase transition writes for G5 end-to-end flow
+- [x] 36-01: Fix spike step ordering and add phase transition writes for G5 end-to-end flow
 
 ### Phase 37: Reference & Roadmap Cleanup
 **Goal**: Remove orphaned pre-formalization reference files, fix stale gate_history references to use gates.yml, correct unchecked roadmap plan checkboxes, and clean up the TODO comment in research SKILL.md
@@ -235,11 +235,11 @@ Plans:
 | 27. Override + Audit | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 28. Checkpoint Resume | v2.0 | 2/2 | Complete | 2026-03-13 |
 | 29. Session Handoff | v2.0 | 2/2 | Complete | 2026-03-13 |
-| 30. Agent Formalization | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
-| 31. Skill Thinning | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
-| 32. Structural Gates | 2/2 | Complete    | 2026-03-16 | - |
-| 33. Verifier Validation | v3.0 | Complete    | 2026-03-16 | 2026-03-16 |
-| 34. Semantic Gates | 3/3 | Complete    | 2026-03-16 | - |
-| 35. Worktree and Git Workflow | 2/2 | Complete    | 2026-03-16 | - |
-| 36. Spike G5 Integration Fix | 1/1 | Complete    | 2026-03-17 | - |
+| 30. Agent Formalization | v3.0 | 2/2 | Complete | 2026-03-16 |
+| 31. Skill Thinning | v3.0 | 3/3 | Complete | 2026-03-16 |
+| 32. Structural Gates | v3.0 | 2/2 | Complete | 2026-03-16 |
+| 33. Verifier Validation | v3.0 | 1/1 | Complete | 2026-03-16 |
+| 34. Semantic Gates | v3.0 | 3/3 | Complete | 2026-03-16 |
+| 35. Worktree and Git Workflow | v3.0 | 2/2 | Complete | 2026-03-16 |
+| 36. Spike G5 Integration Fix | v3.0 | 1/1 | Complete | 2026-03-17 |
 | 37. Reference & Roadmap Cleanup | v3.0 | 0/1 | Planned | - |
