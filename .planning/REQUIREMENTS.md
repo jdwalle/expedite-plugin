@@ -23,7 +23,7 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 - [x] **THIN-01**: All skills refactored to step-sequencer + agent-dispatcher pattern (under 200 lines, adjust to 400 if scope skill needs it)
 - [x] **THIN-02**: Business logic lives in agents; skills retain step sequencing, state writes, checkpoint writes, agent dispatch, result validation
 - [x] **THIN-03**: Gate results written to `.expedite/gates.yml` (fixes INT-01/FLOW-01 integration debt)
-- [ ] **THIN-04**: Gated phase transitions work end-to-end without override workaround or EXPEDITE_HOOKS_DISABLED
+- [x] **THIN-04**: Gated phase transitions work end-to-end without override workaround or EXPEDITE_HOOKS_DISABLED
 - [x] **THIN-05**: Skills validate agent output on return (artifact exists, basic structure check)
 - [x] **THIN-06**: Skills write state/checkpoint after agent completion, never during agent execution
 
@@ -35,7 +35,7 @@ Requirements for v3.0 Agent Harness Completion (M3-M7). Each maps to roadmap pha
 - [x] **GATE-04**: Gate scripts write structured results to gates.yml with specific, actionable failure messages
 - [x] **GATE-05**: Each structural gate runs as part of skill completion flow — skill invokes gate script, script writes gates.yml, PreToolUse hook checks on phase transition
 - [x] **GATE-06**: G3 (Design) uses dual-layer evaluation — structural check then semantic verification via gate-verifier agent
-- [ ] **GATE-07**: G5 (Spike) uses dual-layer evaluation — structural check then semantic verification via gate-verifier agent
+- [x] **GATE-07**: G5 (Spike) uses dual-layer evaluation — structural check then semantic verification via gate-verifier agent
 - [x] **GATE-08**: G2-semantic — verifier checks whether evidence sufficiency ratings are justified by cited evidence
 - [x] **GATE-09**: gate-verifier uses per-dimension scoring (evidence_support, internal_consistency, assumption_transparency, reasoning_completeness) with chain-of-thought evaluation
 - [x] **GATE-10**: Structural layer runs first; semantic layer only runs if structural passes
@@ -104,7 +104,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | THIN-01 | Phase 31 | Complete |
 | THIN-02 | Phase 31 | Complete |
 | THIN-03 | Phase 31 | Complete |
-| THIN-04 | Phase 36 | Pending |
+| THIN-04 | Phase 36 | Complete |
 | THIN-05 | Phase 31 | Complete |
 | THIN-06 | Phase 31 | Complete |
 | GATE-01 | Phase 32 | Complete |
@@ -113,7 +113,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GATE-04 | Phase 32 | Complete |
 | GATE-05 | Phase 32 | Complete |
 | GATE-06 | Phase 34 | Complete |
-| GATE-07 | Phase 36 | Pending |
+| GATE-07 | Phase 36 | Complete |
 | GATE-08 | Phase 34 | Complete |
 | GATE-09 | Phase 34 | Complete |
 | GATE-10 | Phase 34 | Complete |

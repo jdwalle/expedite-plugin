@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Agent Harness Completion
-status: unknown
-last_updated: "2026-03-16T20:25:58.448Z"
+status: active
+last_updated: "2026-03-17T01:22:53Z"
 progress:
-  total_phases: 7
-  completed_phases: 7
-  total_plans: 15
-  completed_plans: 15
+  total_phases: 8
+  completed_phases: 8
+  total_plans: 16
+  completed_plans: 16
 ---
 
 # Project State
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-03-15)
 
 ## Current Position
 
-Phase: 35 — Worktree Git Workflow (7 of 7)
-Plan: 2 of 2 complete
-Status: Phase 35 complete; v3.0 milestone complete
-Last activity: 2026-03-16 — Completed 35-02 (Per-Task Git Commits)
+Phase: 36 — Spike G5 Integration Fix (8 of 8)
+Plan: 1 of 1 complete
+Status: Phase 36 complete; gap closure (GATE-07, THIN-04)
+Last activity: 2026-03-17 — Completed 36-01 (Spike G5 Integration Fix)
 
 Progress: [##########] 100%
 
@@ -79,6 +79,8 @@ Full decision log in PROJECT.md Key Decisions table.
 - [35-02] Git commit protocol lives in reference file (ref-git-commit.md), not inline in skill -- keeps skill under 200 lines
 - [35-02] Verification gate requires user confirmation for FAILED/NEEDS REVIEW tasks before committing
 - [35-02] Git errors pause with user prompts; no destructive auto-resolution attempted
+- [36-01] Case B (re-spike during execute_in_progress) does not write spike_in_progress to avoid FSM violation
+- [36-01] FSM and GATE_PHASE_MAP left unchanged -- already had correct entries for spike phases
 
 ### Pending Todos
 
@@ -106,9 +108,10 @@ None.
 | 34 | 03 | 4min | 2 | 1 |
 | 35 | 01 | 1min | 2 | 2 |
 | 35 | 02 | 3min | 2 | 2 |
+| 36 | 01 | 2min | 2 | 1 |
 
 ## Session Continuity
 
-Last session: 2026-03-16
-Stopped at: Completed 35-02-PLAN.md (Per-Task Git Commits) -- v3.0 milestone complete
+Last session: 2026-03-17
+Stopped at: Completed 36-01-PLAN.md (Spike G5 Integration Fix)
 Resume file: None
