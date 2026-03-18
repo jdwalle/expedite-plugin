@@ -98,6 +98,7 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 **Goal**: All 7 runtime-blocking bugs (AUD-001 through AUD-007) validated against source code and fixed, making a standard lifecycle completable end-to-end
 **Depends on**: Phase 37
 **Audit Source**: `.planning/research/expedite-final-audit/research-synthesis.md`
+**Research Task**: For each AUD finding (001-007), read the cited file and line. Confirm the bug exists as described, note if the audit was wrong or the code has changed, and record the exact current code that needs fixing. Output: validated bug list with confirmed/rejected status and exact code snippets.
 **Success Criteria** (what must be TRUE):
   1. Execute skill writes `execute_complete` before `complete` (AUD-001 confirmed and fixed)
   2. Execute skill entry phases match FSM — spike-skip path explicitly decided (AUD-002 confirmed and fixed)
@@ -112,6 +113,7 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 **Goal**: All 14 correctness bugs (AUD-008 through AUD-021) validated and fixed — state schema reconciled, status skill complete, backup paths correct, agent dispatch specified
 **Depends on**: Phase 38
 **Audit Source**: `.planning/research/expedite-final-audit/research-synthesis.md`
+**Research Task**: For each AUD finding (008-021), read the cited file and line. Confirm the bug exists as described, note if the audit was wrong or the code has changed, and record the exact current code that needs fixing. Output: validated bug list with confirmed/rejected status and exact code snippets.
 **Success Criteria** (what must be TRUE):
   1. State.yml schema covers all written fields; fields belonging in split files removed from skill writes (AUD-008)
   2. Status skill displays spike phases and execute_complete with correct next-action routing (AUD-009)
@@ -132,6 +134,7 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 **Goal**: All 15 quality bugs (AUD-022 through AUD-036) validated and fixed — dead code removed, naming standardized, schema properties cleaned up, cosmetic issues resolved
 **Depends on**: Phase 39
 **Audit Source**: `.planning/research/expedite-final-audit/research-synthesis.md`
+**Research Task**: For each AUD finding (022-036), read the cited file and line. Confirm the bug exists as described, note if the audit was wrong or the code has changed, and record the exact current code that needs fixing. Output: validated bug list with confirmed/rejected status and exact code snippets.
 **Success Criteria** (what must be TRUE):
   1. `nullable` property either implemented or removed from schemas (AUD-022)
   2. Gates.yml schema includes `severity` field (AUD-023)
