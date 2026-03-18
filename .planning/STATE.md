@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: Audit Bug Fixes
 status: active
-last_updated: "2026-03-17T02:08:37.208Z"
+last_updated: "2026-03-18T01:57:00.000Z"
 progress:
   total_phases: 9
   completed_phases: 9
-  total_plans: 17
-  completed_plans: 17
+  total_plans: 18
+  completed_plans: 18
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-17)
 ## Current Position
 
 Phase: 38 — P0 Audit Fixes (1 of 3)
-Plan: 0 of 1 complete
-Status: Not started
-Last activity: 2026-03-17 — v3.0 milestone archived, v3.1 roadmap created
+Plan: 1 of 1 complete
+Status: Phase 38 complete
+Last activity: 2026-03-17 — P0 audit fixes (7 bugs fixed)
 
-Progress: [##########] 100%
+Progress: [###-------] 33%
 
 ## Performance Metrics
 
@@ -82,6 +82,8 @@ Full decision log in PROJECT.md Key Decisions table.
 - [35-02] Git errors pause with user prompts; no destructive auto-resolution attempted
 - [36-01] Case B (re-spike during execute_in_progress) does not write spike_in_progress to avoid FSM violation
 - [36-01] FSM and GATE_PHASE_MAP left unchanged -- already had correct entries for spike phases
+- [38-01] Remove plan_complete from execute entry (require spike to always run, even for zero-TD phases)
+- [38-01] Split scope Step 9b into questions.yml write + state.yml update as separate sub-steps
 
 ### Pending Todos
 
@@ -111,9 +113,10 @@ None.
 | 35 | 02 | 3min | 2 | 2 |
 | 36 | 01 | 2min | 2 | 1 |
 | 37 | 01 | 2min | 2 | 11 |
+| 38 | 01 | 3min | 3 | 6 |
 
 ## Session Continuity
 
 Last session: 2026-03-17
-Stopped at: Completed 37-01-PLAN.md (Reference & Roadmap Cleanup)
+Stopped at: Completed 38-01-PLAN.md (P0 Audit Fixes)
 Resume file: None

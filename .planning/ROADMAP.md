@@ -88,7 +88,7 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 
 **Milestone Goal:** Validate and fix all bugs identified by the 15-agent final audit, making the plugin functional for first real-world use.
 
-- [ ] **Phase 38: P0 Audit Fixes** - Validate and fix 7 runtime-blocking bugs (FSM transitions, v2 state-split, worktree merge-back) (1 plan)
+- [x] **Phase 38: P0 Audit Fixes** - Validate and fix 7 runtime-blocking bugs (FSM transitions, v2 state-split, worktree merge-back) (1 plan) (completed 2026-03-18)
 - [ ] **Phase 39: P1 Audit Fixes** - Validate and fix 14 correctness bugs (override paths, status skill, schema gaps, backup paths) (1 plan)
 - [ ] **Phase 40: P2 Audit Fixes** - Validate and fix 15 quality bugs (dead code, naming consistency, schema cleanup, cosmetic) (1 plan)
 
@@ -186,6 +186,6 @@ Plans:
 | 35. Worktree and Git Workflow | v3.0 | 2/2 | Complete | 2026-03-16 |
 | 36. Spike G5 Integration Fix | v3.0 | 1/1 | Complete | 2026-03-17 |
 | 37. Reference & Roadmap Cleanup | v3.0 | 1/1 | Complete | 2026-03-17 |
-| 38. P0 Audit Fixes | v3.1 | 0/1 | Not started | - |
+| 38. P0 Audit Fixes | 1/1 | Complete   | 2026-03-18 | - |
 | 39. P1 Audit Fixes | v3.1 | 0/1 | Not started | - |
 | 40. P2 Audit Fixes | v3.1 | 0/1 | Not started | - |
