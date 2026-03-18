@@ -89,7 +89,7 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 **Milestone Goal:** Validate and fix all bugs identified by the 15-agent final audit, making the plugin functional for first real-world use.
 
 - [x] **Phase 38: P0 Audit Fixes** - Validate and fix 7 runtime-blocking bugs (FSM transitions, v2 state-split, worktree merge-back) (1 plan) (completed 2026-03-18)
-- [ ] **Phase 39: P1 Audit Fixes** - Validate and fix 14 correctness bugs (override paths, status skill, schema gaps, backup paths) (1 plan)
+- [ ] **Phase 39: P1 Audit Fixes** - Validate and fix 14 correctness bugs (override paths, status skill, schema gaps, backup paths) (2 plans)
 - [ ] **Phase 40: P2 Audit Fixes** - Validate and fix 15 quality bugs (dead code, naming consistency, schema cleanup, cosmetic) (1 plan)
 
 ## Phase Details
@@ -130,7 +130,10 @@ Plans:
   11. Agent dispatch placeholders enumerated for task-implementer and researchers (AUD-018, AUD-019)
   12. sufficiency-evaluator memory setting resolved (AUD-020)
   13. Schema denial recovery instructions added (AUD-021)
-**Plans**: 1 plan
+**Plans**: 2 plans
+Plans:
+- [ ] 39-01-PLAN.md — Fix 9 skill/agent instruction bugs (current_step removal, status phases, research renumbering, dispatches)
+- [ ] 39-02-PLAN.md — Fix 5 JavaScript hook/gate bugs (DA matching, override detection, immutability, schema)
 
 ### Phase 40: P2 Audit Fixes
 **Goal**: All 15 quality bugs (AUD-022 through AUD-036) validated and fixed — dead code removed, naming standardized, schema properties cleaned up, cosmetic issues resolved
@@ -187,5 +190,5 @@ Plans:
 | 36. Spike G5 Integration Fix | v3.0 | 1/1 | Complete | 2026-03-17 |
 | 37. Reference & Roadmap Cleanup | v3.0 | 1/1 | Complete | 2026-03-17 |
 | 38. P0 Audit Fixes | 1/1 | Complete    | 2026-03-18 | - |
-| 39. P1 Audit Fixes | v3.1 | 0/1 | Not started | - |
+| 39. P1 Audit Fixes | v3.1 | 0/2 | Not started | - |
 | 40. P2 Audit Fixes | v3.1 | 0/1 | Not started | - |
