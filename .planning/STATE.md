@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: Audit Bug Fixes
-status: unknown
-last_updated: "2026-03-18T02:02:15.954Z"
+status: in_progress
+last_updated: "2026-03-18T02:32:45.000Z"
 progress:
   total_phases: 2
   completed_phases: 2
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-17)
 
 ## Current Position
 
-Phase: 38 — P0 Audit Fixes (1 of 3)
-Plan: 1 of 1 complete
-Status: Phase 38 complete
-Last activity: 2026-03-17 — P0 audit fixes (7 bugs fixed)
+Phase: 39 — P1 Audit Fixes (2 of 3)
+Plan: 2 of 2 complete
+Status: Phase 39 plan 02 complete
+Last activity: 2026-03-18 — P1 hook and gate fixes (6 audit findings fixed)
 
-Progress: [###-------] 33%
+Progress: [######----] 67%
 
 ## Performance Metrics
 
@@ -84,6 +84,8 @@ Full decision log in PROJECT.md Key Decisions table.
 - [36-01] FSM and GATE_PHASE_MAP left unchanged -- already had correct entries for spike phases
 - [38-01] Remove plan_complete from execute entry (require spike to always run, even for zero-TD phases)
 - [38-01] Split scope Step 9b into questions.yml write + state.yml update as separate sub-steps
+- [39-02] Use regex for override detection instead of indexOf to handle all YAML quoting styles
+- [39-02] Use JSON.stringify for gate history immutability comparison (deterministic for small parsed YAML objects)
 
 ### Pending Todos
 
@@ -114,9 +116,10 @@ None.
 | 36 | 01 | 2min | 2 | 1 |
 | 37 | 01 | 2min | 2 | 11 |
 | 38 | 01 | 3min | 3 | 6 |
+| 39 | 02 | 1min | 2 | 4 |
 
 ## Session Continuity
 
-Last session: 2026-03-17
-Stopped at: Completed 38-01-PLAN.md (P0 Audit Fixes)
+Last session: 2026-03-18
+Stopped at: Completed 39-02-PLAN.md (P1 Hook and Gate Fixes)
 Resume file: None
