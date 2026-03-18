@@ -31,6 +31,10 @@ function readFile(filePath) {
   }
 }
 
+// Gate scripts write gates.yml directly via fs (not through Claude's Write tool).
+// This is by design: gate scripts are deterministic validators that produce well-formed
+// output. Routing writes through the skill would create circular validation dependencies.
+
 /**
  * Append a gate result entry to gates.yml (read-then-append semantics).
  * Creates the file if it does not exist.
@@ -59,21 +63,6 @@ function appendGateResult(gatesYmlPath, entry) {
     fs.mkdirSync(dir, { recursive: true });
   }
   fs.writeFileSync(gatesYmlPath, output, 'utf8');
-}
-
-/**
- * Format an array of check results into human-readable failure messages.
- * @param {Array<{criterion: string, passed: boolean, detail: string}>} checks
- * @returns {string} Formatted string with one bullet per failed check
- */
-function formatChecks(checks) {
-  var lines = [];
-  for (var i = 0; i < checks.length; i++) {
-    if (!checks[i].passed) {
-      lines.push('- ' + checks[i].criterion + ' FAILED: ' + checks[i].detail);
-    }
-  }
-  return lines.join('\n');
 }
 
 /**
@@ -188,12 +177,44 @@ function printResult(entry, failedChecks) {
   console.log(JSON.stringify(output, null, 2));
 }
 
+/**
+ * Extract DA identifiers and names from a SCOPE.md-format document.
+ * @param {string} content - Markdown content with DA headings
+ * @returns {Array<{id: string, name: string|null}>} Extracted DA objects
+ */
+function extractDAs(content) {
+  if (!content) return [];
+  var das = [];
+  var lines = content.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+    var match = lines[i].match(/^#{1,4}\s+.*?(DA-\d+)(?:\s*[:\-]\s*(.+))?/i);
+    if (match) {
+      das.push({
+        id: match[1].toUpperCase(),
+        name: match[2] ? match[2].trim() : null,
+      });
+    }
+  }
+  return das;
+}
+
+/**
+ * Count words in a string.
+ * @param {string} text - Text to count words in
+ * @returns {number} Word count
+ */
+function wordCount(text) {
+  if (!text) return 0;
+  return text.trim().split(/\s+/).filter(function (w) { return w.length > 0; }).length;
+}
+
 module.exports = {
   readYaml: readYaml,
   readFile: readFile,
   appendGateResult: appendGateResult,
-  formatChecks: formatChecks,
   computeOutcome: computeOutcome,
   buildEntry: buildEntry,
   printResult: printResult,
+  extractDAs: extractDAs,
+  wordCount: wordCount,
 };

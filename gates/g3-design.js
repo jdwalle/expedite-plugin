@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
 var utils = require('./lib/gate-utils');
 
@@ -43,23 +42,6 @@ function main() {
   var designContent = utils.readFile(designPath);
   var scopeContent = utils.readFile(scopePath);
   var state = utils.readYaml(statePath);
-
-  // --- Helper: extract DA identifiers and names from SCOPE.md ---
-  function extractDAs(content) {
-    if (!content) return [];
-    var das = [];
-    var lines = content.split('\n');
-    for (var i = 0; i < lines.length; i++) {
-      var match = lines[i].match(/^#{1,4}\s+.*?(DA-\d+)(?:\s*[:\-]\s*(.+))?/i);
-      if (match) {
-        das.push({
-          id: match[1].toUpperCase(),
-          name: match[2] ? match[2].trim() : null,
-        });
-      }
-    }
-    return das;
-  }
 
   // --- Helper: extract DA sections from DESIGN.md ---
   // Returns array of { id, name, content, startLine, endLine }
@@ -146,13 +128,7 @@ function main() {
     return sections;
   }
 
-  // --- Helper: count words in a string ---
-  function wordCount(text) {
-    if (!text) return 0;
-    return text.trim().split(/\s+/).filter(function (w) { return w.length > 0; }).length;
-  }
-
-  var das = extractDAs(scopeContent);
+  var das = utils.extractDAs(scopeContent);
   var daSections = extractDASections(designContent, das);
 
   // --- MUST criteria ---
@@ -310,7 +286,7 @@ function main() {
     m5Passed = false;
   } else {
     for (var wi = 0; wi < daSections.length; wi++) {
-      var sectionWords = wordCount(daSections[wi].content);
+      var sectionWords = utils.wordCount(daSections[wi].content);
       if (sectionWords < 100) {
         m5Failures.push(daSections[wi].id + ' section has only ' + sectionWords + ' words (minimum 100)');
         m5Passed = false;
@@ -370,7 +346,7 @@ function main() {
   });
 
   // S3: DESIGN.md total word count exceeds 500 words
-  var totalWords = wordCount(designContent);
+  var totalWords = utils.wordCount(designContent);
   shouldResults.push({
     criterion: 'S3',
     passed: totalWords > 500,

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
 var utils = require('./lib/gate-utils');
 
@@ -87,12 +86,6 @@ function main() {
     }
 
     return tds;
-  }
-
-  // --- Helper: count words in a string ---
-  function wordCount(text) {
-    if (!text) return 0;
-    return text.trim().split(/\s+/).filter(function (w) { return w.length > 0; }).length;
   }
 
   // --- Helper: count implementation steps ---
@@ -330,7 +323,7 @@ function main() {
   });
 
   // S4: SPIKE.md total word count exceeds 300 words
-  var spikeWords = wordCount(spikeContent);
+  var spikeWords = utils.wordCount(spikeContent);
   shouldResults.push({
     criterion: 'S4',
     passed: spikeWords > 300,

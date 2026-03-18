@@ -44,6 +44,9 @@ function recordDenial(expediteDir, pattern) {
   }
 }
 
+// Reserved: intended for clearing denial counts after a successful override resolves the pattern.
+// Currently unused but has a clear future use case in the override flow.
+
 /**
  * Clear denials for the given pattern string.
  * @param {string} expediteDir - Path to .expedite/ directory

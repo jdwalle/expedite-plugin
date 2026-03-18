@@ -46,23 +46,6 @@ function main() {
   var scopeContent = utils.readFile(scopePath);
   var sufficiencyData = utils.readYaml(sufficiencyPath);
 
-  // --- Helper: extract DA identifiers and names from SCOPE.md ---
-  function extractDAs(content) {
-    if (!content) return [];
-    var das = [];
-    var lines = content.split('\n');
-    for (var i = 0; i < lines.length; i++) {
-      var match = lines[i].match(/^#{1,4}\s+.*?(DA-\d+)(?:\s*[:\-]\s*(.+))?/i);
-      if (match) {
-        das.push({
-          id: match[1].toUpperCase(),
-          name: match[2] ? match[2].trim() : null,
-        });
-      }
-    }
-    return das;
-  }
-
   // --- Helper: list evidence files matching evidence-*.md pattern ---
   function listEvidenceFiles(dir) {
     try {
@@ -75,13 +58,7 @@ function main() {
     }
   }
 
-  // --- Helper: count words in a string ---
-  function wordCount(text) {
-    if (!text) return 0;
-    return text.trim().split(/\s+/).filter(function (w) { return w.length > 0; }).length;
-  }
-
-  var das = extractDAs(scopeContent);
+  var das = utils.extractDAs(scopeContent);
   var evidenceFiles = listEvidenceFiles(researchDir);
 
   // --- MUST criteria ---
@@ -313,7 +290,7 @@ function main() {
   });
 
   // S3: SYNTHESIS.md word count exceeds 500 words
-  var synthWords = wordCount(synthesisContent);
+  var synthWords = utils.wordCount(synthesisContent);
   shouldResults.push({
     criterion: 'S3',
     passed: synthWords > 500,

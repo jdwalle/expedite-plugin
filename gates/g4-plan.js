@@ -45,20 +45,6 @@ function main() {
   var overrideContent = utils.readFile(overridePath);
   var tasksData = utils.readYaml(tasksPath);
 
-  // --- Helper: extract DA identifiers from SCOPE.md ---
-  function extractDAs(content) {
-    if (!content) return [];
-    var das = [];
-    var lines = content.split('\n');
-    for (var i = 0; i < lines.length; i++) {
-      var match = lines[i].match(/^#{1,4}\s+.*?(DA-\d+)/i);
-      if (match) {
-        das.push(match[1]);
-      }
-    }
-    return das;
-  }
-
   // --- Helper: extract phase sections from PLAN.md ---
   function extractPhases(content) {
     if (!content) return [];
@@ -124,7 +110,7 @@ function main() {
     return count;
   }
 
-  var das = extractDAs(scopeContent);
+  var das = utils.extractDAs(scopeContent);
   var phases = extractPhases(planContent);
 
   // --- MUST criteria ---
@@ -162,10 +148,10 @@ function main() {
     m2Passed = false;
   } else {
     for (var dIdx = 0; dIdx < das.length; dIdx++) {
-      var daId = das[dIdx];
-      var found = planContent && planContent.toUpperCase().indexOf(daId.toUpperCase()) !== -1;
+      var da = das[dIdx];
+      var found = planContent && planContent.toUpperCase().indexOf(da.id.toUpperCase()) !== -1;
       if (!found) {
-        m2Missing.push(daId);
+        m2Missing.push(da.id);
         m2Passed = false;
       }
     }
