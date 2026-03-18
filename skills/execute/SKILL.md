@@ -96,7 +96,17 @@ For each task from starting point:
 
 **5a: Display task.** Spiked: TD -> DA chain, files, implementation steps from SPIKE.md. Unspiked: DA reference, files, acceptance criteria from PLAN.md.
 
-**5b: Dispatch task-implementer agent (worktree-isolated).** Assemble task context: task definition (from SPIKE.md steps or PLAN.md criteria), file targets, acceptance criteria, design decision reference from DESIGN.md, execution mode (spiked/unspiked).
+**5b: Dispatch task-implementer agent (worktree-isolated).** Assemble task context and pass to task-implementer agent:
+- project_name: from state.yml
+- intent: from state.yml
+- task_id: from current task in tasks.yml
+- task_title: from current task in tasks.yml
+- execution_mode: "spiked" if .expedite/plan/phases/{slug}/SPIKE.md exists, else "unspiked"
+- spike_file: ".expedite/plan/phases/{slug}/SPIKE.md" (if spiked)
+- plan_file: ".expedite/plan/PLAN.md"
+- design_file: ".expedite/design/DESIGN.md"
+- task_definition: extracted task steps or acceptance criteria from SPIKE.md (spiked) or PLAN.md (unspiked)
+- design_context: relevant DA section from DESIGN.md for this task
 
 Dispatch the `task-implementer` agent by name via the Agent tool. The agent runs in an isolated git worktree (configured via `isolation: worktree` in agent frontmatter).
 
@@ -121,7 +131,7 @@ Dispatch the `task-implementer` agent by name via the Agent tool. The agent runs
 5. Capture commit hash via `git rev-parse --short HEAD` for PROGRESS.md logging.
 6. On any git error: display error, prompt (retry / skip / pause). Do NOT auto-resolve.
 
-**5d: Update state.** Update per-phase checkpoint.yml (current_task, last_completed, tasks_completed). Update tasks.yml (current_task, task status). Write top-level checkpoint with substep.
+**5d: Update state.** Update per-phase checkpoint.yml (current_task, last_completed, tasks_completed). Backup-before-write tasks.yml: read, `cp .expedite/tasks.yml .expedite/tasks.yml.bak`. Update tasks.yml (current_task, task status). Write top-level checkpoint with substep.
 
 **5e: Append to PROGRESS.md via Bash** (`cat >>`, NEVER Write tool). Record: task ID, status, TD/DA chain, files modified, verification result, contract chain, commit hash (if auto-commit was active and succeeded), timestamp.
 
@@ -133,7 +143,7 @@ Dispatch the `task-implementer` agent by name via the Agent tool. The agent runs
 
 Update per-phase checkpoint (status: "complete"). Append phase summary to PROGRESS.md via Bash. Display: task counts (verified/partial/failed/skipped), artifact paths, contract chain.
 
-**If more phases remain:** Display remaining phases and next step suggestions. Update state.yml: keep execute_in_progress, set last_modified. Update tasks.yml: clear current_wave/current_task. STOP.
+**If more phases remain:** Display remaining phases and next step suggestions. Backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml.bak`. Update state.yml: keep execute_in_progress, set last_modified. Backup-before-write tasks.yml: read, `cp .expedite/tasks.yml .expedite/tasks.yml.bak`. Update tasks.yml: clear current_wave/current_task. STOP.
 
 **If final phase:** Proceed to Step 7.
 

@@ -54,7 +54,7 @@ You are the Expedite research orchestrator. Dispatch parallel research agents to
 
 **Case A: `phase: "scope_complete"`** -- Read SCOPE.md and state.yml. Display: `Scope: "{project_name}" ({intent}). {N} questions across {M} DAs, {K} sources enabled.` Proceed to Step 3.
 
-**Case B: `phase: "research_in_progress"`** -- Resume. If checkpoint.skill is "research", resume from checkpoint.step. Otherwise use artifact heuristic: evidence files exist -> Step 9; batches formed -> Step 5; only initialized -> Step 4. AskUserQuestion: Continue/Start over (start over -> revert to scope_complete and STOP).
+**Case B: `phase: "research_in_progress"`** -- Resume. If checkpoint.skill is "research", resume from checkpoint.step. Otherwise use artifact heuristic: evidence files exist -> Step 6; batches formed -> Step 5; only initialized -> Step 4. AskUserQuestion: Continue/Start over (start over -> revert to scope_complete and STOP).
 
 **Case C: Any other phase** -- "Research requires scope_complete phase. Current: {phase}. Run /expedite:scope first." STOP.
 
@@ -82,39 +82,58 @@ Group questions by `source_hints` into batches (web, codebase, mcp). Rules: skip
 - `"web"` source -> dispatch the `web-researcher` agent
 - `"codebase"` source -> dispatch the `codebase-researcher` agent
 
-Pass assembled context: project_name, intent, research_round, output paths, questions YAML block with evidence_requirements. The agent's model, tool restrictions, and maxTurns are defined in its frontmatter at `agents/{agent-name}.md`. Max 3 concurrent agents.
+For web-researcher agent dispatch:
+- project_name: from state.yml
+- intent: from state.yml
+- research_round: from questions.yml
+- output_file: ".expedite/research/evidence-{batch_id}.md"
+- batch_id: sequential batch identifier
+- timestamp: ISO 8601 timestamp
+- questions_yaml_block: the YAML block of questions assigned to this batch
+
+For codebase-researcher agent dispatch:
+- project_name: from state.yml
+- intent: from state.yml
+- research_round: from questions.yml
+- codebase_root: project root directory path (absolute)
+- output_file: ".expedite/research/evidence-{batch_id}.md"
+- batch_id: sequential batch identifier
+- timestamp: ISO 8601 timestamp
+- questions_yaml_block: the YAML block of questions assigned to this batch
+
+The agent's model, tool restrictions, and maxTurns are defined in its frontmatter at `agents/{agent-name}.md`. Max 3 concurrent agents.
 
 **5c. Validate agent output on return:** After each agent returns, verify the expected evidence file exists at `.expedite/research/evidence-{batch_id}.md`. If the file does not exist or is empty, display: "Agent {name} did not produce expected output at {path}. Retry? (yes/skip)". If retry: re-dispatch once. If skip or second failure: mark questions as "not_covered".
 
 Display progress as agents complete. Log agent completions and any source failures to log.yml.
 
-### Step 9: Collect Results and Update State
+### Step 6: Collect Results and Update State
 
-*Original Step 10.* Read each agent's condensed return summary (~500 tokens). Extract per-question status from GAPS section. Collect PROPOSED_QUESTIONS into queue. Update state.yml (backup-before-write): set `evidence_files`, set preliminary `status` (covered/partial/not_covered/unavailable_source). Log agent completions.
+Read each agent's condensed return summary (~500 tokens). Extract per-question status from GAPS section. Collect PROPOSED_QUESTIONS into queue. Update state.yml (backup-before-write): set `evidence_files`, set preliminary `status` (covered/partial/not_covered/unavailable_source). Log agent completions.
 
-### Step 11: Research Completion Summary
+### Step 7: Research Completion Summary
 
 Display structured summary: batches dispatched/completed/failed, question status counts, evidence file paths, proposed question count. Write proposed questions to `.expedite/research/proposed-questions.yml` if any. Phase stays at research_in_progress.
 
-### Step 12: Sufficiency Assessment
+### Step 8: Sufficiency Assessment
 
 Dispatch the `sufficiency-evaluator` agent via the Agent tool. Pass assembled context: project_name, intent, research_round. Apply intent lens. The agent reads evidence + scope itself and writes results to `.expedite/research/sufficiency-results.yml`.
 
 After agent returns: verify `.expedite/research/sufficiency-results.yml` exists on disk. If missing, display error: "Agent sufficiency-evaluator did not produce expected output at .expedite/research/sufficiency-results.yml. Retry? (yes/skip)". If retry: re-dispatch once. If skip or second failure: fall back to manual assessment.
 
-Read results. Handle UNAVAILABLE-SOURCE questions (AskUserQuestion: accept gap/suggest alternative/override). Update state.yml with final statuses and gap_details. Display assessment summary table.
+Backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml.bak`. Read results. Handle UNAVAILABLE-SOURCE questions (AskUserQuestion: accept gap/suggest alternative/override). Update state.yml with final statuses and gap_details, set `last_modified`, write back. Display assessment summary table.
 
-### Step 13: Dynamic Question Discovery
+### Step 9: Dynamic Question Discovery
 
-Read `.expedite/research/proposed-questions.yml`. If empty/missing, skip to Step 14. Deduplicate against existing questions (LLM semantic dedup, not string matching). Cap at 4. Present to user (freeform: approve all/specific/none/modify). Add approved questions to state.yml and SCOPE.md.
+Read `.expedite/research/proposed-questions.yml`. If empty/missing, skip to Step 10. Deduplicate against existing questions (LLM semantic dedup, not string matching). Cap at 4. Present to user (freeform: approve all/specific/none/modify). Add approved questions to state.yml and SCOPE.md.
 
-### Step 14: Synthesis Generation
+### Step 10: Synthesis Generation
 
 Dispatch the `research-synthesizer` agent via the Agent tool. Pass assembled context: project_name, intent, research_round, evidence_dir, scope_file, output_file (.expedite/research/SYNTHESIS.md), timestamp. Apply intent lens. If go-with-advisory: inject advisory context. If override: inject override context.
 
 After agent returns: verify `.expedite/research/SYNTHESIS.md` exists on disk. If missing, display error: "Agent research-synthesizer did not produce expected output at .expedite/research/SYNTHESIS.md. Retry? (yes/skip)". If present, display confirmation with file size.
 
-### Step 15: G2 Gate Evaluation (Dual-Layer)
+### Step 11: G2 Gate Evaluation (Dual-Layer)
 
 **Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
@@ -125,7 +144,7 @@ The script reads SYNTHESIS.md, SCOPE.md, and evidence files, evaluates structura
 
 **Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Proceed to Step 16 with the structural recycle outcome.
+**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Proceed to Step 12 with the structural recycle outcome.
 
 **If structural outcome is "go" or "go_advisory":** Proceed to Layer 2.
 
@@ -170,21 +189,21 @@ history:
 
 Log gate outcome (both layers) to log.yml. Display: structural pass/fail, semantic dimension scores, overall outcome.
 
-### Step 16: Gate Outcome Handling
+### Step 12: Gate Outcome Handling
 
-**Go** -> "G2 gate passed. Research sufficient for design." -> Step 18.
+**Go** -> "G2 gate passed. Research sufficient for design." -> Step 14.
 
-**Go-with-advisory** -> Show SHOULD failures. Freeform: "1. Proceed with advisory | 2. Run gap-fill." Proceed -> Step 18. Gap-fill -> treat as Recycle -> Step 17.
+**Go-with-advisory** -> Show SHOULD failures. Freeform: "1. Proceed with advisory | 2. Run gap-fill." Proceed -> Step 14. Gap-fill -> treat as Recycle -> Step 13.
 
-**Recycle** -> Read `skills/research/references/ref-recycle-escalation.md` (Glob if needed). Show gaps. User: approve gap-fill -> Step 17 / adjust+re-gate -> Step 15 / override -> write override to gates.yml per ref-override-protocol.md, then Step 18.
+**Recycle** -> Read `skills/research/references/ref-recycle-escalation.md` (Glob if needed). Show gaps. User: approve gap-fill -> Step 13 / adjust+re-gate -> Step 11 / override -> write override to gates.yml per ref-override-protocol.md, then Step 14.
 
 **Override handling:** Record override in gates.yml (outcome: "overridden", override_reason, severity). Write `.expedite/research/override-context.md`. Log override to log.yml.
 
-### Step 17: Gap-Fill Dispatch
+### Step 13: Gap-Fill Dispatch
 
-Filter deficient questions (partial/not_covered/pending). Read questions.yml, increment `research_round`, write back to questions.yml. `mkdir -p .expedite/research/round-{N}/`. Read `skills/research/references/ref-gapfill-dispatch.md` (Glob if needed). Re-batch by DA. Dispatch gap-fill agents using Step 5 pattern with narrowed question set and additive supplement output paths. After completion: return to Step 12 for re-assessment.
+Filter deficient questions (partial/not_covered/pending). Read questions.yml, increment `research_round`, write back to questions.yml. `mkdir -p .expedite/research/round-{N}/`. Read `skills/research/references/ref-gapfill-dispatch.md` (Glob if needed). Re-batch by DA. Dispatch gap-fill agents using Step 5 pattern with narrowed question set and additive supplement output paths. After completion: return to Step 8 for re-assessment.
 
-### Step 18: Research Completion
+### Step 14: Research Completion
 
 Update state.yml (backup-before-write): set phase "research_complete", last_modified.
 

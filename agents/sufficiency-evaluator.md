@@ -12,7 +12,6 @@ disallowedTools:
   - WebFetch
   - Edit
   - EnterWorktree
-memory: project
 maxTurns: 30
 ---
 

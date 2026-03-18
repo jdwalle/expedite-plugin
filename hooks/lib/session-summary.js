@@ -8,7 +8,7 @@ var path = require('path');
 var yaml = require('js-yaml');
 
 var SKILL_STEP_TOTALS = {
-  scope: 10, research: 18, design: 10, plan: 9, spike: 9, execute: 7
+  scope: 10, research: 14, design: 10, plan: 9, spike: 9, execute: 7
 };
 
 var NEXT_SKILL = {
