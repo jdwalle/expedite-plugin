@@ -135,11 +135,11 @@ Dispatch the `gate-verifier` agent by name via the Agent tool. Pass the followin
 2. All 4 dimensions are present: evidence_support, internal_consistency, assumption_transparency, reasoning_completeness
 3. Each dimension has a numeric `score` between 1 and 5
 4. Each dimension has non-empty `reasoning` text
-5. `overall.outcome` is one of: "go", "go-with-advisory", "recycle"
+5. `overall.outcome` is one of: "go", "go_advisory", "recycle"
 
 If validation fails (e.g., verifier hit maxTurns before finishing, or output is malformed): Display the specific validation failure. "Gate-verifier produced incomplete evaluation: {missing fields}. Re-run? (yes/skip)". On re-run: re-dispatch once. On skip or second failure: fall back to structural-only result with advisory note.
 
-**Determine combined outcome:** Use the gate-verifier's `overall.outcome` as the final gate outcome (the structural pass is a prerequisite, so if we reach here structural already passed). Map verifier outcomes to skill conventions: "go" -> go, "go-with-advisory" -> go_advisory, "recycle" -> recycle.
+**Determine combined outcome:** Use the gate-verifier's `overall.outcome` directly as the gate outcome ("go", "go_advisory", or "recycle").
 
 **Record semantic gate result to `.expedite/gates.yml`:**
 Read existing gates.yml. Append to history array:
@@ -166,7 +166,7 @@ The outcome comes from Step 8's combined determination: structural recycle (Laye
 
 **Go** -- "G3 passed (structural + semantic)." -> Step 10.
 
-**Go-with-advisory** -- Show both structural SHOULD failures (if any) AND verifier dimension scores at 3. Include the verifier's advisory text. "1. Proceed | 2. Revise". Proceed -> Step 10. Revise -> Step 7.
+**go_advisory** -- Show both structural SHOULD failures (if any) AND verifier dimension scores at 3. Include the verifier's advisory text. "1. Proceed | 2. Revise". Proceed -> Step 10. Revise -> Step 7.
 
 **Recycle** -- If from structural layer: show structural MUST failures. If from semantic layer: show the verifier's recycle_details and the specific dimensions that scored below 3. Escalation by count (1st: informational, 2nd: suggest adjustment, 3rd+: recommend override). Revise -> Step 7. Override -> record in gates.yml (overridden: true), write `.expedite/design/override-context.md` with severity and affected DAs, log override -> Step 10.
 

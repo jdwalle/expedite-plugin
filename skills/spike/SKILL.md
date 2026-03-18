@@ -113,7 +113,7 @@ The script reads SPIKE.md, PLAN.md, and SCOPE.md, evaluates structural criteria 
 
 **Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Handle recycle: display issues, fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go-with-advisory.
+**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Handle recycle: display issues, fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go_advisory.
 
 **If structural outcome is "go" or "go_advisory":** Proceed to Layer 2.
 
@@ -131,11 +131,11 @@ Dispatch the `gate-verifier` agent by name via the Agent tool. Pass:
 2. All 4 dimensions present: evidence_support, internal_consistency, assumption_transparency, reasoning_completeness
 3. Each dimension has numeric `score` between 1 and 5
 4. Each dimension has non-empty `reasoning` text
-5. `overall.outcome` is one of: "go", "go-with-advisory", "recycle"
+5. `overall.outcome` is one of: "go", "go_advisory", "recycle"
 
 If validation fails: "Gate-verifier produced incomplete evaluation: {missing fields}. Re-run? (yes/skip)". On re-run: re-dispatch once. On skip or second failure: fall back to structural-only result with advisory note.
 
-**Determine combined outcome:** Use the gate-verifier's `overall.outcome` as the final gate outcome. Map: "go" -> go, "go-with-advisory" -> go_advisory, "recycle" -> recycle.
+**Determine combined outcome:** Use the gate-verifier's `overall.outcome` directly as the gate outcome ("go", "go_advisory", or "recycle").
 
 **Record semantic gate result to `.expedite/gates.yml`:**
 Read existing gates.yml. Append to history array:
@@ -157,7 +157,7 @@ history:
 Log gate outcome (both layers) to log.yml. Display: structural pass/fail summary, semantic dimension scores, overall outcome.
 
 **On Go:** Proceed to Step 9.
-**On Recycle (structural or semantic):** Display issues. Fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go-with-advisory.
+**On Recycle (structural or semantic):** Display issues. Fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go_advisory.
 
 ### Step 9: Display Summary
 

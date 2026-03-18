@@ -129,7 +129,7 @@ Read `.expedite/research/proposed-questions.yml`. If empty/missing, skip to Step
 
 ### Step 10: Synthesis Generation
 
-Dispatch the `research-synthesizer` agent via the Agent tool. Pass assembled context: project_name, intent, research_round, evidence_dir, scope_file, output_file (.expedite/research/SYNTHESIS.md), timestamp. Apply intent lens. If go-with-advisory: inject advisory context. If override: inject override context.
+Dispatch the `research-synthesizer` agent via the Agent tool. Pass assembled context: project_name, intent, research_round, evidence_dir, scope_file, output_file (.expedite/research/SYNTHESIS.md), timestamp. Apply intent lens. If go_advisory: inject advisory context. If override: inject override context.
 
 After agent returns: verify `.expedite/research/SYNTHESIS.md` exists on disk. If missing, display error: "Agent research-synthesizer did not produce expected output at .expedite/research/SYNTHESIS.md. Retry? (yes/skip)". If present, display confirmation with file size.
 
@@ -164,11 +164,11 @@ Dispatch the `gate-verifier` agent by name via the Agent tool. Pass:
 2. All 4 dimensions present: evidence_support, internal_consistency, assumption_transparency, reasoning_completeness
 3. Each dimension has numeric `score` between 1 and 5
 4. Each dimension has non-empty `reasoning` text
-5. `overall.outcome` is one of: "go", "go-with-advisory", "recycle"
+5. `overall.outcome` is one of: "go", "go_advisory", "recycle"
 
 If validation fails: "Gate-verifier produced incomplete evaluation: {missing fields}. Re-run? (yes/skip)". On re-run: re-dispatch once. On skip or second failure: fall back to structural-only result with advisory note.
 
-**Determine combined outcome:** Use the gate-verifier's `overall.outcome` as the final gate outcome. Map: "go" -> go, "go-with-advisory" -> go_advisory, "recycle" -> recycle.
+**Determine combined outcome:** Use the gate-verifier's `overall.outcome` directly as the gate outcome ("go", "go_advisory", or "recycle").
 
 **Record semantic gate result to `.expedite/gates.yml`:**
 Read existing gates.yml. Append to history array:
@@ -193,7 +193,7 @@ Log gate outcome (both layers) to log.yml. Display: structural pass/fail, semant
 
 **Go** -> "G2 gate passed. Research sufficient for design." -> Step 14.
 
-**Go-with-advisory** -> Show SHOULD failures. Freeform: "1. Proceed with advisory | 2. Run gap-fill." Proceed -> Step 14. Gap-fill -> treat as Recycle -> Step 13.
+**go_advisory** -> Show SHOULD failures. Freeform: "1. Proceed with advisory | 2. Run gap-fill." Proceed -> Step 14. Gap-fill -> treat as Recycle -> Step 13.
 
 **Recycle** -> Read `skills/research/references/ref-recycle-escalation.md` (Glob if needed). Show gaps. User: approve gap-fill -> Step 13 / adjust+re-gate -> Step 11 / override -> write override to gates.yml per ref-override-protocol.md, then Step 14.
 

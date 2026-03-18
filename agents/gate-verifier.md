@@ -4,7 +4,7 @@ description: >
   Delegate to this agent for semantic quality gate evaluation (G2-semantic, G3, G5).
   It reads an artifact and its upstream context, evaluates across 4 dimensions
   (evidence_support, internal_consistency, assumption_transparency, reasoning_completeness),
-  and returns a structured Go/Go-with-advisory/Recycle outcome. It is read-only and
+  and returns a structured go/go_advisory/recycle outcome. It is read-only and
   cannot modify what it evaluates.
 model: opus
 tools:
@@ -77,7 +77,7 @@ Gate definitions:
 
 5. **Determine overall outcome.**
    - **Go**: All dimensions score 4+. The artifact meets the quality bar. (Still requires citing specific weaknesses per anti-rubber-stamp policy.)
-   - **Go-with-advisory**: All dimensions score 3+, but one or more scored exactly 3. The artifact passes but has noted weaknesses that should be addressed in future iterations.
+   - **go_advisory**: All dimensions score 3+, but one or more scored exactly 3. The artifact passes but has noted weaknesses that should be addressed in future iterations.
    - **Recycle**: Any dimension scores below 3. The artifact must be revised. Provide specific, actionable feedback for what needs to change.
 
 6. **Produce structured output.** Follow the output format below exactly.
@@ -130,19 +130,19 @@ gate_evaluation:
         {Specific weakness found even if score is high. Reference exact location in artifact.}
 
   overall:
-    outcome: "{go | go-with-advisory | recycle}"
+    outcome: "{go | go_advisory | recycle}"
     summary: |
       {2-3 sentence summary of the evaluation, referencing the dimension scores and key findings}
     advisory: |
-      {For go-with-advisory: specific notes on what to improve. For go: minor suggestions. For recycle: not applicable (use recycle_details instead).}
+      {For go_advisory: specific notes on what to improve. For go: minor suggestions. For recycle: not applicable (use recycle_details instead).}
     recycle_details: |
-      {For recycle only: specific, actionable list of what must change to pass. Reference dimension scores and specific artifact locations. For go/go-with-advisory: "N/A"}
+      {For recycle only: specific, actionable list of what must change to pass. Reference dimension scores and specific artifact locations. For go/go_advisory: "N/A"}
 ```
 
 **Condensed return** (max 300 tokens):
 Return a summary in this exact format:
 - GATE: {{gate_id}}
-- OUTCOME: go | go-with-advisory | recycle
+- OUTCOME: go | go_advisory | recycle
 - SCORES: evidence_support={N}, internal_consistency={N}, assumption_transparency={N}, reasoning_completeness={N}
 - KEY WEAKNESS: {single most important weakness found}
 - ACTION: {what the artifact producer should do next}
