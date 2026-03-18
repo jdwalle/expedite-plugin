@@ -91,7 +91,9 @@ process.stdin.on('end', function () {
     var result = schema[matchedValidator](parsed);
 
     if (!result.valid) {
-      deny('State validation failed: ' + result.errors.join('; '));
+      deny('State validation failed: ' + result.errors.join('; ') +
+        '. Fix the data to match the schema and retry the write.' +
+        ' To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.');
       return;
     }
 
@@ -233,6 +235,25 @@ process.stdin.on('end', function () {
             existingCount = (currentGates && Array.isArray(currentGates.history)) ? currentGates.history.length : 0;
           } catch (e) {
             existingCount = 0;
+          }
+
+          // Truncation check: proposed content must not have fewer entries than existing
+          if (parsed.history.length < existingCount) {
+            deny('Gate write blocked: proposed gates.yml has fewer entries (' + parsed.history.length +
+              ') than existing (' + existingCount + '). Gate history is append-only.' +
+              ' To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.');
+            return;
+          }
+
+          // Verify existing entries are unchanged (immutability enforcement)
+          for (var ei = 0; ei < existingCount; ei++) {
+            if (JSON.stringify(currentGates.history[ei]) !== JSON.stringify(parsed.history[ei])) {
+              deny('Gate write blocked: existing history entry at index ' + ei +
+                ' was modified. Gate history is append-only and immutable.' +
+                ' To fix gate history, use the recovery procedure in ref-state-recovery.md.' +
+                ' To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.');
+              return;
+            }
           }
 
           // Only validate entries beyond the existing count (new entries)

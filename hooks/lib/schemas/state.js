@@ -31,6 +31,7 @@ var schema = {
     phase: { type: 'string', enum: VALID_PHASES },
     started_at: { type: 'string', nullable: true },
     phase_started_at: { type: 'string', nullable: true },
+    last_modified: { type: 'string', nullable: true },
   },
 };
 
