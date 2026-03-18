@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: Audit Bug Fixes
-status: unknown
-last_updated: "2026-03-18T02:46:04.669Z"
+status: complete
+last_updated: "2026-03-18T04:06:51.000Z"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-17)
 
 ## Current Position
 
-Phase: 39 — P1 Audit Fixes (2 of 3)
+Phase: 40 — P2 Audit Fixes (3 of 3)
 Plan: 2 of 2 complete
-Status: Phase 39 complete
-Last activity: 2026-03-18 — P1 skill/agent fixes (9 audit findings fixed)
+Status: Phase 40 complete
+Last activity: 2026-03-18 — P2 schema/gate cleanup (nullable removal, helper consolidation, enum fixes)
 
-Progress: [######----] 67%
+Progress: [##########] 100%
 
 ## Performance Metrics
 
@@ -89,6 +89,10 @@ Full decision log in PROJECT.md Key Decisions table.
 - [39-01] Status skill plan_complete routing changed from execute to spike (matching actual lifecycle flow)
 - [39-02] Use regex for override detection instead of indexOf to handle all YAML quoting styles
 - [39-02] Use JSON.stringify for gate history immutability comparison (deterministic for small parsed YAML objects)
+- [40-01] Implicit nullability is by design in validate.js; nullable:true was purely decorative
+- [40-01] G4 extractDAs updated to use consolidated {id, name} object format with da.id access
+- [40-02] Gate-verifier produces go_advisory directly; skills no longer map from go-with-advisory
+- [40-02] Edit tool denied at PreToolUse only (PostToolUse never fires for denied tools)
 
 ### Pending Todos
 
@@ -121,9 +125,10 @@ None.
 | 38 | 01 | 3min | 3 | 6 |
 | 39 | 01 | 7min | 2 | 9 |
 | 39 | 02 | 1min | 2 | 4 |
+| 40 | 02 | 4min | 2 | 9 |
 
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: Completed 39-01-PLAN.md (P1 Skill/Agent Fixes)
+Stopped at: Completed 40-02-PLAN.md (P2 Audit Fixes)
 Resume file: None

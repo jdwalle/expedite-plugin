@@ -90,7 +90,7 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 
 - [x] **Phase 38: P0 Audit Fixes** - Validate and fix 7 runtime-blocking bugs (FSM transitions, v2 state-split, worktree merge-back) (1 plan) (completed 2026-03-18)
 - [x] **Phase 39: P1 Audit Fixes** - Validate and fix 14 correctness bugs (override paths, status skill, schema gaps, backup paths) (2 plans) (completed 2026-03-18)
-- [ ] **Phase 40: P2 Audit Fixes** - Validate and fix 15 quality bugs (dead code, naming consistency, schema cleanup, cosmetic) (2 plans)
+- [x] **Phase 40: P2 Audit Fixes** - Validate and fix 15 quality bugs (dead code, naming consistency, schema cleanup, cosmetic) (2 plans) (completed 2026-03-18)
 
 ## Phase Details
 
@@ -194,4 +194,4 @@ Plans:
 | 37. Reference & Roadmap Cleanup | v3.0 | 1/1 | Complete | 2026-03-17 |
 | 38. P0 Audit Fixes | v3.1 | 1/1 | Complete | 2026-03-18 |
 | 39. P1 Audit Fixes | v3.1 | 2/2 | Complete | 2026-03-18 |
-| 40. P2 Audit Fixes | v3.1 | 0/2 | Not started | - |
+| 40. P2 Audit Fixes | 2/2 | Complete   | 2026-03-18 | - |
