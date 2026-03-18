@@ -111,7 +111,7 @@ Present design for review. Freeform loop:
 **Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
 **Invoke structural script:**
-Run via Bash: `node gates/g3-design.js "$(pwd)"`
+Run via Bash: `node ${CLAUDE_PLUGIN_ROOT}/gates/g3-design.js "$(pwd)"`
 
 The script reads DESIGN.md, SCOPE.md, and state.yml, evaluates structural criteria (DA coverage, evidence citations, format, word counts), writes the structural result to gates.yml, and prints JSON to stdout.
 

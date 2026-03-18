@@ -191,7 +191,7 @@ DA metadata (name, depth, readiness) lives ONLY in SCOPE.md, not state.yml. Disp
 Structural gate -- deterministic Node.js script. No LLM judgment.
 
 **Invoke gate script:**
-Run via Bash: `node gates/g1-scope.js "$(pwd)"`
+Run via Bash: `node ${CLAUDE_PLUGIN_ROOT}/gates/g1-scope.js "$(pwd)"`
 
 The script reads SCOPE.md and state.yml, evaluates all structural criteria, writes the result to gates.yml, and prints JSON to stdout.
 

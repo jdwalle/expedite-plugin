@@ -108,7 +108,7 @@ Plan-specific revisions: reorder tasks, split/merge phases, reclassify TDs, adju
 Structural gate -- deterministic Node.js script. No LLM judgment.
 
 **Invoke gate script:**
-Run via Bash: `node gates/g4-plan.js "$(pwd)"`
+Run via Bash: `node ${CLAUDE_PLUGIN_ROOT}/gates/g4-plan.js "$(pwd)"`
 
 The script reads PLAN.md and SCOPE.md, evaluates structural criteria, writes the result to gates.yml, and prints JSON to stdout.
 

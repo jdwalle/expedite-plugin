@@ -107,7 +107,7 @@ Generate ordered steps using resolved TDs, phase tasks, and design decisions. Ea
 **Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
 **Invoke structural script:**
-Run via Bash: `node gates/g5-spike.js "$(pwd)" "{slug}"`
+Run via Bash: `node ${CLAUDE_PLUGIN_ROOT}/gates/g5-spike.js "$(pwd)" "{slug}"`
 
 The script reads SPIKE.md, PLAN.md, and SCOPE.md, evaluates structural criteria (TD coverage, rationale presence, implementation steps count), writes the structural result to gates.yml, and prints JSON to stdout.
 

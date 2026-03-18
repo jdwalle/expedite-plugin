@@ -138,7 +138,7 @@ After agent returns: verify `.expedite/research/SYNTHESIS.md` exists on disk. If
 **Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
 **Invoke structural script:**
-Run via Bash: `node gates/g2-structural.js "$(pwd)"`
+Run via Bash: `node ${CLAUDE_PLUGIN_ROOT}/gates/g2-structural.js "$(pwd)"`
 
 The script reads SYNTHESIS.md, SCOPE.md, and evidence files, evaluates structural criteria, writes the result to gates.yml, and prints JSON to stdout.
 
