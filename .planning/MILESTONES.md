@@ -1,5 +1,29 @@
 # Milestones
 
+## v3.1 Audit Bug Fixes (Shipped: 2026-03-18)
+
+**Phases completed:** 4 phases, 6 plans, 12 tasks
+**Timeline:** 1 day (2026-03-18)
+**Lines changed:** +5,462 / -246 across 55 files
+**Requirements:** 36/36 AUD findings satisfied
+**Git range:** cf7a204..cac8f01
+
+**Key accomplishments:**
+1. Fixed 7 P0 runtime-blocking bugs -- FSM two-step transition, spike-only entry, questions.yml/tasks.yml targeting, valid override gate IDs, completion checkpoint
+2. Fixed 14 P1 correctness bugs -- current_step removal, status skill lifecycle coverage, research step contiguity, gate immutability, schema recovery instructions
+3. Fixed 15 P2 quality bugs -- nullable cleanup, helper consolidation (extractDAs/wordCount), dead code removal, Edit tool hook, plugin metadata v3.1.0
+4. Standardized go_advisory naming across all production files (gate-verifier, plan skill, gate-utils)
+5. Plugin verified functional for first real-world use -- all 5 E2E flows complete end-to-end
+
+### Tech Debt (5 items, all pre-existing)
+- Research Step 6 writes evidence_files to state.yml instead of questions.yml (pre-existing)
+- Sufficiency-evaluator reads questions/evidence_files from state.yml (pre-existing)
+- `override` dead enum value in VALID_GATE_OUTCOMES (pre-existing, harmless)
+- Phase 19 (v1.2): RESL-05 sentinel field deferred
+- Phase 19 (v1.2): 3 human runtime tests pending (recovery preamble verification)
+
+---
+
 ## v3.0 Agent Harness Completion (Shipped: 2026-03-17)
 
 **Phases completed:** 8 phases, 15 plans, 29 tasks

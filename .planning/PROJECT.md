@@ -73,13 +73,14 @@ Developers can run a complete evidence-based lifecycle — from scoping question
 
 ## Context
 
-Shipped v3.0 with agent harness completion (Phases 30-37). 5 milestones complete: v1.0 (13 phases), v1.1 (5 phases), v1.2 (1 phase), v2.0 (5 phases), v3.0 (8 phases).
-Plugin source: 7 skill directories + 8 agent definitions + 5 gate scripts + 10 prompt templates + 3 inline references + state templates + 6 hook scripts + 7 hook library modules.
+Shipped v3.1 with all 36 audit bugs fixed (Phases 38-41). 6 milestones complete: v1.0 (13 phases), v1.1 (5 phases), v1.2 (1 phase), v2.0 (5 phases), v3.0 (8 phases), v3.1 (4 phases).
+Plugin source: 7 skill directories + 8 agent definitions + 5 gate scripts + 10 prompt templates + 3 inline references + state templates + 7 hook scripts + 7 hook library modules.
 Tech stack: Claude Code plugin platform (SKILL.md step-sequencers, Agent() dispatch by name, plugin.json auto-discovery) + Node.js hooks/gates (js-yaml).
-Total: 32 phases, 71 plans, 179 requirements across 5 milestones.
-Codebase: ~20,010 LOC (JS/MD/JSON/YML plugin source).
+Total: 36 phases, 77 plans across 6 milestones.
+Codebase: ~20,250 LOC (JS/MD/JSON/YML plugin source).
 Hook latency: p99 ~21ms (well under 300ms target).
-7 tech debt items carried forward (live runtime tests pending, schema naming mismatch).
+Plugin functional for first real-world use — all 5 E2E lifecycle flows verified end-to-end.
+5 pre-existing tech debt items carried forward (evidence_files state targeting, dead override enum, v1.2 recovery tests).
 
 ## Constraints
 
@@ -130,6 +131,13 @@ Hook latency: p99 ~21ms (well under 300ms target).
 | Git commit protocol in reference file (not inline) | Keeps execute skill under 200 lines | ✓ Good — separation of concerns |
 | Merge conflicts pause (never auto-resolve) | Destructive auto-resolution too risky for user code | ✓ Good — safe default |
 | Spike writes own phase transitions | spike_in_progress/spike_complete enables G5 gate and clean handoff to execute | ✓ Good — fixed BREAK-1/2/3 |
+| Spike-only entry for execute | Require spike to always run (even zero-TD phases) instead of allowing plan_complete entry | ✓ Good — prevents FSM violations |
+| checkpoint.yml as sole step position source | current_step in state.yml was redundant with checkpoint.yml skill/step/label fields | ✓ Good — single source of truth |
+| Research steps renumbered contiguously (1-14) | No real-world checkpoints exist yet; clean numbering improves maintainability | ✓ Good — no backward compat needed |
+| Implicit nullable in schemas (not explicit) | validate.js treats missing fields as nullable by design; nullable:true was decorative | ✓ Good — simpler schemas |
+| Gate helper consolidation (gate-utils.js) | extractDAs/wordCount duplicated across 4 gate scripts; single shared source | ✓ Good — eliminated 4 copies |
+| go_advisory as canonical outcome string | Gate-verifier produces canonical form directly; skills don't need to map from hyphenated | ✓ Good — consistent naming |
+| Edit tool denied via PreToolUse hook | PostToolUse never fires for denied tools; PreToolUse is the only enforcement point | ✓ Good — correct hook event |
 
 ---
-*Last updated: 2026-03-17 after v3.0 milestone*
+*Last updated: 2026-03-18 after v3.1 milestone*

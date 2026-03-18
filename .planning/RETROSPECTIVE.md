@@ -222,6 +222,49 @@
 
 ---
 
+## Milestone: v3.1 — Audit Bug Fixes
+
+**Shipped:** 2026-03-18
+**Phases:** 4 | **Plans:** 6
+
+### What Was Built
+- Fixed 7 P0 runtime-blocking bugs (FSM transitions, state-split targeting, override gate IDs, completion checkpoint)
+- Fixed 14 P1 correctness bugs (schema reconciliation, status skill lifecycle, backup paths, gate immutability, dispatch placeholders)
+- Fixed 15 P2 quality bugs (dead code, helper consolidation, naming standardization, Edit tool hook, plugin metadata)
+- Closed final audit gap (go_advisory naming) with dedicated Phase 41
+
+### What Worked
+- 15-agent parallel audit (from previous milestone) provided comprehensive, prioritized bug list — no manual triage needed
+- Priority-based phasing (P0 → P1 → P2) meant runtime-blocking bugs were fixed first, enabling earlier testing
+- Audit-then-fix pattern validated: audit identified 36 findings, all 36 resolved in 4 phases with zero regressions
+- Phase 41 gap-closure pattern (audit → identify gap → add phase → re-audit) worked cleanly for AUD-029
+- Fastest per-plan execution: average 3.3 minutes across 6 plans — all bugs were well-specified by audit
+
+### What Was Inefficient
+- ROADMAP.md plan checkboxes never checked off during execution — still unchecked despite SUMMARY.md files existing (5th consecutive milestone with this gap)
+- Phase 40 audit showed AUD-029 as partial because verification used case-sensitive grep — led to creating Phase 41 for 5 string replacements that should have been caught in Phase 40
+- No REQUIREMENTS.md for this milestone — requirements were tracked as AUD-* IDs in audit source, making the standard archival flow skip
+
+### Patterns Established
+- Audit-driven milestone: entire milestone scope derived from automated audit findings rather than manual requirement gathering
+- Checkpoint-first step tracking: checkpoint.yml is sole source of step position (current_step removed from state.yml)
+- Shared helper pattern: gate-utils.js consolidation eliminated duplication across 4+ gate scripts
+- PreToolUse deny pattern: matcher + deny JSON + exit 2 for file-type access control (deny-state-edit.js)
+
+### Key Lessons
+1. Automated audit → prioritized bug list → phased fixes is an efficient pattern for quality milestones — no manual triage overhead
+2. Verification grep must be case-insensitive when checking naming standardization — AUD-029 gap was caused by case-sensitive grep missing capitalized variants
+3. Audit-driven milestones may not need traditional REQUIREMENTS.md — the audit source serves as the requirements document
+4. Plugin is now functional for first real-world use — 6 milestones and 36 phases to reach this point
+
+### Cost Observations
+- Model mix: 100% opus (quality profile throughout)
+- Average plan duration: 3.3 minutes
+- Total execution time: ~20 minutes across 6 plans
+- Notable: Shortest milestone by execution time. All bugs were precisely specified by audit, eliminating decision overhead entirely.
+
+---
+
 ## Cross-Milestone Trends
 
 ### Process Evolution
@@ -233,6 +276,7 @@
 | v1.2 | 1 | 2 | 1 day | Scoped down — 5 phases subsumed by v2.0 architecture |
 | v2.0 | 5 | 11 | 1 day | Infrastructure milestone — extensive pre-research made execution fast |
 | v3.0 | 8 | 15 | 2 days | Agent harness completion — pre-build validation + shared utilities made execution fast |
+| v3.1 | 4 | 6 | 1 day | Audit bug fixes — automated audit findings drove scope, fastest execution yet |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -245,3 +289,4 @@
 7. Thorough research investment pays back in execution speed — v2.0 and v3.0 both shipped fast despite high complexity
 8. Pre-build validation gates (GO/NO-GO) should precede any uncertain component commitment (v3.0 Phase 33)
 9. Shared utility libraries pay off when 3+ consumers exist — gate-utils.js halved subsequent gate script dev time (v3.0)
+10. Automated audit → phased fixes is an efficient quality milestone pattern — audit provides scope, priority, and verification criteria (v3.1)
