@@ -114,13 +114,13 @@ The script reads PLAN.md and SCOPE.md, evaluates structural criteria, writes the
 
 **Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**Outcomes:** Go, Go-with-advisory, Recycle -- same routing as Step 8. Log to log.yml.
+**Outcomes:** go, go_advisory, recycle -- same routing as Step 8. Log to log.yml.
 
 ### Step 8: Gate Outcome Handling
 
 **Go** -- "G4 passed." -> Step 9.
 
-**Go-with-advisory** -- Show SHOULD failures. "1. Proceed | 2. Revise". Proceed -> Step 9. Revise -> Step 6.
+**go_advisory** -- Show SHOULD failures. "1. Proceed | 2. Revise". Proceed -> Step 9. Revise -> Step 6.
 
 **Recycle** -- Escalation by count (1st: informational, 2nd: suggest adjustment, 3rd+: recommend override). Revise -> Step 6. Override -> record in gates.yml (overridden: true), write `.expedite/plan/override-context.md` with severity and affected phases/DAs, log override -> Step 9.
 

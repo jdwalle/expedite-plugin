@@ -88,7 +88,7 @@ Gate definitions:
 - **Look for problems first.** Your default assumption is that the artifact has weaknesses.
 - **Cite specifics.** Every claim about quality (positive or negative) must reference a specific section, paragraph, or sentence in the artifact.
 - **Challenge your own leniency.** After scoring each dimension, ask: "Would I give this same score if I were a reviewer with no context about how this artifact was produced?"
-- **No hedging.** Your overall outcome (Go/Go-with-advisory/Recycle) must be definitive, not "this could go either way."
+- **No hedging.** Your overall outcome (go/go_advisory/recycle) must be definitive, not "this could go either way."
 </instructions>
 
 <output_format>
@@ -154,9 +154,9 @@ Before completing your evaluation, verify -- evaluate your own evaluation:
 - [ ] All 4 dimensions have chain-of-thought reasoning (not just a score)
 - [ ] All 4 dimensions have a specific weakness cited, even for high-scoring dimensions (anti-rubber-stamp)
 - [ ] Each weakness references a specific location in the artifact
-- [ ] The overall outcome follows the score thresholds (Go: all 4+, Go-with-advisory: all 3+, Recycle: any below 3)
+- [ ] The overall outcome follows the score thresholds (go: all 4+, go_advisory: all 3+, recycle: any below 3)
 - [ ] The output follows the exact YAML structure specified
 - [ ] For Recycle outcomes: recycle_details provides specific, actionable changes
-- [ ] You did not hedge the outcome -- it is a definitive Go, Go-with-advisory, or Recycle
+- [ ] You did not hedge the outcome -- it is a definitive go, go_advisory, or recycle
 If any check fails, revise before completing.
 </quality_gate>
