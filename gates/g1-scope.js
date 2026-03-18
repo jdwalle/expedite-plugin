@@ -54,14 +54,16 @@ function main() {
         : 'SCOPE.md exists and has content (' + scopeContent.trim().length + ' chars)'),
   });
 
-  // M2: state.yml has questions array with at least 3 entries
-  var questions = (state && Array.isArray(state.questions)) ? state.questions : [];
+  // M2: questions.yml has questions array with at least 3 entries
+  var questionsPath = path.join(projectDir, '.expedite', 'questions.yml');
+  var questionsData = utils.readYaml(questionsPath);
+  var questions = (questionsData && Array.isArray(questionsData.questions)) ? questionsData.questions : [];
   mustResults.push({
     criterion: 'M2',
     passed: questions.length >= 3,
     detail: questions.length >= 3
-      ? 'Found ' + questions.length + ' questions in state.yml (minimum 3)'
-      : 'Found ' + questions.length + ' questions in state.yml, need at least 3',
+      ? 'Found ' + questions.length + ' questions in questions.yml (minimum 3)'
+      : 'Found ' + questions.length + ' questions in questions.yml, need at least 3',
   });
 
   // M3: state.yml has intent set to "product" or "engineering"

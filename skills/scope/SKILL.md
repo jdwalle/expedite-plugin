@@ -166,19 +166,23 @@ Read `.expedite/sources.yml`. Display configured sources checklist (web always a
 - Source Configuration checklist
 - Metadata: question count, DA count, batch estimate
 
-**9b. Update state.yml** (backup-before-write): set current_step to step 9, last_modified. Set `questions` array with entries per question:
+**9b. Write questions.yml** (backup-before-write: `cp .expedite/questions.yml .expedite/questions.yml.bak`): Set `questions` array with entries per question:
 ```yaml
-- id: "q01"
-  text: "{question text}"
-  priority: "P0"
-  decision_area: "{DA name}"
-  source_hints: ["{web}", "{codebase}"]
-  evidence_requirements: "{requirements}"
-  status: "pending"
-  source: "original"  # or "codebase-routed" for Step 7 questions
-  gap_details: null
-  evidence_files: []
+research_round: 0
+questions:
+  - id: "q01"
+    text: "{question text}"
+    priority: "P0"
+    decision_area: "{DA name}"
+    source_hints: ["{web}", "{codebase}"]
+    evidence_requirements: "{requirements}"
+    status: "pending"
+    source: "original"  # or "codebase-routed" for Step 7 questions
+    gap_details: null
+    evidence_files: []
 ```
+
+**9c. Update state.yml** (backup-before-write): set current_step to step 9, last_modified. Do NOT write the questions array to state.yml.
 
 DA metadata (name, depth, readiness) lives ONLY in SCOPE.md, not state.yml. Display: "Scope artifacts written. Running gate evaluation..."
 
