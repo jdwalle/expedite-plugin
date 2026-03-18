@@ -201,7 +201,7 @@ process.stdin.on('end', function () {
                 ' To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.';
               if (cpCount >= denialTracker.ESCALATION_THRESHOLD) {
                 cpReason += '\n\nThis denial has occurred ' + cpCount + ' times. ' +
-                  'Consider manual intervention: edit .expedite/state.yml directly, ' +
+                  'Consider manual intervention: edit .expedite/checkpoint.yml directly, ' +
                   'or set EXPEDITE_HOOKS_DISABLED=true to bypass all enforcement.';
               }
               deny(cpReason);

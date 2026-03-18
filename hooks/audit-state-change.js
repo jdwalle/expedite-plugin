@@ -60,7 +60,7 @@ process.stdin.on('end', function () {
     var expediteDir = path.dirname(filePath);
 
     // Check for override-specific logging
-    if (matchedFile === 'gates.yml' && content.indexOf('outcome: "overridden"') !== -1) {
+    if (matchedFile === 'gates.yml' && /outcome:\s*['"]?overridden['"]?/.test(content)) {
       // Extract gate, override_reason, and severity from content
       var gateMatch = content.match(/gate:\s*["']?([A-Z]\d+)["']?/);
       var reasonMatch = content.match(/override_reason:\s*["']?([^\n"']+)["']?/);

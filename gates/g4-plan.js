@@ -163,7 +163,7 @@ function main() {
   } else {
     for (var dIdx = 0; dIdx < das.length; dIdx++) {
       var daId = das[dIdx];
-      var found = planContent && planContent.indexOf(daId) !== -1;
+      var found = planContent && planContent.toUpperCase().indexOf(daId.toUpperCase()) !== -1;
       if (!found) {
         m2Missing.push(daId);
         m2Passed = false;
