@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: Audit Bug Fixes
 status: unknown
-last_updated: "2026-03-18T04:14:30.977Z"
+last_updated: "2026-03-18T05:02:01.000Z"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 7
-  completed_plans: 7
+  total_phases: 5
+  completed_phases: 5
+  total_plans: 8
+  completed_plans: 8
 ---
 
 # Project State
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Developers can run a complete evidence-based lifecycle — from scoping questions through researched design to executable plan — without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** v3.1 Audit Bug Fixes (Phases 38-40)
+**Current focus:** v3.1 Audit Bug Fixes (Phases 38-41)
 
 ## Current Position
 
-Phase: 40 — P2 Audit Fixes (3 of 3)
-Plan: 2 of 2 complete
-Status: Phase 40 complete
-Last activity: 2026-03-18 — P2 schema/gate cleanup (nullable removal, helper consolidation, enum fixes)
+Phase: 41 — AUD-029 Go-Advisory Cleanup (1 of 1)
+Plan: 1 of 1 complete
+Status: Phase 41 complete
+Last activity: 2026-03-18 — go_advisory naming standardization (gate-verifier, plan skill)
 
 Progress: [##########] 100%
 
@@ -127,9 +127,10 @@ None.
 | 39 | 02 | 1min | 2 | 4 |
 | 40 | 01 | 4min | 2 | 15 |
 | 40 | 02 | 4min | 2 | 9 |
+| 41 | 01 | 1min | 1 | 2 |
 
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: Completed 40-01-PLAN.md (P2 Schema/Gate Cleanup)
+Stopped at: Completed 41-01-PLAN.md (AUD-029 Go-Advisory Cleanup)
 Resume file: None
