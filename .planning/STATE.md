@@ -1,8 +1,8 @@
 ---
 gsd_state_version: 1.0
-milestone: v3.0
-milestone_name: Agent Harness Completion
-status: unknown
+milestone: v3.1
+milestone_name: Audit Bug Fixes
+status: active
 last_updated: "2026-03-17T02:08:37.208Z"
 progress:
   total_phases: 9
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-17)
 
 **Core value:** Developers can run a complete evidence-based lifecycle — from scoping questions through researched design to executable plan — without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Planning next milestone
+**Current focus:** v3.1 Audit Bug Fixes (Phases 38-40)
 
 ## Current Position
 
-Phase: 37 — Reference & Roadmap Cleanup (9 of 9)
-Plan: 1 of 1 complete
-Status: Phase 37 complete; gap closure (STALE-1, ORPHAN-1, roadmap checkboxes)
-Last activity: 2026-03-17 — Completed 37-01 (Reference & Roadmap Cleanup)
+Phase: 38 — P0 Audit Fixes (1 of 3)
+Plan: 0 of 1 complete
+Status: Not started
+Last activity: 2026-03-17 — v3.0 milestone archived, v3.1 roadmap created
 
 Progress: [##########] 100%
 

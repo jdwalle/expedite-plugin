@@ -7,6 +7,7 @@
 - ✅ **v1.2 Infrastructure Hardening & Quality** -- Phase 19 (shipped 2026-03-12)
 - ✅ **v2.0 Agent Harness Foundation** -- Phases 25-29 (shipped 2026-03-13)
 - ✅ **v3.0 Agent Harness Completion** -- Phases 30-37 (shipped 2026-03-17)
+- 🚧 **v3.1 Audit Bug Fixes** -- Phases 38-40 (in progress)
 
 ## Phases
 
@@ -83,6 +84,67 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 
 </details>
 
+### 🚧 v3.1 Audit Bug Fixes (In Progress)
+
+**Milestone Goal:** Validate and fix all bugs identified by the 15-agent final audit, making the plugin functional for first real-world use.
+
+- [ ] **Phase 38: P0 Audit Fixes** - Validate and fix 7 runtime-blocking bugs (FSM transitions, v2 state-split, worktree merge-back) (1 plan)
+- [ ] **Phase 39: P1 Audit Fixes** - Validate and fix 14 correctness bugs (override paths, status skill, schema gaps, backup paths) (1 plan)
+- [ ] **Phase 40: P2 Audit Fixes** - Validate and fix 15 quality bugs (dead code, naming consistency, schema cleanup, cosmetic) (1 plan)
+
+## Phase Details
+
+### Phase 38: P0 Audit Fixes
+**Goal**: All 7 runtime-blocking bugs (AUD-001 through AUD-007) validated against source code and fixed, making a standard lifecycle completable end-to-end
+**Depends on**: Phase 37
+**Audit Source**: `.planning/research/expedite-final-audit/research-synthesis.md`
+**Success Criteria** (what must be TRUE):
+  1. Execute skill writes `execute_complete` before `complete` (AUD-001 confirmed and fixed)
+  2. Execute skill entry phases match FSM — spike-skip path explicitly decided (AUD-002 confirmed and fixed)
+  3. Scope writes questions to `questions.yml`; G1 reads from `questions.yml` (AUD-003 confirmed and fixed)
+  4. Execute writes tasks to `tasks.yml` (AUD-004 confirmed and fixed)
+  5. Override entry paths use valid gate IDs and `outcome: "overridden"` (AUD-005 confirmed and fixed)
+  6. Execute writes completion checkpoint at lifecycle end (AUD-006 confirmed and fixed)
+  7. Worktree merge-back documented with branch name in task-implementer output (AUD-007 confirmed and fixed)
+**Plans**: 1 plan
+
+### Phase 39: P1 Audit Fixes
+**Goal**: All 14 correctness bugs (AUD-008 through AUD-021) validated and fixed — state schema reconciled, status skill complete, backup paths correct, agent dispatch specified
+**Depends on**: Phase 38
+**Audit Source**: `.planning/research/expedite-final-audit/research-synthesis.md`
+**Success Criteria** (what must be TRUE):
+  1. State.yml schema covers all written fields; fields belonging in split files removed from skill writes (AUD-008)
+  2. Status skill displays spike phases and execute_complete with correct next-action routing (AUD-009)
+  3. G4 DA matching is case-insensitive (AUD-010)
+  4. Research backup path uses `.expedite/state.yml` (AUD-011)
+  5. Override detection handles all YAML quoting styles (AUD-012)
+  6. HOOK-03 escalation references checkpoint.yml (AUD-013)
+  7. research_round standardized to questions.yml (AUD-014)
+  8. Research steps renumbered contiguously; status totals updated (AUD-015)
+  9. Backup-before-write added to execute Steps 5d/6/7 and research Step 12 (AUD-016)
+  10. Gates.yml history immutability enforced (AUD-017)
+  11. Agent dispatch placeholders enumerated for task-implementer and researchers (AUD-018, AUD-019)
+  12. sufficiency-evaluator memory setting resolved (AUD-020)
+  13. Schema denial recovery instructions added (AUD-021)
+**Plans**: 1 plan
+
+### Phase 40: P2 Audit Fixes
+**Goal**: All 15 quality bugs (AUD-022 through AUD-036) validated and fixed — dead code removed, naming standardized, schema properties cleaned up, cosmetic issues resolved
+**Depends on**: Phase 39
+**Audit Source**: `.planning/research/expedite-final-audit/research-synthesis.md`
+**Success Criteria** (what must be TRUE):
+  1. `nullable` property either implemented or removed from schemas (AUD-022)
+  2. Gates.yml schema includes `severity` field (AUD-023)
+  3. Cosmetic message fixes applied (AUD-024)
+  4. Truthiness check fixed in session-summary.js (AUD-025)
+  5. Step count constants verified and corrected (AUD-026)
+  6. `extractDAs` and `wordCount` consolidated into gate-utils.js (AUD-027, AUD-028)
+  7. `go_advisory` vs `go-with-advisory` standardized (AUD-029)
+  8. Dead enum values, exports, and imports removed (AUD-030, AUD-031, AUD-032)
+  9. plugin.json version and description updated (AUD-033)
+  10. Edit tool hook gap addressed (AUD-035)
+**Plans**: 1 plan
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -119,3 +181,6 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 | 35. Worktree and Git Workflow | v3.0 | 2/2 | Complete | 2026-03-16 |
 | 36. Spike G5 Integration Fix | v3.0 | 1/1 | Complete | 2026-03-17 |
 | 37. Reference & Roadmap Cleanup | v3.0 | 1/1 | Complete | 2026-03-17 |
+| 38. P0 Audit Fixes | v3.1 | 0/1 | Not started | - |
+| 39. P1 Audit Fixes | v3.1 | 0/1 | Not started | - |
+| 40. P2 Audit Fixes | v3.1 | 0/1 | Not started | - |
