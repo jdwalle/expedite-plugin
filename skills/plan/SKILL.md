@@ -57,7 +57,7 @@ updated_at: "{ISO 8601 UTC timestamp}"
 
 **Case A: `phase: "design_complete"`** -- "Starting plan phase..." Proceed to Step 2.
 
-**Case B: `phase: "design_in_progress"` AND `--override` AND gates.yml has G3 recycle** -- Verify G3 recycle in gates.yml (read `.expedite/gates.yml`, check history for gate: "G3", outcome: "recycle"). Read override-context.md. Record override in gates.yml (append: gate "G3-plan-entry", outcome "override"). Display override warning. Proceed to Step 2.
+**Case B: `phase: "design_in_progress"` AND `--override` AND gates.yml has G3 recycle** -- Verify G3 recycle in gates.yml (read `.expedite/gates.yml`, check history for gate: "G3", outcome: "recycle"). Read override-context.md. Record override in gates.yml (append: gate "G3", outcome "overridden", override_reason "User-initiated --override entry from design_in_progress"). Display override warning. Proceed to Step 2.
 
 **Case B2: `phase: "plan_in_progress"` (no --override)** -- Resume. Check gates.yml for G3 recycle evidence. Checkpoint-based resume: if checkpoint.skill is "plan", jump to checkpoint.step. Artifact fallback: PLAN.md exists -> Step 6; no PLAN.md -> Step 2. Do NOT re-run Step 3.
 

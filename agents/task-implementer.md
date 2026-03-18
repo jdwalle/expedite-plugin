@@ -138,6 +138,7 @@ Return a summary in this exact format:
 - FILES: [list of files created/modified]
 - CRITERIA: [N/M passed]
 - CHAIN: intact | broken at [stage]
+- BRANCH: [worktree branch name, or "none" if no changes made]
 </output_format>
 
 <quality_gate>
