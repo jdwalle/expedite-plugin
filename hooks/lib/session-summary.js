@@ -113,7 +113,7 @@ function writeSummary(expediteDir) {
       var totalQ = questions.questions.length;
       var answeredQ = 0;
       for (var i = 0; i < questions.questions.length; i++) {
-        if (questions.questions[i].answer) {
+        if (questions.questions[i].answer != null) {
           answeredQ++;
         }
       }

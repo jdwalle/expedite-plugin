@@ -24,14 +24,14 @@ var schema = {
   required: ['version', 'phase'],
   fields: {
     version: { type: 'number' },
-    lifecycle_id: { type: 'string', nullable: true },
-    project_name: { type: 'string', nullable: true },
-    intent: { type: 'string', nullable: true, enum: ['product', 'engineering'] },
-    description: { type: 'string', nullable: true },
+    lifecycle_id: { type: 'string' },
+    project_name: { type: 'string' },
+    intent: { type: 'string', enum: ['product', 'engineering'] },
+    description: { type: 'string' },
     phase: { type: 'string', enum: VALID_PHASES },
-    started_at: { type: 'string', nullable: true },
-    phase_started_at: { type: 'string', nullable: true },
-    last_modified: { type: 'string', nullable: true },
+    started_at: { type: 'string' },
+    phase_started_at: { type: 'string' },
+    last_modified: { type: 'string' },
   },
 };
 

@@ -269,7 +269,7 @@ process.stdin.on('end', function () {
                 var gpPattern = 'gatephase:' + entry.gate + ':' + stateObj.phase;
                 var gpCount = denialTracker.recordDenial(expediteDir, gpPattern);
                 var gpReason = 'Gate write blocked: ' + phaseCheck.error + '. Current phase: ' + stateObj.phase +
-                  ' To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.';
+                  '. To bypass enforcement entirely, set EXPEDITE_HOOKS_DISABLED=true.';
                 if (gpCount >= denialTracker.ESCALATION_THRESHOLD) {
                   gpReason += '\n\nThis denial has occurred ' + gpCount + ' times. ' +
                     'Consider manual intervention: edit .expedite/state.yml directly, ' +

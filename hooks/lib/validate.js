@@ -3,6 +3,9 @@
 // Generic schema validation helpers.
 // Domain schemas define structure; this module checks it.
 
+// All fields are implicitly nullable: null/undefined values skip type/enum checks.
+// Schemas define type and enum constraints that apply only to non-null values.
+
 function checkType(value, expectedType) {
   if (Array.isArray(expectedType)) {
     return expectedType.some(function (t) { return checkType(value, t); });

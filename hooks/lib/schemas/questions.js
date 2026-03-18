@@ -17,7 +17,7 @@ var VALID_QUESTION_PRIORITIES = ['P0', 'P1', 'P2'];
 var schema = {
   required: ['questions'],
   fields: {
-    research_round: { type: 'number', nullable: true },
+    research_round: { type: 'number' },
     questions: { type: 'array' },
   },
   itemSchema: {
@@ -31,7 +31,7 @@ var schema = {
       evidence_requirements: { type: 'string' },
       status: { type: 'string', enum: VALID_QUESTION_STATUSES },
       source: { type: 'string' },
-      gap_details: { type: 'string', nullable: true },
+      gap_details: { type: 'string' },
       evidence_files: { type: 'array' },
     },
   },

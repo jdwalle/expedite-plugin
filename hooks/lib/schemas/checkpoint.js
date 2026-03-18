@@ -6,13 +6,13 @@ var schema = {
   required: [],
   requiredWhenPopulated: ['skill', 'step', 'label'],
   fields: {
-    skill: { type: 'string', nullable: true },
-    step: { type: ['number', 'string'], nullable: true },
-    label: { type: 'string', nullable: true },
-    substep: { type: 'string', nullable: true },
-    continuation_notes: { type: 'string', nullable: true },
-    inputs_hash: { type: 'string', nullable: true },
-    updated_at: { type: 'string', nullable: true },
+    skill: { type: 'string' },
+    step: { type: ['number', 'string'] },
+    label: { type: 'string' },
+    substep: { type: 'string' },
+    continuation_notes: { type: 'string' },
+    inputs_hash: { type: 'string' },
+    updated_at: { type: 'string' },
   },
 };
 

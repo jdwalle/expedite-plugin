@@ -17,8 +17,8 @@ var VALID_TASK_STATUSES = [
 var schema = {
   required: ['tasks'],
   fields: {
-    current_wave: { type: 'number', nullable: true },
-    current_task: { type: 'string', nullable: true },
+    current_wave: { type: 'number' },
+    current_task: { type: 'string' },
     tasks: { type: 'array' },
   },
   itemSchema: {
@@ -27,8 +27,8 @@ var schema = {
       id: { type: 'string' },
       title: { type: 'string' },
       status: { type: 'string', enum: VALID_TASK_STATUSES },
-      wave: { type: 'number', nullable: true },
-      assigned_agent: { type: 'string', nullable: true },
+      wave: { type: 'number' },
+      assigned_agent: { type: 'string' },
     },
   },
 };

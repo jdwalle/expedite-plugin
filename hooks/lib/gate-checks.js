@@ -17,7 +17,7 @@ var GATE_PHASE_MAP = {
 /**
  * Gate outcomes that count as "passed" (transition is allowed).
  */
-var PASSING_OUTCOMES = ['go', 'go-with-advisory', 'go_advisory', 'overridden'];
+var PASSING_OUTCOMES = ['go', 'go_advisory', 'overridden'];
 
 /**
  * Check if a passing gate result exists in the gates.yml history.
