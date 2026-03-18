@@ -9,6 +9,15 @@
             "command": "node hooks/validate-state-write.js"
           }
         ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node hooks/deny-state-edit.js"
+          }
+        ]
       }
     ],
     "PostToolUse": [

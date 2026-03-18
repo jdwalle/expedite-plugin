@@ -1,7 +1,7 @@
 {
   "name": "expedite",
-  "version": "1.0.0",
-  "description": "Research-driven development lifecycle: Scope, Research, Design, Plan, Execute",
+  "version": "3.1.0",
+  "description": "Research-driven development lifecycle: Scope, Research, Design, Plan, Spike, Execute",
   "author": {
     "name": "Jared Wallenfels"
   }

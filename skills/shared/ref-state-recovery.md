@@ -139,6 +139,8 @@ questions: []
 Write this exact structure to `.expedite/gates.yml`:
 
 ```yaml
+# Gate history is intentionally not reconstructed during recovery.
+# Gate timestamps, scores, and evaluator names cannot be reliably derived from artifacts alone.
 history: []
 ```
 
