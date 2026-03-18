@@ -108,6 +108,8 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
   6. Execute writes completion checkpoint at lifecycle end (AUD-006 confirmed and fixed)
   7. Worktree merge-back documented with branch name in task-implementer output (AUD-007 confirmed and fixed)
 **Plans**: 1 plan
+Plans:
+- [ ] 38-01-PLAN.md — Fix 7 P0 runtime-blocking bugs (FSM, state-split, override, worktree)
 
 ### Phase 39: P1 Audit Fixes
 **Goal**: All 14 correctness bugs (AUD-008 through AUD-021) validated and fixed — state schema reconciled, status skill complete, backup paths correct, agent dispatch specified
