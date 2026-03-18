@@ -39,7 +39,7 @@ You are the Expedite research orchestrator. Dispatch parallel research agents to
 
 **After completing each step, proceed to the next step automatically.**
 
-**Step tracking (all steps):** Before each step, update `current_step` in state.yml (backup-before-write: read, `cp state.yml state.yml.bak`, set `current_step` to `{skill: "research", step: N, label: "name"}`, set `last_modified`, write back). Write checkpoint.yml: `skill: "research", step: N, label: "name", substep: null, continuation_notes: null, inputs_hash: null, updated_at: timestamp`.
+**Step tracking (all steps):** Before each step: (1) backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml.bak`, set `last_modified`, write back. (2) Write checkpoint.yml: `skill: "research", step: N, label: "name", substep: null, continuation_notes: null, inputs_hash: null, updated_at: timestamp`.
 
 **State write timing:** State.yml and checkpoint.yml writes happen ONLY at step boundaries -- before and after agent dispatch. Agents produce artifacts on disk; the skill reads results and writes state afterward.
 
@@ -64,7 +64,7 @@ Read `.expedite/scope/SCOPE.md` and `.expedite/state.yml`. Extract: project_name
 
 ### Step 3: Initialize Research State
 
-Backup-before-write state.yml: set `phase: "research_in_progress"`, increment `research_round`, set current_step. Log phase transition to log.yml: `from_phase: "scope_complete", to_phase: "research_in_progress"`. Display: "Phase: research_in_progress (round {research_round})".
+Backup-before-write state.yml: set `phase: "research_in_progress"`, set `last_modified`. Read questions.yml, increment `research_round`, write back to questions.yml. Log phase transition to log.yml: `from_phase: "scope_complete", to_phase: "research_in_progress"`. Display: "Phase: research_in_progress (round {research_round})".
 
 ### Step 4: Evidence Planning
 
@@ -182,11 +182,11 @@ Log gate outcome (both layers) to log.yml. Display: structural pass/fail, semant
 
 ### Step 17: Gap-Fill Dispatch
 
-Filter deficient questions (partial/not_covered/pending). Increment research_round. `mkdir -p .expedite/research/round-{N}/`. Read `skills/research/references/ref-gapfill-dispatch.md` (Glob if needed). Re-batch by DA. Dispatch gap-fill agents using Step 5 pattern with narrowed question set and additive supplement output paths. After completion: return to Step 12 for re-assessment.
+Filter deficient questions (partial/not_covered/pending). Read questions.yml, increment `research_round`, write back to questions.yml. `mkdir -p .expedite/research/round-{N}/`. Read `skills/research/references/ref-gapfill-dispatch.md` (Glob if needed). Re-batch by DA. Dispatch gap-fill agents using Step 5 pattern with narrowed question set and additive supplement output paths. After completion: return to Step 12 for re-assessment.
 
 ### Step 18: Research Completion
 
-Update state.yml (backup-before-write): set current_step null, phase "research_complete", last_modified.
+Update state.yml (backup-before-write): set phase "research_complete", last_modified.
 
 Write completion checkpoint: `step: "complete", label: "research complete", continuation_notes: "Research complete. Next: /expedite:design"`.
 

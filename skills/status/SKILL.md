@@ -19,6 +19,9 @@ Checkpoint:
 Gates:
 !`cat .expedite/gates.yml 2>/dev/null || echo "No gates"`
 
+Questions:
+!`cat .expedite/questions.yml 2>/dev/null || echo "No questions"`
+
 Override protocol:
 !`cat skills/shared/ref-override-protocol.md 2>/dev/null || echo "No override protocol found"`
 
@@ -47,18 +50,17 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `phase` -- the current lifecycle phase
    - `questions` -- the list of research questions (may be empty)
    - Read gate evaluations from the injected gates.yml content above (the "Gates:" section). Extract the `history` array entries with `gate`, `outcome`, and `timestamp` fields.
-   - `research_round` -- number of research rounds completed
+   - `research_round` -- read from the injected questions.yml content above (the "Questions:" section), not from state.yml
    - `current_task` -- current task ID during execute phase (may be null)
    - `current_wave` -- current wave during execute phase (may be null)
-   - `current_step` -- current position within active skill (may be null or absent)
 
-3. **Parse current_step (if present).** If the injected state contains a `current_step` field that is not null:
-   - Extract `skill`, `step`, and `label` sub-keys
+3. **Parse current step from checkpoint (if present).** Read the injected checkpoint.yml content above (the "Checkpoint:" section). If it contains actual checkpoint data (not "No checkpoint") and `skill` is not null:
+   - Extract `skill`, `step`, and `label` fields from checkpoint.yml
    - Look up total steps for the skill using this table:
-     - scope: 10, research: 18, design: 10, plan: 9, spike: 9, execute: 7
+     - scope: 10, research: 14, design: 10, plan: 9, spike: 9, execute: 7
    - Format the display string: `{skill}: step {step} of {total} -- {label}`
    - If the skill name is not in the lookup table, display without total: `{skill}: step {step} -- {label}`
-   - If `current_step` is null or absent, skip this entirely (no placeholder, no error)
+   - If checkpoint is missing, empty, or skill is null, skip this entirely (no placeholder, no error)
 
 4. **Log Size Check.** Check if `.expedite/log.yml` exists and exceeds 50KB (51200 bytes).
 
@@ -83,7 +85,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
 
       "Later" means any phase that comes AFTER in the lifecycle sequence.
       The full phase ordering is:
-      scope_in_progress < scope_complete < research_in_progress < research_complete < design_in_progress < design_complete < plan_in_progress < plan_complete < execute_in_progress < complete
+      scope_in_progress < scope_complete < research_in_progress < research_complete < design_in_progress < design_complete < plan_in_progress < plan_complete < spike_in_progress < spike_complete < execute_in_progress < execute_complete < complete
 
    3. For each expected artifact, check existence using Glob or Read. Note: the HANDOFF.md check is conditional on the `intent` field parsed in Step 2 -- only expect HANDOFF.md when intent is "product". Do not flag missing HANDOFF.md for engineering-intent lifecycles.
    4. Collect any missing artifacts as inconsistencies:
@@ -102,7 +104,10 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `design_complete` -> "Design: complete, ready for planning"
    - `plan_in_progress` -> "Plan: generating implementation plan"
    - `plan_complete` -> "Plan: complete, ready for execution"
+   - `spike_in_progress` -> "Spike: resolving tactical decisions"
+   - `spike_complete` -> "Spike: complete, ready for execution"
    - `execute_in_progress` -> "Execute: implementing tasks"
+   - `execute_complete` -> "Execute: tasks complete, finalizing"
    - `complete` -> "Lifecycle complete"
    - `archived` -> "Lifecycle archived"
 
@@ -114,8 +119,11 @@ You are the Expedite status display. Your job is to read the lifecycle state and
    - `design_in_progress` -> "Continue with `/expedite:design`"
    - `design_complete` -> "Run `/expedite:plan` to generate the plan"
    - `plan_in_progress` -> "Continue with `/expedite:plan`"
-   - `plan_complete` -> "Run `/expedite:execute` to begin implementation"
+   - `plan_complete` -> "Run `/expedite:spike` to resolve tactical decisions"
+   - `spike_in_progress` -> "Continue with `/expedite:spike`"
+   - `spike_complete` -> "Run `/expedite:execute` to begin implementation"
    - `execute_in_progress` -> "Resume with `/expedite:execute`"
+   - `execute_complete` -> "Lifecycle completing..."
    - `complete` -> "Lifecycle complete. Run `/expedite:scope` for a new lifecycle."
    - `archived` -> "Lifecycle archived. Run `/expedite:scope` for a new lifecycle."
 
@@ -136,7 +144,7 @@ You are the Expedite status display. Your job is to read the lifecycle state and
 **Intent:** {intent}
 **Phase:** {phase} ({human-readable description from Step 6})
 **Current Step:** {skill}: step {step} of {total} -- {label}
-(Only show Current Step line when current_step is present and not null. Omit entirely otherwise.)
+(Only show Current Step line when checkpoint data is present per Step 3. Omit entirely otherwise.)
 
 ## Next Action
 {phase-aware recommendation from Step 7}

@@ -34,7 +34,7 @@ You are the Expedite design orchestrator. Synthesize research evidence into acti
 
 **After completing each step, proceed to the next step automatically.**
 
-**Step tracking (applies to ALL steps):** Before each step, update `current_step` in state.yml using backup-before-write: read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, set `current_step` to `{skill: "design", step: N, label: "step-name"}`, set `last_modified`, write back.
+**Step tracking (applies to ALL steps):** Before each step: (1) backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml.bak`, set `last_modified`, write back. (2) Write checkpoint.yml: `skill: "design", step: N, label: "step-name", substep: null, continuation_notes: null, inputs_hash: null, updated_at: timestamp`.
 
 **Checkpoint pattern (applies to ALL steps):** After step tracking, write `.expedite/checkpoint.yml`:
 ```yaml
@@ -69,7 +69,7 @@ Read: `.expedite/scope/SCOPE.md` (DAs, depth, readiness), `.expedite/research/SY
 
 ### Step 3: Initialize Design State
 
-Backup-before-write state.yml: set `phase: "design_in_progress"`, current_step, last_modified. Log phase transition to log.yml. `mkdir -p .expedite/design/`. Display: "Design phase initialized."
+Backup-before-write state.yml: set `phase: "design_in_progress"`, last_modified. Log phase transition to log.yml. `mkdir -p .expedite/design/`. Display: "Design phase initialized."
 
 ### Step 4: Generate Design Document (Agent Dispatch)
 
@@ -172,4 +172,4 @@ The outcome comes from Step 8's combined determination: structural recycle (Laye
 
 ### Step 10: Design Completion
 
-Update state.yml: `phase: "design_complete"`, current_step null. Write completion checkpoint. Log phase transition. Display summary: project, intent, artifacts produced, gate results, contract chain status. "Next: `/expedite:plan`." STOP.
+Update state.yml: `phase: "design_complete"`, last_modified. Write completion checkpoint. Log phase transition. Display summary: project, intent, artifacts produced, gate results, contract chain status. "Next: `/expedite:plan`." STOP.

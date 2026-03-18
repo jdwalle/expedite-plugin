@@ -37,7 +37,7 @@ You are the Expedite execute orchestrator. Dispatch task-implementer agents for 
 
 **After completing each step, proceed to the next step automatically.**
 
-**Step tracking (applies to ALL steps):** Before each step, update `current_step` in state.yml using backup-before-write: read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, set `current_step` to `{skill: "execute", step: N, label: "step-name"}`, set `last_modified`, write back.
+**Step tracking (applies to ALL steps):** Before each step: (1) backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml.bak`, set `last_modified`, write back. (2) Write checkpoint.yml: `skill: "execute", step: N, label: "step-name", substep: null, continuation_notes: null, inputs_hash: null, updated_at: timestamp`.
 
 **Checkpoint pattern (applies to ALL steps):** After step tracking, write `.expedite/checkpoint.yml`:
 ```yaml
@@ -133,13 +133,13 @@ Dispatch the `task-implementer` agent by name via the Agent tool. The agent runs
 
 Update per-phase checkpoint (status: "complete"). Append phase summary to PROGRESS.md via Bash. Display: task counts (verified/partial/failed/skipped), artifact paths, contract chain.
 
-**If more phases remain:** Display remaining phases and next step suggestions. Update state.yml: keep execute_in_progress, clear current_step. Update tasks.yml: clear current_wave/current_task. STOP.
+**If more phases remain:** Display remaining phases and next step suggestions. Update state.yml: keep execute_in_progress, set last_modified. Update tasks.yml: clear current_wave/current_task. STOP.
 
 **If final phase:** Proceed to Step 7.
 
 ### Step 7: Lifecycle Completion
 
-Backup-before-write state.yml: set `phase: "execute_complete"`, clear current_step. Log phase transition from "execute_in_progress" to "execute_complete".
+Backup-before-write state.yml: set `phase: "execute_complete"`, last_modified. Log phase transition from "execute_in_progress" to "execute_complete".
 
 Backup-before-write tasks.yml: clear current_wave, current_task, tasks.
 

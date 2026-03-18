@@ -40,7 +40,7 @@ Scope does not dispatch agents. All work is performed inline in the main session
 
 **After completing each step, proceed to the next step automatically.** Do not wait for explicit "next step" instructions unless the step specifically calls for user input.
 
-**Step tracking (applies to ALL steps):** Before each step, update `current_step` in state.yml using backup-before-write: read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, set `current_step` to `{skill: "scope", step: N, label: "step-name"}`, set `last_modified`, write back. If state.yml does not exist yet, skip step tracking.
+**Step tracking (applies to ALL steps):** Before each step: (1) backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml.bak`, set `last_modified`, write back. (2) Write checkpoint.yml: `skill: "scope", step: N, label: "step-name", substep: null, continuation_notes: null, inputs_hash: null, updated_at: timestamp`. If state.yml does not exist yet, skip step tracking.
 
 **Checkpoint pattern (applies to ALL steps):** After step tracking, write `.expedite/checkpoint.yml`:
 ```yaml
@@ -93,7 +93,7 @@ Resume scenario. Check injected checkpoint for deterministic resume.
 If no `.expedite/state.yml` exists (fresh start or post-archival):
 
 1. `mkdir -p .expedite/scope`
-2. Glob `**/templates/state.yml.template`, read, write to `.expedite/state.yml` with `last_modified` set, `phase: "scope_in_progress"`, `current_step` set to step 3.
+2. Glob `**/templates/state.yml.template`, read, write to `.expedite/state.yml` with `last_modified` set, `phase: "scope_in_progress"`.
 3. Copy sources template to `.expedite/sources.yml` if not exists (Glob `**/templates/sources.yml.template`).
 4. Copy gitignore template to `.expedite/.gitignore` if not exists (Glob `**/templates/gitignore.template`).
 5. Log phase transition to `.expedite/log.yml`: `event: phase_transition, from_phase: "none", to_phase: "scope_in_progress"`.
@@ -111,7 +111,7 @@ Ask via freeform prompts. If user provided project description as argument, use 
 **Q2: Intent** -- "Is this a product investigation or an engineering investigation?" Parse response for indicators. If ambiguous, AskUserQuestion to disambiguate.
 **Q3: Description** -- "Describe what you want to accomplish in 2-3 sentences."
 
-**After Round 1:** Backup-before-write state.yml: set `project_name`, `intent`, `lifecycle_id` (`{slug}-{YYYYMMDD}`), `description`, `current_step` to step 4, `last_modified`.
+**After Round 1:** Backup-before-write state.yml: set `project_name`, `intent`, `lifecycle_id` (`{slug}-{YYYYMMDD}`), `description`, `last_modified`.
 
 ### Step 5: Interactive Questioning (Round 2: Adaptive Refinement)
 
@@ -182,7 +182,7 @@ questions:
     evidence_files: []
 ```
 
-**9c. Update state.yml** (backup-before-write): set current_step to step 9, last_modified. Do NOT write the questions array to state.yml.
+**9c. Update state.yml** (backup-before-write): set last_modified. Do NOT write the questions array to state.yml.
 
 DA metadata (name, depth, readiness) lives ONLY in SCOPE.md, not state.yml. Display: "Scope artifacts written. Running gate evaluation..."
 
@@ -198,11 +198,11 @@ The script reads SCOPE.md and state.yml, evaluates all structural criteria, writ
 **Read script output:** Parse the JSON stdout. Extract `outcome`, `must_passed`, `must_failed`, `should_passed`, `should_failed`, and `failures` array.
 
 **Outcomes:**
-- `outcome: "go"` (all pass) -> set phase "scope_complete", current_step null.
-- `outcome: "go_advisory"` (MUST pass, SHOULD fail) -> set phase "scope_complete", current_step null. Display advisory from failures.
+- `outcome: "go"` (all pass) -> set phase "scope_complete".
+- `outcome: "go_advisory"` (MUST pass, SHOULD fail) -> set phase "scope_complete". Display advisory from failures.
 - `outcome: "hold"` (any MUST fail) -> do NOT set scope_complete. Display each failure message. AskUserQuestion: "Fix now" / "Fix later".
 
-**Update state.yml** (backup-before-write): set current_step (step 10 if hold, null if pass), phase "scope_complete" if pass, last_modified. Gate results are recorded ONLY in gates.yml (not state.yml).
+**Update state.yml** (backup-before-write): set phase "scope_complete" if pass, last_modified. Gate results are recorded ONLY in gates.yml (not state.yml).
 
 **Completion checkpoint** (if go/go_advisory):
 ```yaml

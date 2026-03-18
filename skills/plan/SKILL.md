@@ -34,7 +34,7 @@ You are the Expedite plan orchestrator. Decompose design decisions into executab
 
 **After completing each step, proceed to the next step automatically.**
 
-**Step tracking (applies to ALL steps):** Before each step, update `current_step` in state.yml using backup-before-write: read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, set `current_step` to `{skill: "plan", step: N, label: "step-name"}`, set `last_modified`, write back.
+**Step tracking (applies to ALL steps):** Before each step: (1) backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml.bak`, set `last_modified`, write back. (2) Write checkpoint.yml: `skill: "plan", step: N, label: "step-name", substep: null, continuation_notes: null, inputs_hash: null, updated_at: timestamp`.
 
 **Checkpoint pattern (applies to ALL steps):** After step tracking, write `.expedite/checkpoint.yml`:
 ```yaml
@@ -69,7 +69,7 @@ Read: `.expedite/design/DESIGN.md` (per-DA decisions, confidence, open questions
 
 ### Step 3: Initialize Plan State
 
-Backup-before-write state.yml: set `phase: "plan_in_progress"`, current_step, last_modified. Log phase transition to log.yml. `mkdir -p .expedite/plan/`. Display: "Plan phase initialized."
+Backup-before-write state.yml: set `phase: "plan_in_progress"`, last_modified. Log phase transition to log.yml. `mkdir -p .expedite/plan/`. Display: "Plan phase initialized."
 
 ### Step 4: Generate Implementation Plan (Agent Dispatch)
 
@@ -126,6 +126,6 @@ The script reads PLAN.md and SCOPE.md, evaluates structural criteria, writes the
 
 ### Step 9: Plan Completion
 
-Update state.yml: `phase: "plan_complete"`, current_step null. Write completion checkpoint. Log phase transition. Do NOT populate tasks array or current_wave (execute skill does that).
+Update state.yml: `phase: "plan_complete"`, last_modified. Write completion checkpoint. Log phase transition. Do NOT populate tasks array or current_wave (execute skill does that).
 
 Display summary: project, intent, artifacts, gate results, plan stats (waves/epics, tasks, TDs), contract chain. "Next: `/expedite:spike <phase>` to resolve tactical decisions before execution." STOP.

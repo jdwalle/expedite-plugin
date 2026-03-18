@@ -34,7 +34,7 @@ You are the Expedite spike orchestrator. Resolve tactical decisions for ONE plan
 
 **After completing each step, proceed to the next step automatically.**
 
-**Step tracking (applies to ALL steps):** Before each step, update `current_step` in state.yml using backup-before-write: read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, set `current_step` to `{skill: "spike", step: N, label: "step-name"}`, set `last_modified`, write back.
+**Step tracking (applies to ALL steps):** Before each step: (1) backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml.bak`, set `last_modified`, write back. (2) Write checkpoint.yml: `skill: "spike", step: N, label: "step-name", substep: null, continuation_notes: null, inputs_hash: null, updated_at: timestamp`.
 
 **Checkpoint pattern (applies to ALL steps):** After step tracking, write `.expedite/checkpoint.yml`:
 ```yaml
@@ -161,6 +161,6 @@ Log gate outcome (both layers) to log.yml. Display: structural pass/fail summary
 
 ### Step 9: Display Summary
 
-Display: phase, project, G5 status, artifacts, TD breakdown (resolved-from-design / clear-cut / user / researched), step count. Clear current_step to null. Write completion checkpoint. If original phase was plan_complete (Case A from Step 1): write state.yml setting `phase: "spike_complete"` using backup-before-write (read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, update phase to `spike_complete`, update `last_modified`, write back). The spike_in_progress -> spike_complete transition requires G5 passage per the FSM; by Step 9, G5 has already been evaluated and passed (Step 8), so the hook will allow this write. "Next: `/expedite:execute {N}`." STOP.
+Display: phase, project, G5 status, artifacts, TD breakdown (resolved-from-design / clear-cut / user / researched), step count. Write completion checkpoint. If original phase was plan_complete (Case A from Step 1): write state.yml setting `phase: "spike_complete"` using backup-before-write (read state.yml, `cp .expedite/state.yml .expedite/state.yml.bak`, update phase to `spike_complete`, update `last_modified`, write back). The spike_in_progress -> spike_complete transition requires G5 passage per the FSM; by Step 9, G5 has already been evaluated and passed (Step 8), so the hook will allow this write. "Next: `/expedite:execute {N}`." STOP.
 
 NOTE: Spike writes spike_in_progress at Step 1 and spike_complete at Step 9 (Case A only). When re-spiking during execution (Case B), phase stays execute_in_progress.
