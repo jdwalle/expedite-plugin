@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: Audit Bug Fixes
 status: in_progress
-last_updated: "2026-03-18T02:32:45.000Z"
+last_updated: "2026-03-18T02:38:47Z"
 progress:
   total_phases: 2
   completed_phases: 2
@@ -24,8 +24,8 @@ See: .planning/PROJECT.md (updated 2026-03-17)
 
 Phase: 39 — P1 Audit Fixes (2 of 3)
 Plan: 2 of 2 complete
-Status: Phase 39 plan 02 complete
-Last activity: 2026-03-18 — P1 hook and gate fixes (6 audit findings fixed)
+Status: Phase 39 complete
+Last activity: 2026-03-18 — P1 skill/agent fixes (9 audit findings fixed)
 
 Progress: [######----] 67%
 
@@ -84,6 +84,9 @@ Full decision log in PROJECT.md Key Decisions table.
 - [36-01] FSM and GATE_PHASE_MAP left unchanged -- already had correct entries for spike phases
 - [38-01] Remove plan_complete from execute entry (require spike to always run, even for zero-TD phases)
 - [38-01] Split scope Step 9b into questions.yml write + state.yml update as separate sub-steps
+- [39-01] Superseded decision [31-01]: research steps renumbered contiguously 1-14 (no backward compatibility concern)
+- [39-01] checkpoint.yml is sole source of step position data; current_step removed from state.yml across all 6 skills
+- [39-01] Status skill plan_complete routing changed from execute to spike (matching actual lifecycle flow)
 - [39-02] Use regex for override detection instead of indexOf to handle all YAML quoting styles
 - [39-02] Use JSON.stringify for gate history immutability comparison (deterministic for small parsed YAML objects)
 
@@ -116,10 +119,11 @@ None.
 | 36 | 01 | 2min | 2 | 1 |
 | 37 | 01 | 2min | 2 | 11 |
 | 38 | 01 | 3min | 3 | 6 |
+| 39 | 01 | 7min | 2 | 9 |
 | 39 | 02 | 1min | 2 | 4 |
 
 ## Session Continuity
 
 Last session: 2026-03-18
-Stopped at: Completed 39-02-PLAN.md (P1 Hook and Gate Fixes)
+Stopped at: Completed 39-01-PLAN.md (P1 Skill/Agent Fixes)
 Resume file: None
