@@ -90,7 +90,7 @@ Full details: `.planning/milestones/v3.0-ROADMAP.md`
 
 - [x] **Phase 38: P0 Audit Fixes** - Validate and fix 7 runtime-blocking bugs (FSM transitions, v2 state-split, worktree merge-back) (1 plan) (completed 2026-03-18)
 - [x] **Phase 39: P1 Audit Fixes** - Validate and fix 14 correctness bugs (override paths, status skill, schema gaps, backup paths) (2 plans) (completed 2026-03-18)
-- [ ] **Phase 40: P2 Audit Fixes** - Validate and fix 15 quality bugs (dead code, naming consistency, schema cleanup, cosmetic) (1 plan)
+- [ ] **Phase 40: P2 Audit Fixes** - Validate and fix 15 quality bugs (dead code, naming consistency, schema cleanup, cosmetic) (2 plans)
 
 ## Phase Details
 
@@ -151,7 +151,10 @@ Plans:
   8. Dead enum values, exports, and imports removed (AUD-030, AUD-031, AUD-032)
   9. plugin.json version and description updated (AUD-033)
   10. Edit tool hook gap addressed (AUD-035)
-**Plans**: 1 plan
+**Plans**: 2 plans
+Plans:
+- [ ] 40-01-PLAN.md — Fix 12 JS hook/schema/gate bugs (nullable cleanup, helper consolidation, enum fixes, dead code removal)
+- [ ] 40-02-PLAN.md — Standardize go_advisory naming, add Edit hook, update plugin metadata
 
 ## Progress
 
@@ -189,6 +192,6 @@ Plans:
 | 35. Worktree and Git Workflow | v3.0 | 2/2 | Complete | 2026-03-16 |
 | 36. Spike G5 Integration Fix | v3.0 | 1/1 | Complete | 2026-03-17 |
 | 37. Reference & Roadmap Cleanup | v3.0 | 1/1 | Complete | 2026-03-17 |
-| 38. P0 Audit Fixes | 1/1 | Complete    | 2026-03-18 | - |
-| 39. P1 Audit Fixes | 2/2 | Complete    | 2026-03-18 | - |
-| 40. P2 Audit Fixes | v3.1 | 0/1 | Not started | - |
+| 38. P0 Audit Fixes | v3.1 | 1/1 | Complete | 2026-03-18 |
+| 39. P1 Audit Fixes | v3.1 | 2/2 | Complete | 2026-03-18 |
+| 40. P2 Audit Fixes | v3.1 | 0/2 | Not started | - |
