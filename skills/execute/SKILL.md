@@ -58,7 +58,7 @@ updated_at: "{ISO 8601 UTC timestamp}"
 
 **State Recovery Preamble:** If "No active lifecycle": follow `skills/shared/ref-state-recovery.md`. Recovery fails -> "Run /expedite:scope." STOP.
 
-**Case A: `phase: "plan_complete"` or `phase: "spike_complete"`** -- Fresh start. "Starting execution..." Proceed to Step 2.
+**Case A: `phase: "spike_complete"`** -- Fresh start. "Starting execution..." Proceed to Step 2.
 
 **Case B: `phase: "execute_in_progress"`** -- Resume. Parse phase argument. Checkpoint-based resume: if checkpoint.skill is "execute" and substep starts with "executing_task_", resume at Step 5 for that task. Otherwise resume at checkpoint.step. Also read per-phase checkpoint at `.expedite/plan/phases/{slug}/checkpoint.yml` for task-level context. Proceed to Step 2 to load artifacts, then skip Step 3.
 
@@ -76,7 +76,11 @@ Display loading summary: project, intent, phase, mode, task count.
 
 ### Step 3: Initialize Execute State
 
-Backup-before-write state.yml: set `phase: "execute_in_progress"` (only if currently plan_complete or spike_complete), `current_wave`, `current_task` (first task), populate `tasks` array for THIS PHASE ONLY (id, title, wave, status: "pending"), last_modified. Parse `--no-commit` flag from user invocation if present. Store as `no_commit: true` in execution context for Step 5c-git opt-out check.
+Backup-before-write state.yml: set `phase: "execute_in_progress"` (only if currently spike_complete), `last_modified`. Log phase transition.
+
+Backup-before-write tasks.yml (`cp .expedite/tasks.yml .expedite/tasks.yml.bak`): set `current_wave`, `current_task` (first task), populate `tasks` array for THIS PHASE ONLY (id, title, wave, status: "pending").
+
+Parse `--no-commit` flag from user invocation if present. Store as `no_commit: true` in execution context for Step 5c-git opt-out check.
 
 Log phase transition (only if phase changed). `mkdir -p .expedite/plan/phases/{slug}/`. Create per-phase checkpoint.yml. Write PROGRESS.md header via `cat >` (create-only; all subsequent writes use `cat >>` append via Bash).
 
@@ -117,7 +121,7 @@ Dispatch the `task-implementer` agent by name via the Agent tool. The agent runs
 5. Capture commit hash via `git rev-parse --short HEAD` for PROGRESS.md logging.
 6. On any git error: display error, prompt (retry / skip / pause). Do NOT auto-resolve.
 
-**5d: Update state.** Update per-phase checkpoint.yml (current_task, last_completed, tasks_completed). Update state.yml (current_task, task status). Write top-level checkpoint with substep.
+**5d: Update state.** Update per-phase checkpoint.yml (current_task, last_completed, tasks_completed). Update tasks.yml (current_task, task status). Write top-level checkpoint with substep.
 
 **5e: Append to PROGRESS.md via Bash** (`cat >>`, NEVER Write tool). Record: task ID, status, TD/DA chain, files modified, verification result, contract chain, commit hash (if auto-commit was active and succeeded), timestamp.
 
@@ -129,13 +133,30 @@ Dispatch the `task-implementer` agent by name via the Agent tool. The agent runs
 
 Update per-phase checkpoint (status: "complete"). Append phase summary to PROGRESS.md via Bash. Display: task counts (verified/partial/failed/skipped), artifact paths, contract chain.
 
-**If more phases remain:** Display remaining phases and next step suggestions. Update state.yml: keep execute_in_progress, clear current_step/wave/task. STOP.
+**If more phases remain:** Display remaining phases and next step suggestions. Update state.yml: keep execute_in_progress, clear current_step. Update tasks.yml: clear current_wave/current_task. STOP.
 
 **If final phase:** Proceed to Step 7.
 
 ### Step 7: Lifecycle Completion
 
-Update state.yml: `phase: "complete"`, clear current_step/task/wave/tasks. Log phase transition. Append lifecycle complete to PROGRESS.md via Bash.
+Backup-before-write state.yml: set `phase: "execute_complete"`, clear current_step. Log phase transition from "execute_in_progress" to "execute_complete".
+
+Backup-before-write tasks.yml: clear current_wave, current_task, tasks.
+
+Backup-before-write state.yml: set `phase: "complete"`. Log phase transition from "execute_complete" to "complete".
+
+Write completion checkpoint to `.expedite/checkpoint.yml`:
+```yaml
+skill: "execute"
+step: "complete"
+label: "lifecycle_complete"
+substep: null
+continuation_notes: "Lifecycle complete. Run /expedite:scope for new lifecycle."
+inputs_hash: null
+updated_at: "{ISO 8601 UTC timestamp}"
+```
+
+Append lifecycle complete to PROGRESS.md via Bash.
 
 Display: project, intent, per-phase tallies (from each PROGRESS.md), artifacts, contract chain summary, lifecycle status.
 
