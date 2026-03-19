@@ -68,7 +68,11 @@ Backup-before-write state.yml: set `phase: "research_in_progress"`, set `last_mo
 
 ### Step 4: Evidence Planning
 
-Group questions by `source_hints` into batches (web, codebase, mcp). Rules: skip `"covered"` questions; assign to first enabled source; fallback to web. Max 5 batches. Sort by priority within each. Present batch plan for approval (freeform: approve/modify/cancel). Validate DA coverage -- warn if any DA has zero batched questions. On cancel: revert to scope_complete, STOP.
+Group questions by `source_hints` into batches (codebase, web, mcp). Rules:
+- Skip questions with status `"covered"`.
+- Route by source_hints priority: if `"codebase"` is in source_hints, assign to codebase batch. Else if `"mcp"` is in source_hints, assign to mcp batch. Else assign to web batch.
+- Fallback: questions with no source_hints or empty source_hints go to web batch.
+- Max 5 batches. Sort by priority within each. Present batch plan for approval (freeform: approve/modify/cancel). Validate DA coverage -- warn if any DA has zero batched questions. On cancel: revert to scope_complete, STOP.
 
 *Merged steps: Original Steps 4 (Form Batches), 5 (Validate DA Coverage), 6 (Present Batch Plan).*
 
