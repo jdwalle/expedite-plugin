@@ -147,3 +147,42 @@ Full details: `.planning/milestones/v3.1-ROADMAP.md`
 Plans:
 - [x] 01-01-PLAN.md -- G2 gate recursive scan + web researcher guardrails and write-early
 - [x] 01-02-PLAN.md -- Research skill source routing + sufficiency evaluator code read exception
+
+### Phase 2: Plan phase retrospective fixes
+
+**Goal:** Fix 4 issues from first real-world plan phase: plan-decomposer agent missing G4 format requirements, G4 S3 false positive on coverage tables, G1 gate regex too strict on heading format, and effort estimates calibrated for human developers instead of agents.
+
+**Requirements:**
+
+1. **Plan-decomposer agent prompt: add G4 formatting requirements** — File: `agents/plan-decomposer.md`. The agent produced a correct plan but omitted TD-N references entirely because it didn't know the G4 gate checks for them. Add to the agent's prompt: (a) every task referencing a tactical decision must include a `TD-N` label, (b) a "Tactical Decisions" table must exist in PLAN.md listing each TD with its ID, description, and status (resolved/needs-spike), (c) tasks that address a TD must include `(TD-N)` in their title or description. Reference the G4 gate's M4 check which uses regex `/TD-\d+/` or the string "tactical decision" to verify coverage.
+
+2. **G4 S3 false positive on coverage tables** — File: `gates/g4-plan.js`. The S3 check ("no orphan tasks — task-like bullets outside phase sections") flags coverage summary tables and metadata sections as task-like bullets. This produces `go_advisory` on every well-structured plan that includes a coverage summary. Fix: restrict the S3 check to only scan content within phase sections (between `## Phase N` headings), excluding top-level metadata sections like coverage summaries, tactical decision tables, and plan headers. The check should not flag bullets in sections that precede the first phase heading or follow the last phase section.
+
+3. **G1 gate regex too strict on heading format** — File: `gates/g1-scope.js`. During first real-world use, G1 failed twice (two hold cycles) because SCOPE.md content was correct but headings didn't match the gate's regex for DA sections with depth/readiness annotations. The gate expected a specific heading format for Decision Areas with inline depth and readiness fields. Fix has two parts: (a) in `g1-scope.js`, loosen the M6 regex to accept common heading variants — the check should match DA sections whether depth/readiness appear as inline annotations, sub-bullets, or table rows within the DA section, not just one exact heading format; (b) in `skills/scope/SKILL.md`, add explicit formatting guidance in the SCOPE.md writing step (Step 9) specifying the exact heading format that G1 expects, so Claude formats it correctly the first time. Both fixes together eliminate the recycle loop.
+
+4. **Effort estimates calibrated for agents** — File: `agents/plan-decomposer.md`. The plan-decomposer produces effort estimates reflecting human developer time with context-switching (2-5 hours per task). When tasks will be executed by `/expedite:execute` (agent dispatch), these estimates are inflated by 3-5x. Add guidance to the agent prompt: "Effort estimates should reflect agent execution time, not human developer time. Agents execute with full codebase context, no context-switching, and parallel file access. A task that would take a human developer 4 hours typically completes in 30-60 minutes via agent dispatch. Estimate accordingly."
+
+**Depends on:** Phase 1
+**Plans:** 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md -- Plan-decomposer G4 TD format requirements + agent-calibrated effort estimates
+- [ ] 02-02-PLAN.md -- G4 S3 false positive fix + G1 M6 regex loosening + SKILL.md format guidance
+
+### Phase 3: Spike phase retrospective fixes
+
+**Goal:** Fix 3 issues from first real-world spike phase: G5 gate heading format mismatch (same pattern as G1/G4 fixes in Phase 2), 0-TD wave fast path to skip ceremony, and skip semantic gate-verifier on simple waves.
+
+**Requirements:**
+
+1. **G5 gate heading format mismatch** — File: `gates/g5-spike.js` and `skills/spike/SKILL.md`. Same pattern as G1/G4 fixes in Phase 2. SPIKE.md used `### Step N:` headings but the g5-spike.js `countImplementationSteps` function exits the "Implementation Steps" section when it hits any heading level ≤ 3 (`/^#{1,3}\s/`). This means `### Step 1:` terminates the section scan instead of being counted as a step. First real-world use required debugging the gate script and restructuring to `#### Step N:` headings — a full wasted recycle cycle. Fix has two parts: (a) in `g5-spike.js`, apply the same approach Phase 2 uses for G1/G4 — loosen the heading detection to accept implementation steps at heading levels 3 or 4 (the break condition should only trigger on heading levels ≤ 2, not ≤ 3, since steps are naturally `###` or `####`); (b) in `skills/spike/SKILL.md`, add explicit formatting guidance in the SPIKE.md writing step (Step 7) specifying the exact heading format G5 expects, so Claude formats it correctly the first time.
+
+2. **0-TD wave fast path in spike skill** — File: `skills/spike/SKILL.md`. When a wave has 0 tactical decisions, Step 5 (Resolve TDs) has nothing to do but the skill still runs through TD classification/resolution ceremony. The spike's core value for 0-TD waves is the implementation blueprint (reading source code, producing step-by-step instructions with real line numbers), not TD resolution. Add a fast path: after Step 4 (Extract Phase Definition), if the extracted phase has 0 TDs, skip Step 5 entirely and proceed directly to Step 6 (Generate Implementation Steps). Add a note in Step 4: "If this phase has 0 tactical decisions, skip Step 5 and proceed to Step 6. The spike still adds value by reading the actual codebase and producing implementation steps with real file paths and line numbers." Update the checkpoint write to reflect the skip (e.g., `substep: "no_tds_skipping_resolution"`).
+
+3. **Skip semantic gate-verifier on simple waves** — File: `skills/spike/SKILL.md` Step 8. The gate-verifier agent took ~110 seconds for a 0-TD, 1-task wave. Its feedback was useful but minor (advisory items). The semantic layer's value scales with complexity — for simple waves, structural G5 alone is sufficient. Add a heuristic to Step 8: after the structural G5 gate passes, check if the wave has 0 TDs AND ≤ 2 tasks. If both conditions are true, skip the semantic gate-verifier dispatch and use the structural result as the final gate outcome. Write the gates.yml entry with `evaluator: "g5-structural-only"` and add a note explaining semantic verification was skipped due to wave simplicity. For waves with TDs or > 2 tasks, run the full dual-layer gate as normal.
+
+**Depends on:** Phase 2 (applies same gate-format fix pattern from G1/G4 to G5)
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 3 to break down)
