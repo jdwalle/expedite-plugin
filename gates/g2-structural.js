@@ -47,14 +47,34 @@ function main() {
   var sufficiencyData = utils.readYaml(sufficiencyPath);
 
   // --- Helper: list evidence files matching evidence-*.md pattern ---
+  // Recursively scans subdirectories (e.g., round-2/) for evidence files.
+  // Returns relative paths from the base research directory.
   function listEvidenceFiles(dir) {
     try {
-      var files = fs.readdirSync(dir);
-      return files.filter(function (f) {
-        return /^evidence-.*\.md$/i.test(f);
-      });
+      var entries = fs.readdirSync(dir, { withFileTypes: true });
+      var results = [];
+      for (var i = 0; i < entries.length; i++) {
+        var entry = entries[i];
+        if (entry.isDirectory()) {
+          var subFiles = listEvidenceFiles(path.join(dir, entry.name));
+          for (var j = 0; j < subFiles.length; j++) {
+            results.push(entry.name + '/' + subFiles[j]);
+          }
+        } else if (entry.isFile() && /^evidence-.*\.md$/i.test(entry.name)) {
+          results.push(entry.name);
+        }
+      }
+      return results;
     } catch (err) {
-      return [];
+      // Fallback for Node < 10.10 (no withFileTypes support) or missing dir
+      try {
+        var files = fs.readdirSync(dir);
+        return files.filter(function (f) {
+          return /^evidence-.*\.md$/i.test(f);
+        });
+      } catch (fallbackErr) {
+        return [];
+      }
     }
   }
 
@@ -124,8 +144,8 @@ function main() {
     criterion: 'M3',
     passed: evidenceFiles.length >= 1,
     detail: evidenceFiles.length >= 1
-      ? 'Found ' + evidenceFiles.length + ' evidence file(s) in research directory'
-      : 'No evidence files (evidence-*.md) found in ' + researchDir,
+      ? 'Found ' + evidenceFiles.length + ' evidence file(s) in research directory (including subdirectories)'
+      : 'No evidence files (evidence-*.md) found in ' + researchDir + ' (including subdirectories)',
   });
 
   // M4: SYNTHESIS.md contains readiness/sufficiency assessment content
@@ -285,8 +305,8 @@ function main() {
     criterion: 'S2',
     passed: evidenceFiles.length >= 2,
     detail: evidenceFiles.length >= 2
-      ? 'Found ' + evidenceFiles.length + ' evidence files (multiple sources covered)'
-      : 'Found ' + evidenceFiles.length + ' evidence file(s), recommend at least 2 for source diversity',
+      ? 'Found ' + evidenceFiles.length + ' evidence files in research directory (including subdirectories) -- multiple sources covered'
+      : 'Found ' + evidenceFiles.length + ' evidence file(s) in research directory (including subdirectories), recommend at least 2 for source diversity',
   });
 
   // S3: SYNTHESIS.md word count exceeds 500 words
