@@ -136,3 +136,14 @@ Full details: `.planning/milestones/v3.1-ROADMAP.md`
 | 39. P1 Audit Fixes | v3.1 | 2/2 | Complete | 2026-03-18 |
 | 40. P2 Audit Fixes | v3.1 | 2/2 | Complete | 2026-03-18 |
 | 41. AUD-029 Go-Advisory Cleanup | v3.1 | 1/1 | Complete | 2026-03-18 |
+
+### Phase 1: Research phase retrospective fixes
+
+**Goal:** Fix 5 issues from first real-world research phase use: recursive evidence file counting in G2 gate, web researcher codebase guardrails, source routing priority in research skill, corroboration exception for direct code reads, and write-early pattern for web researcher.
+**Requirements**: None (bug-fix phase)
+**Depends on:** None
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md -- G2 gate recursive scan + web researcher guardrails and write-early
+- [ ] 01-02-PLAN.md -- Research skill source routing + sufficiency evaluator code read exception
