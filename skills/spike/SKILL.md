@@ -73,6 +73,8 @@ Read: `.expedite/plan/PLAN.md`, `.expedite/state.yml`, `.expedite/design/DESIGN.
 
 From PLAN.md, find matching wave/epic heading. Extract: heading, DA IDs covered, tactical decisions table, tasks/stories. If phase not found: list available, ask user. Classify TDs: resolved vs needs-spike. Display summary.
 
+If this phase has 0 tactical decisions, write checkpoint with `substep: "no_tds_skipping_resolution"`, skip Step 5, and proceed directly to Step 6. The spike still adds value by reading the actual codebase and producing implementation steps with real file paths and line numbers.
+
 ### Step 5: Resolve Tactical Decisions
 
 Update checkpoint substep as each TD resolves: `substep: "resolving_td_{N}"`.
@@ -120,6 +122,20 @@ The script reads SPIKE.md, PLAN.md, and SCOPE.md, evaluates structural criteria 
 **If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Handle recycle: display issues, fix -> loop to relevant step -> re-run G5. 2nd+ recycle: offer override. Override -> treat as go_advisory.
 
 **If structural outcome is "go" or "go_advisory":** Proceed to Layer 2.
+
+**Simple wave fast path:** If the structural outcome is "go" or "go_advisory" AND the wave has 0 TDs AND <= 2 tasks, skip Layer 2. The structural G5 result is sufficient for simple waves. Write a gates.yml entry:
+```yaml
+history:
+  - gate: "G5"
+    timestamp: "{ISO 8601 UTC}"
+    outcome: "{structural outcome}"
+    evaluator: "g5-structural-only"
+    notes: "Spike phase: {slug}. Semantic verification skipped — wave has 0 TDs and <= 2 tasks."
+    overridden: false
+```
+Display: "Semantic gate-verifier skipped (0 TDs, {N} task(s)). Structural G5 result: {outcome}." Proceed to Step 9.
+
+For waves with TDs or > 2 tasks, continue to Layer 2 as normal.
 
 **Layer 2: Semantic verification** -- gate-verifier agent dispatch.
 
