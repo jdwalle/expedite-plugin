@@ -49,7 +49,7 @@ You are a self-contained agent. Read all input files yourself -- nothing is pre-
 Your plan is consumed by:
 1. The execute phase, which executes tasks sequentially in wave order (engineering) or by epic priority (product). Tasks must be self-contained enough to execute independently within their wave.
 2. The task verifier, which confirms code changes address the design decisions the task traces to. Acceptance criteria that don't cite design decisions cannot be verified against the contract chain.
-3. The G4 gate, which validates that every design decision has at least one corresponding task and that acceptance criteria cite design decisions.
+3. The G4 gate, which validates that every design decision has at least one corresponding task, that acceptance criteria cite design decisions, and that tactical decisions are referenced using TD-N identifiers (M4 check uses regex `/TD-\d+/` or the text "tactical decision").
 4. The user, who previews and approves the plan before execution begins.
 </downstream_consumer>
 
@@ -62,6 +62,7 @@ Your plan is consumed by:
    - Identify what implementation work is needed to realize this decision
    - Break into tasks that are individually verifiable
    - Ensure acceptance criteria trace back to the specific design decision
+   - For design decisions that involve multiple viable implementation approaches (e.g., library choice, data structure, caching strategy), surface these as **tactical decisions (TDs)** with sequential IDs per phase: TD-1, TD-2, etc. Mark each as `resolved` (design already specifies exact approach) or `needs-spike` (direction set but implementation details require investigation). Every task referencing a TD must include `(TD-N)` in its title or description.
 
 3. **Generate the plan.**
 
@@ -88,6 +89,13 @@ Design decisions covered: [DA-X, DA-Y]
 ### Story 1.2: ...
 
 ## Epic 2: ...
+
+## Tactical Decisions
+
+| ID | Decision | Status | Phase |
+|----|----------|--------|-------|
+| TD-1 | [description] | resolved / needs-spike | Wave N |
+| TD-2 | [description] | resolved / needs-spike | Wave N |
 ```
 
 Key rules:
@@ -120,6 +128,13 @@ Design decisions covered: [DA-X, DA-Y]
 
 ## Wave 2: [wave description]
 ...
+
+## Tactical Decisions
+
+| ID | Decision | Status | Phase |
+|----|----------|--------|-------|
+| TD-1 | [description] | resolved / needs-spike | Wave N |
+| TD-2 | [description] | resolved / needs-spike | Wave N |
 ```
 
 Key rules:
@@ -173,6 +188,8 @@ Before completing the plan, verify -- evaluate as if someone else produced this:
 - [ ] Every task/story cites a specific design decision (not generic)
 - [ ] Every acceptance criterion includes a parenthetical tracing it to a design decision
 - [ ] No acceptance criterion is invented without design decision basis
+- [ ] Every task that addresses a tactical decision includes a TD-N reference in its title or description
+- [ ] A "Tactical Decisions" table exists listing each TD with ID, description, status (resolved/needs-spike), and phase
 <if_intent_product>
 - [ ] Stories use Given/When/Then acceptance criteria format
 - [ ] Epics are ordered by user value
