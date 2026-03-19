@@ -316,35 +316,26 @@ function main() {
       : 'No effort or sizing information found in PLAN.md (expected "effort", "estimate", "size", or "complexity")',
   });
 
-  // S3: No orphan tasks (all task bullets are under a phase heading)
+  // S3: No orphan tasks (task bullets should be under phase headings)
+  // Only scan the region between the first and last phase headings.
+  // Bullets before the first phase heading (metadata, coverage tables,
+  // tactical decision tables) are not orphan tasks.
   var s3Passed = true;
   var s3Detail = '';
   if (planContent) {
-    var allLines = planContent.split('\n');
-    var orphanCount = 0;
-    var inPhaseSection = false;
-    for (var ol = 0; ol < allLines.length; ol++) {
-      if (/^#{1,4}\s+(?:Phase|Wave|Epic)\s+\d+/i.test(allLines[ol])) {
-        inPhaseSection = true;
-        continue;
-      }
-      // If we hit a non-phase heading, we leave the phase section
-      if (/^#{1,2}\s+/.test(allLines[ol]) && !/^#{1,4}\s+(?:Phase|Wave|Epic)\s+\d+/i.test(allLines[ol])) {
-        inPhaseSection = false;
-      }
-      // Task bullet not under a phase
-      if (!inPhaseSection && /^\s*(?:[-*]|\d+[.)]\s)\s*\S/.test(allLines[ol])) {
-        // Exclude bullets that are clearly not tasks (in header sections, metadata, etc.)
-        var lineText = allLines[ol].trim();
-        if (lineText.length > 10) { // Short bullets are likely metadata, not tasks
-          orphanCount++;
-        }
-      }
+    // Count tasks found by extractPhases (already parsed at line 114)
+    var tasksInPhases = 0;
+    for (var s3p = 0; s3p < phases.length; s3p++) {
+      tasksInPhases += phases[s3p].tasks.length;
     }
-    s3Passed = orphanCount === 0;
+    // Count all task bullets in the entire document using countAllTasks
+    // (which only counts bullets after the first phase heading)
+    var totalTaskCount = countAllTasks(planContent);
+    var orphanCount = totalTaskCount - tasksInPhases;
+    s3Passed = orphanCount <= 0;
     s3Detail = s3Passed
-      ? 'All task items are under phase headings'
-      : orphanCount + ' task-like bullet(s) found outside of phase sections';
+      ? 'All task items are under phase headings (' + tasksInPhases + ' tasks across ' + phases.length + ' phases)'
+      : orphanCount + ' task-like bullet(s) found between phase sections but not within any phase';
   } else {
     s3Detail = 'Cannot check for orphan tasks: PLAN.md does not exist';
   }
