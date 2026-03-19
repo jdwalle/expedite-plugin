@@ -167,7 +167,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md -- Plan-decomposer G4 TD format requirements + agent-calibrated effort estimates
-- [ ] 02-02-PLAN.md -- G4 S3 false positive fix + G1 M6 regex loosening + SKILL.md format guidance
+- [x] 02-02-PLAN.md -- G4 S3 false positive fix + G1 M6 regex loosening + SKILL.md format guidance
 
 ### Phase 3: Spike phase retrospective fixes
 
@@ -185,4 +185,4 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 03-01-PLAN.md -- G5 heading fix + 0-TD fast path + semantic skip heuristic
+- [x] 03-01-PLAN.md -- G5 heading fix + 0-TD fast path + semantic skip heuristic
