@@ -161,7 +161,7 @@ Read `.expedite/sources.yml`. Display configured sources checklist (web always a
 - Header: project_name, timestamp, intent, lifecycle_id
 - Project Context: description + refinement summary
 - Success Criteria: bulleted, concrete, measurable
-- Decision Areas: each DA with depth, readiness criterion, question table (ID, Priority, Question, Sources, Evidence Requirements)
+- Decision Areas: each DA as a heading in the format `### DA-N: [Name] (Depth: [Deep|Standard|Light])`, followed by readiness criterion, and a question table (ID, Priority, Question, Sources, Evidence Requirements). The `DA-N` identifier in the heading is required for the G1 gate to detect DA sections.
 - Risks/Concerns Addressed (intent-specific)
 - Source Configuration checklist
 - Metadata: question count, DA count, batch estimate

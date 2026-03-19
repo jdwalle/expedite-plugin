@@ -131,12 +131,32 @@ function main() {
   var m6Passed = false;
   var m6Detail = '';
   if (scopeContent) {
-    // Find DA headings (contain "DA-" or "Decision Area")
     var daLines = scopeContent.split('\n');
     var daHeadings = [];
+    // Primary pass: headings with explicit DA-N or "Decision Area" markers
     for (var d = 0; d < daLines.length; d++) {
       if (/^#{1,4}\s+.*(?:DA-\d+|Decision\s+Area)/i.test(daLines[d])) {
         daHeadings.push({ line: d, text: daLines[d] });
+      }
+    }
+    // Fallback pass: if no DA headings found via primary regex, look for
+    // headings whose section content contains both depth and readiness
+    // (these are DA sections even without the DA-N label)
+    if (daHeadings.length === 0) {
+      var candidateHeadings = [];
+      for (var d2 = 0; d2 < daLines.length; d2++) {
+        if (/^#{1,4}\s+/.test(daLines[d2]) && !/^#{1,4}\s+.*success\s+criteria/i.test(daLines[d2]) && !/^#{1,4}\s+.*source\s+config/i.test(daLines[d2]) && !/^#{1,4}\s+.*metadata/i.test(daLines[d2]) && !/^#{1,4}\s+.*project\s+context/i.test(daLines[d2]) && !/^#{1,4}\s+.*risk/i.test(daLines[d2]) && !/^#{1,4}\s+.*concern/i.test(daLines[d2])) {
+          candidateHeadings.push({ line: d2, text: daLines[d2] });
+        }
+      }
+      // Check each candidate: is the section content DA-like?
+      for (var ch = 0; ch < candidateHeadings.length; ch++) {
+        var chStart = candidateHeadings[ch].line;
+        var chEnd = (ch + 1 < candidateHeadings.length) ? candidateHeadings[ch + 1].line : daLines.length;
+        var chSection = daLines.slice(chStart, chEnd).join('\n');
+        if (/depth/i.test(chSection) && /readiness/i.test(chSection)) {
+          daHeadings.push({ line: chStart, text: candidateHeadings[ch].text });
+        }
       }
     }
 
