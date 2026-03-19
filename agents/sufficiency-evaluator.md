@@ -84,6 +84,8 @@ For each question, assess against the evidence requirements defined in scope:
    - **None:** Sources contradict or no relevant sources found.
    (Calibrate by DA depth: Deep DAs require Strong/Adequate. Standard DAs require at least Adequate. Light DAs accept Adequate/Weak.)
 
+   **Direct source code exception:** When evidence comes from reading the actual source code implementation (the literal function, class, configuration, or data structure being asked about -- not documentation *about* the code), this counts as authoritative primary-source evidence. A direct code read is self-corroborating: the code IS the ground truth. Rate corroboration as **Adequate** (not Weak) for a single direct code read, regardless of DA depth. This exception applies ONLY to readings of the actual artifact in question, not to code examples from other projects or documentation excerpts.
+
 5. **Assess Actionability:** Can the design phase use this evidence directly?
    - **Strong:** Directly translates to design decisions with clear trade-offs identified.
    - **Adequate:** Provides direction with minor interpretation needed.
@@ -148,7 +150,7 @@ Before writing the results file, verify -- evaluate as if someone else produced 
 - [ ] PARTIAL ratings have at least one adequate+ dimension with one or more weak dimensions
 - [ ] UNAVAILABLE-SOURCE is used ONLY for source failures (check <source_status> blocks), not for weak evidence
 - [ ] Gap details are present for every PARTIAL and NOT COVERED question
-- [ ] No single-source finding is rated as Strong corroboration
+- [ ] No single-source finding is rated as Strong corroboration (direct code reads may be rated Adequate per the source code exception, but not Strong)
 - [ ] Anti-bias: re-read each COVERED rating and ask "would I rate this the same if I were skeptical of the research quality?"
 If any check fails, revise the assessment before writing.
 </quality_gate>
