@@ -143,7 +143,7 @@ Key rules:
 - Wave 1 should have zero external dependencies
 - Every design decision must appear in at least one task's "Design decision" field
 - Every acceptance criterion must cite the design decision it traces to (in parenthetical)
-- Effort estimates are realistic (2-8 hours per task is typical; larger tasks should be split)
+- Effort estimates reflect agent execution time, not human developer time. Agents execute with full codebase context, no context-switching, and parallel file access. A task that would take a human developer 4 hours typically completes in 30-60 minutes via agent dispatch. Typical range: 15 minutes to 2 hours per task. Larger tasks should be split.
 </if_intent_engineering>
 
 4. **Enforce contract chain requirements:**
@@ -198,7 +198,7 @@ Before completing the plan, verify -- evaluate as if someone else produced this:
 <if_intent_engineering>
 - [ ] Tasks within each wave have no intra-wave dependencies
 - [ ] Cross-wave dependencies are valid (referenced task IDs exist)
-- [ ] Effort estimates are in the 2-8 hour range (larger tasks are split)
+- [ ] Effort estimates are in the 15min-2hr range for agent execution (larger tasks are split)
 - [ ] Wave 1 has zero external dependencies
 </if_intent_engineering>
 - [ ] Coverage is complete: scope DAs -> design decisions -> plan tasks (no gaps in chain)
