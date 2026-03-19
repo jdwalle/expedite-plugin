@@ -98,13 +98,13 @@ After all TDs: "All {X} tactical decisions resolved. Generating implementation s
 
 ### Step 6: Generate Implementation Steps
 
-Generate ordered steps using resolved TDs, phase tasks, and design decisions. Each step has: number/title, traces-to (TD -> DA), files, numbered sub-steps. Self-check: every TD maps to a step, every task covered, all have traceability, file lists are specific paths.
+Generate ordered steps using resolved TDs, phase tasks, and design decisions. Each step has: number/title, traces-to (TD -> DA), files, numbered sub-steps. **IMPORTANT: Use `#### Step N: [Title]` headings (level 4) for implementation steps — NOT `###`.** The G5 gate breaks on headings level <= 2, so `###` and `####` both work, but `##` would break the scan. Self-check: every TD maps to a step, every task covered, all have traceability, file lists are specific paths, all step headings use `####` not `###`.
 
 ### Step 7: Write SPIKE.md
 
 `mkdir -p .expedite/plan/phases/{slug}/`. Check for existing SPIKE.md (prompt overwrite). Write spike output: header (phase, TD counts, G5 status), TD resolutions (classification, resolution, rationale, method, evidence), implementation steps (traces-to, files, sub-steps).
 
-**Implementation steps heading format:** Use `#### Step N: [Title]` headings (level 4) for each implementation step. The G5 structural gate's `countImplementationSteps` function scans for bullets/numbered items under an "Implementation Steps" heading and exits when it hits a heading level <= 2. Using `###` or `####` for step headings keeps them within the scanned section. Using `##` would prematurely terminate the scan.
+**CRITICAL — Implementation steps heading format:** Each implementation step MUST use `#### Step N: [Title]` (4 hashes, not 3). The G5 gate's `countImplementationSteps` exits on headings with <= 2 hashes. Using `###` works but `##` would break. Do NOT mirror this SKILL.md's own `### Step N:` pattern — that's for skill steps, not SPIKE.md implementation steps.
 
 Verify file exists and has content.
 
