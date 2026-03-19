@@ -182,7 +182,7 @@ Plans:
 3. **Skip semantic gate-verifier on simple waves** — File: `skills/spike/SKILL.md` Step 8. The gate-verifier agent took ~110 seconds for a 0-TD, 1-task wave. Its feedback was useful but minor (advisory items). The semantic layer's value scales with complexity — for simple waves, structural G5 alone is sufficient. Add a heuristic to Step 8: after the structural G5 gate passes, check if the wave has 0 TDs AND ≤ 2 tasks. If both conditions are true, skip the semantic gate-verifier dispatch and use the structural result as the final gate outcome. Write the gates.yml entry with `evaluator: "g5-structural-only"` and add a note explaining semantic verification was skipped due to wave simplicity. For waves with TDs or > 2 tasks, run the full dual-layer gate as normal.
 
 **Depends on:** Phase 2 (applies same gate-format fix pattern from G1/G4 to G5)
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 3 to break down)
+- [ ] 03-01-PLAN.md -- G5 heading fix + 0-TD fast path + semantic skip heuristic
