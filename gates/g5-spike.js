@@ -106,7 +106,7 @@ function main() {
       if (inImplSection && /^#{1,4}\s+/.test(line) && !/^#{1,4}\s+.*(?:implementation|steps)/i.test(line)) {
         // Check if it's a sub-heading (lower level) or same/higher level
         var headingLevel = line.match(/^(#+)/);
-        if (headingLevel && headingLevel[1].length <= 3) {
+        if (headingLevel && headingLevel[1].length <= 2) {
           break;
         }
       }

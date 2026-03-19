@@ -100,7 +100,11 @@ Generate ordered steps using resolved TDs, phase tasks, and design decisions. Ea
 
 ### Step 7: Write SPIKE.md
 
-`mkdir -p .expedite/plan/phases/{slug}/`. Check for existing SPIKE.md (prompt overwrite). Write spike output: header (phase, TD counts, G5 status), TD resolutions (classification, resolution, rationale, method, evidence), implementation steps (traces-to, files, sub-steps). Verify file exists and has content.
+`mkdir -p .expedite/plan/phases/{slug}/`. Check for existing SPIKE.md (prompt overwrite). Write spike output: header (phase, TD counts, G5 status), TD resolutions (classification, resolution, rationale, method, evidence), implementation steps (traces-to, files, sub-steps).
+
+**Implementation steps heading format:** Use `#### Step N: [Title]` headings (level 4) for each implementation step. The G5 structural gate's `countImplementationSteps` function scans for bullets/numbered items under an "Implementation Steps" heading and exits when it hits a heading level <= 2. Using `###` or `####` for step headings keeps them within the scanned section. Using `##` would prematurely terminate the scan.
+
+Verify file exists and has content.
 
 ### Step 8: G5 Gate Evaluation (Dual-Layer)
 
