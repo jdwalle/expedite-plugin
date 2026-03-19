@@ -145,5 +145,5 @@ Full details: `.planning/milestones/v3.1-ROADMAP.md`
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- G2 gate recursive scan + web researcher guardrails and write-early
-- [ ] 01-02-PLAN.md -- Research skill source routing + sufficiency evaluator code read exception
+- [x] 01-01-PLAN.md -- G2 gate recursive scan + web researcher guardrails and write-early
+- [x] 01-02-PLAN.md -- Research skill source routing + sufficiency evaluator code read exception

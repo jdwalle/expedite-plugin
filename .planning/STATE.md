@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v3.1
 milestone_name: Audit Bug Fixes
 status: completed
-last_updated: "2026-03-18T05:30:00.000Z"
+last_updated: "2026-03-19T03:51:34Z"
 progress:
   total_phases: 4
   completed_phases: 4
@@ -18,11 +18,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-18)
 
 **Core value:** Developers can run a complete evidence-based lifecycle — from scoping questions through researched design to executable plan — without losing context, skipping steps, or making decisions without evidence.
-**Current focus:** Planning next milestone
+**Current focus:** Research phase retrospective fixes
 
 ## Current Position
 
-Milestone v3.1 shipped. No active work.
+Phase 01 (Research phase retrospective fixes): Plan 02 complete. Both plans in phase complete.
 
 ## Performance Metrics
 
@@ -39,10 +39,19 @@ Milestone v3.1 shipped. No active work.
 ### Decisions
 
 Full decision log in PROJECT.md Key Decisions table.
+- [Phase 01-01]: Keep ES5-compatible style in g2-structural.js to match existing codebase
+- [Phase 01-01]: Return relative paths from research dir for informative detail messages
+- [Phase 01-01]: Add guardrails as prompt block, not disallowedTools, so codebase tools remain available for supplemental context
+- [Phase 01-02]: Codebase takes routing priority over mcp and web when present in source_hints
+- [Phase 01-02]: Direct source code reads count as Adequate corroboration regardless of DA depth
 
 ### Pending Todos
 
 None.
+
+### Roadmap Evolution
+
+- Phase 1 added: Research phase retrospective fixes
 
 ### Blockers/Concerns
 
@@ -50,6 +59,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-18
-Stopped at: v3.1 milestone completed
+Last session: 2026-03-19
+Stopped at: Completed 01-01-PLAN.md (all phase 01 plans complete)
 Resume file: None
