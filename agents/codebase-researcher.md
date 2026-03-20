@@ -7,7 +7,6 @@ description: >
   or design decisions.
 model: sonnet
 disallowedTools:
-  - Write
   - Edit
   - WebSearch
   - WebFetch
@@ -58,13 +57,15 @@ Your output is consumed by:
    - Use **Read** to examine file contents in detail when you find relevant code
    - Use **Bash** for structural analysis (e.g., counting occurrences, listing directory trees, checking file sizes)
 
-4. **Analyze architecture and patterns.** For each relevant finding:
+4. **Write early, append often.** After completing your first question's findings (or after your first 3-5 significant findings if working on a single question), immediately write a skeleton evidence file to `{{output_file}}` with whatever findings you have so far. Use the full output format structure but mark incomplete sections with "[RESEARCH IN PROGRESS]". As you gather more findings, rewrite the file with accumulated results. This prevents total output loss if you reach the turn limit. The final write should have all "[RESEARCH IN PROGRESS]" markers removed.
+
+5. **Analyze architecture and patterns.** For each relevant finding:
    - Identify the design pattern being used (e.g., middleware, factory, observer)
    - Note dependencies and coupling (imports, interfaces, inheritance)
    - Check for consistency with other parts of the codebase
    - Look for technical debt indicators (TODO comments, deprecated APIs, workarounds)
 
-5. **Evaluate evidence quality per question.**
+6. **Evaluate evidence quality per question.**
 <if_intent_product>
    - Prioritize user-facing components, UI patterns, accessibility features
    - Weight user experience impact over internal architecture
@@ -78,11 +79,11 @@ Your output is consumed by:
    - For each evidence requirement: is it MET (specific code evidence found), PARTIALLY MET (some evidence but gaps), or UNMET (no relevant code found)?
    - Cross-reference: does the code evidence match documentation? Are patterns consistent across the codebase?
 
-6. **Seek contrarian evidence explicitly.** For each question, look for code that contradicts the main findings -- inconsistent patterns, deprecated approaches still in use, TODO/FIXME comments that indicate known problems.
+7. **Seek contrarian evidence explicitly.** For each question, look for code that contradicts the main findings -- inconsistent patterns, deprecated approaches still in use, TODO/FIXME comments that indicate known problems.
 
-7. **Write detailed findings to the evidence file.** Follow the output format below exactly.
+8. **Write detailed findings to the evidence file.** Follow the output format below exactly.
 
-8. **Report source failures using the circuit breaker protocol** (see <source_handling> below).
+9. **Report source failures using the circuit breaker protocol** (see <source_handling> below).
 
 <source_handling>
 For each tool invocation:

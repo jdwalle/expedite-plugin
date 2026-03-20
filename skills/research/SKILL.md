@@ -26,7 +26,7 @@ Questions:
 !`cat .expedite/questions.yml 2>/dev/null || echo "No questions"`
 
 Session context:
-!`cat .expedite/session-summary.md 2>/dev/null`
+!`cat .expedite/session-summary.md 2>/dev/null || echo "No session context"`
 
 Override protocol:
 !`cat skills/shared/ref-override-protocol.md 2>/dev/null || echo "No override protocol found"`
