@@ -105,7 +105,7 @@ The design document MUST include these sections in this order:
 
 4. **Enforce contract chain requirements:**
    - Every DA from scope MUST have a corresponding design decision in the "Design Decisions by DA" section
-   - Each decision MUST cite specific evidence files and findings from SYNTHESIS.md (not just "research showed that...")
+   - Each decision MUST cite specific evidence files and findings from SYNTHESIS.md (not just "research showed that..."). **Citation format:** Use literal references the G3 gate can detect: `SYNTHESIS.md`, `evidence-batch-01.md`, `Finding 1`, `F1`. Example: "Evidence: SYNTHESIS.md Finding 3 shows React outperforms Vue in bundle size (evidence-batch-01.md)."
    - No design decision may be invented without evidence basis. If evidence is insufficient, flag the gap explicitly and state the decision confidence as Low.
    - Where evidence conflicts, present both perspectives and state which was chosen and why
 

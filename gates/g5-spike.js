@@ -110,8 +110,12 @@ function main() {
           break;
         }
       }
-      // Count numbered or bulleted items in implementation section
-      if (inImplSection && /^\s*(?:\d+[.)]\s+|-\s+|\*\s+)\S/.test(line)) {
+      // Count step headings (#### Step N:) as implementation steps
+      if (inImplSection && /^#{3,4}\s+(?:Step\s+)?\d+/i.test(line)) {
+        count++;
+      }
+      // Also count numbered or bulleted items in implementation section
+      else if (inImplSection && /^\s*(?:\d+[.)]\s+|-\s+|\*\s+)\S/.test(line)) {
         count++;
       }
     }
