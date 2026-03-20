@@ -177,9 +177,35 @@ If a gate blocks progress and you disagree with the assessment, each skill suppo
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
 - Node.js (for gate scripts and hooks)
 
+### Web Research Permissions
+
+The research phase dispatches agents that use `WebSearch` and `WebFetch` tools. These must be pre-approved in your Claude Code settings **before** starting a session — permissions added mid-session won't take effect.
+
+**Option A: User-level (all projects)**
+
+Create or update `~/.claude/settings.local.json`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch"
+    ]
+  }
+}
+```
+
+If agents are blocked on other tools (Write, Bash, etc.), add them to the `allow` array as needed. See [Claude Code permissions docs](https://docs.anthropic.com/en/docs/claude-code/settings) for granular patterns like `"Bash(ls:*)"`.
+
+**Option B: Project-level (one project)**
+
+Create or update `<project>/.claude/settings.local.json` with the same content.
+
+If web tools are unavailable (e.g., AWS Bedrock), the web-researcher agent will return UNAVAILABLE status and research falls back to codebase-only evidence.
+
 ### Optional
 
-- **WebSearch** tool access — Required for web research. Without it (e.g., on AWS Bedrock), the web-researcher agent will return UNAVAILABLE status and research falls back to codebase-only evidence.
 - **MCP servers** — If configured in your project, research agents can query them as additional evidence sources.
 
 ## Adding to `.gitignore`
