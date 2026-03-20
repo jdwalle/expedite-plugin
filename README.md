@@ -17,12 +17,6 @@ Scope ──G1──▶ Research ──G2──▶ Design ──G3──▶ Plan
 5. **Spike** — Resolve tactical decisions and produce implementation steps with real file paths and line numbers
 6. **Execute** — Agents follow the spike blueprint to write the code, with per-task atomic commits
 
-## Installation
-
-```bash
-claude plugin add github:jdwalle/expedite-plugin
-```
-
 ## Usage
 
 Navigate to any project directory and run the commands in order:
@@ -195,7 +189,3 @@ The `.expedite/` directory contains project-specific lifecycle state. Add it to 
 ```
 .expedite/
 ```
-
-## License
-
-MIT
