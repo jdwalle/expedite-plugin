@@ -2,7 +2,7 @@
 
 var fs = require('fs');
 var path = require('path');
-var yaml = require(path.join(__dirname, '../../hooks/node_modules/js-yaml'));
+var yaml = require('js-yaml');
 
 /**
  * Read and parse a YAML file.

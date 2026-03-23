@@ -135,7 +135,7 @@ function main() {
     var daHeadings = [];
     // Primary pass: headings with explicit DA-N or "Decision Area" markers
     for (var d = 0; d < daLines.length; d++) {
-      if (/^#{1,4}\s+.*(?:DA-\d+|Decision\s+Area)/i.test(daLines[d])) {
+      if (/^#{1,4}\s+.*(?:DA-\d+|Decision\s+Area(?!s))/i.test(daLines[d])) {
         daHeadings.push({ line: d, text: daLines[d] });
       }
     }

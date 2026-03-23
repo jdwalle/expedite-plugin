@@ -131,13 +131,25 @@ Backup-before-write state.yml: read, `cp .expedite/state.yml .expedite/state.yml
 
 Read `.expedite/research/proposed-questions.yml`. If empty/missing, skip to Step 10. Deduplicate against existing questions (LLM semantic dedup, not string matching). Cap at 4. Present to user (freeform: approve all/specific/none/modify). Add approved questions to state.yml and SCOPE.md.
 
-### Step 10: Synthesis Generation
+### Step 10: Gap-Fill Dispatch (if needed)
+
+Check sufficiency results from Step 8. If ANY questions have status `partial` or `not_covered`:
+
+Filter deficient questions (partial/not_covered/pending). Read questions.yml, increment `research_round`, write back to questions.yml. `mkdir -p .expedite/research/round-{N}/`. Read `skills/research/references/ref-gapfill-dispatch.md` (Glob if needed). Re-batch by DA. Dispatch gap-fill agents using Step 5 pattern with narrowed question set and additive supplement output paths. After completion: return to Step 8 for re-assessment.
+
+Display: "Gap-fill round {N}: {X} deficient questions across {Y} DAs. Dispatching agents..."
+
+**If all questions are `covered`:** Skip gap-fill. Display: "All questions sufficient. Proceeding to synthesis." Continue to Step 11.
+
+**Max rounds guard:** If research_round exceeds 3, display: "3 gap-fill rounds completed. Remaining gaps: {list}. 1. Run another round | 2. Proceed to synthesis with current evidence." Default to proceeding.
+
+### Step 11: Synthesis Generation
 
 Dispatch the `research-synthesizer` agent via the Agent tool. Pass assembled context: project_name, intent, research_round, evidence_dir, scope_file, output_file (.expedite/research/SYNTHESIS.md), timestamp. Apply intent lens. If go_advisory: inject advisory context. If override: inject override context.
 
 After agent returns: verify `.expedite/research/SYNTHESIS.md` exists on disk. If missing, display error: "Agent research-synthesizer did not produce expected output at .expedite/research/SYNTHESIS.md. Retry? (yes/skip)". If present, display confirmation with file size.
 
-### Step 11: G2 Gate Evaluation (Dual-Layer)
+### Step 12: G2 Gate Evaluation (Dual-Layer)
 
 **Layer 1: Structural gate** -- deterministic Node.js script. No LLM judgment.
 
@@ -148,7 +160,7 @@ The script reads SYNTHESIS.md, SCOPE.md, and evidence files, evaluates structura
 
 **Read script output:** Parse the JSON stdout. Extract `outcome` and `failures`.
 
-**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Proceed to Step 12 with the structural recycle outcome.
+**If structural outcome is "recycle":** The semantic layer does NOT run. Display structural failures. Proceed to Step 13 with the structural recycle outcome.
 
 **If structural outcome is "go" or "go_advisory":** Proceed to Layer 2.
 
@@ -193,19 +205,15 @@ history:
 
 Log gate outcome (both layers) to log.yml. Display: structural pass/fail, semantic dimension scores, overall outcome.
 
-### Step 12: Gate Outcome Handling
+### Step 13: Gate Outcome Handling
 
 **Go** -> "G2 gate passed. Research sufficient for design." -> Step 14.
 
-**go_advisory** -> Show SHOULD failures. Freeform: "1. Proceed with advisory | 2. Run gap-fill." Proceed -> Step 14. Gap-fill -> treat as Recycle -> Step 13.
+**go_advisory** -> Show SHOULD failures. Freeform: "1. Proceed with advisory | 2. Run another gap-fill round." Proceed -> Step 14. Gap-fill -> return to Step 10.
 
-**Recycle** -> Read `skills/research/references/ref-recycle-escalation.md` (Glob if needed). Show gaps. User: approve gap-fill -> Step 13 / adjust+re-gate -> Step 11 / override -> write override to gates.yml per ref-override-protocol.md, then Step 14.
+**Recycle** -> Read `skills/research/references/ref-recycle-escalation.md` (Glob if needed). Show gaps. User: approve gap-fill -> return to Step 10 / adjust+re-gate -> Step 12 / override -> write override to gates.yml per ref-override-protocol.md, then Step 14.
 
 **Override handling:** Record override in gates.yml (outcome: "overridden", override_reason, severity). Write `.expedite/research/override-context.md`. Log override to log.yml.
-
-### Step 13: Gap-Fill Dispatch
-
-Filter deficient questions (partial/not_covered/pending). Read questions.yml, increment `research_round`, write back to questions.yml. `mkdir -p .expedite/research/round-{N}/`. Read `skills/research/references/ref-gapfill-dispatch.md` (Glob if needed). Re-batch by DA. Dispatch gap-fill agents using Step 5 pattern with narrowed question set and additive supplement output paths. After completion: return to Step 8 for re-assessment.
 
 ### Step 14: Research Completion
 
